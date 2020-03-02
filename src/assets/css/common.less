@@ -1,0 +1,136 @@
+body {
+  overflow: hidden;
+}
+* {
+  margin:0;
+  padding: 0
+}
+ul li {
+  list-style: none;
+}
+/**滚动条样式**/
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+  background-color: #F5F5F5;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  border-radius: 2px;
+  background-color: #F5F5F5;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #ccc;
+}
+
+/**ant 表格样式**/
+.wrap-table {
+  background-color:#fff;
+}
+.ant-table-wrapper {
+  background-color: #fff !important
+}
+.ant-table-body {
+  background-color: #fff !important;
+}
+.ant-layout-content {
+  margin: 10px 10px 0 10px !important;
+}
+.ant-table-thead>tr>th,
+.ant-table-body tr td {
+  text-align: center !important
+}
+
+/**tab导航样式**/
+.ant-pro-multi-tab {
+  margin: -6px -24px 0px -16px !important
+}
+
+/**界面空白区域**/
+.ant-layout {
+  background: #F5F5F5 !important;
+}
+.page-layout {
+  width: 100%;
+  margin-top: 10px;
+  /**没有tab导航时为100% - 25(100% - 25)**/
+  height: calc(100% - 55px);
+}
+
+/**弹性盒子布局**/
+/** 伸缩盒子盒子 **/
+
+.qui-fx {
+  display: flex;
+}
+
+.qui-fx-ver {
+  display: flex;
+  flex-direction: column;
+}
+
+/**水平垂直居中**/
+.qui-fx-ac-jc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/**垂直居中**/
+.qui-fx-ac {
+  display: flex;
+  align-items: center;
+}
+
+/**垂直居下**/
+.qui-fx-ae {
+  display: flex;
+  align-items: flex-end;
+}
+
+/**水平居中**/
+.qui-fx-jc {
+  display: flex;
+  justify-content: center;
+}
+
+/**水平居右**/
+.qui-fx-je {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/**水平两端对齐**/
+.qui-fx-jsb {
+  display: flex;
+  justify-content: space-between;
+}
+
+/**水平等间距对齐**/
+.qui-fx-jsa {
+  display: flex;
+  justify-content: space-around;
+}
+
+/**水平换行**/
+.qui-fx-wp {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.qui-fx-f1 {
+  min-width: 0px;
+  flex: 1;
+  position: relative;
+}
+
+.qui-fx-f2 {
+  min-width: 0px;
+  flex: 2;
+  position: relative;
+}
