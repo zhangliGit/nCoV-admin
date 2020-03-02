@@ -1,5 +1,5 @@
 <template>
-  <div class="home page-layout">运维端</div>
+  <div class="home page-layout">教育局</div>
 </template>
 
 <script>

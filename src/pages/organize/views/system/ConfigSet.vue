@@ -1,15 +1,16 @@
 <template>
-  <div class="home page-layout">运维端</div>
+  <div class="page-layout">
+    权限配置
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Home',
+  name: 'ConfigSet',
   components: {},
   data() {
     return {}
   },
-  mounted() {},
   methods: {}
 }
 </script>
