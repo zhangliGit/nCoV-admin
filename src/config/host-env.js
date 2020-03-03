@@ -7,12 +7,11 @@ const ConfigEnv = process.env.VUE_APP_URL
 let hostEnv = ''
 
 if (ConfigEnv === 'test') {
-  hostEnv = 'http://test'
+  hostEnv = 'http://yapi.demo.qunar.com/mock/81654'
 } else if (ConfigEnv === 'prod') { // 线上接口
-  hostEnv = 'http://192.168.1.24:10080'
+  hostEnv = 'http://yapi.demo.qunar.com/mock/81654'
 } else {
-  hostEnv = window.location.origin
-  // hostEnv = 'http://192.168.1.24:10080'
+  hostEnv = 'http://yapi.demo.qunar.com/mock/81654'
 }
 
 export default hostEnv

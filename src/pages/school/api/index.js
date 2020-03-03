@@ -1,6 +1,8 @@
 import homeApi from './home'
+import schoolApi from './school'
 
 const apiList = {
-  ...homeApi
+  ...homeApi,
+  ...schoolApi
 }
 export default apiList

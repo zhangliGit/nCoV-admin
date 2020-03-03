@@ -1,6 +1,10 @@
 // eslint-disable-next-line
 import { BasicLayout } from '../layouts'
 import system from './system'
+import classManage from './classManage'
+import teacherManage from './teacherManage'
+import studentManage from './studentManage'
+import riskList from './riskList'
 const Home = resolve => require(['../views/Home.vue'], resolve)
 
 export const asyncRouterMap = [
@@ -20,7 +24,11 @@ export const asyncRouterMap = [
           icon: 'home'
         }
       },
-      system
+      system,
+      classManage,
+      teacherManage,
+      studentManage,
+      riskList
     ]
   },
   {
