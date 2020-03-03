@@ -25,7 +25,9 @@ import {
   Menu,
   LocaleProvider,
   message,
-  upload
+  upload,
+  Switch,
+  TimePicker
 } from 'ant-design-vue'
 const ComList = [
   Popconfirm,
@@ -51,7 +53,9 @@ const ComList = [
   Menu,
   LocaleProvider,
   message,
-  upload
+  upload,
+  Switch,
+  TimePicker
 ]
 const install = Vue => {
   ComList.forEach(item => {
