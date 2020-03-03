@@ -1,5 +1,7 @@
 <template>
-  <div class="home page-layout">教育局</div>
+  <div class="home page-layout"></div>
+</template>
+  </div>
 </template>
 
 <script>
