@@ -2,6 +2,8 @@
  * @description 注册全局组件
  */
 import {
+  Tooltip,
+  Popconfirm,
   Pagination,
   Row,
   Tree,
@@ -26,6 +28,8 @@ import {
   upload
 } from 'ant-design-vue'
 const ComList = [
+  Tooltip,
+  Popconfirm,
   Pagination,
   Select,
   Checkbox,
