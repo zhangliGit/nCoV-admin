@@ -1,8 +1,9 @@
 // eslint-disable-next-line
 import { BasicLayout } from '../layouts'
-import system from './system'
+// import system from './system'
 const Home = resolve => require(['../views/Home.vue'], resolve)
-
+const OrgManage = resolve => require(['../views/OrgManage.vue'], resolve)
+const SchoolManage = resolve => require(['../views/SchoolManage.vue'], resolve)
 export const asyncRouterMap = [
   {
     path: '/',
@@ -19,8 +20,24 @@ export const asyncRouterMap = [
           title: '系统首页',
           icon: 'home'
         }
-      },
-      system
+      }, {
+        path: 'orgManage',
+        name: 'orgManage',
+        component: OrgManage,
+        meta: {
+          title: '机构管理',
+          icon: 'menu-fold'
+        }
+      }, {
+        path: 'schoolManage',
+        name: 'schoolManage',
+        component: SchoolManage,
+        meta: {
+          title: '学校管理',
+          icon: 'menu-fold'
+        }
+      }
+      // system
     ]
   },
   {
