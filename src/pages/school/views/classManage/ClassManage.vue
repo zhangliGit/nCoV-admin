@@ -1,7 +1,11 @@
 <template>
   <div class="page-layout qui-fx-ver">
+    <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
+    </submit-form>
+    <choose-user ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
+    </choose-user>
     <div class="top-btn-group">
-      <a-button icon="plus" class="add-btn">添加班级</a-button>
+      <a-button icon="plus" class="add-btn" @click="addClass()">添加班级</a-button>
       <a-button icon="export" class="export-btn">导出</a-button>
     </div>
     <table-list
@@ -9,8 +13,8 @@
       :columns="columns"
       :table-list="userList">
       <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="新增">
-          <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher(action.record)"></a-button>
+        <a-tooltip placement="topLeft" title="绑定班主任">
+          <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher()"></a-button>
         </a-tooltip>
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
           <template slot="title">
@@ -31,6 +35,8 @@ import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
+import SubmitForm from '@c/SubmitForm'
+import chooseUser from '@c/ChooseUser'
 const columns = [
   {
     title: '序号',
@@ -82,16 +88,45 @@ const columns = [
     }
   }
 ]
+const formData = [
+  {
+    value: 'className',
+    initValue: '',
+    type: 'input',
+    label: '年级',
+    placeholder: '请输入年级名称'
+  },
+  {
+    value: 'classNum',
+    initValue: '',
+    type: 'input',
+    label: '新增班级数',
+    placeholder: '请输入新增班级个数'
+  },
+  {
+    value: 'startNum',
+    initValue: '',
+    type: 'input',
+    label: '起始编号',
+    placeholder: '请输入起始编号'
+  }
+]
 export default {
   name: 'ClassManage',
   components: {
     TableList,
     SearchForm,
+    SubmitForm,
+    chooseUser,
     PageNum
   },
   data () {
     return {
       columns,
+      formData,
+      title: '添加班级',
+      formStatus: false,
+      userTag: false,
       pageList: {
         page: 1,
         size: 20
@@ -112,11 +147,26 @@ export default {
       this.userList = res.data
       this.total = res.total
     },
-    addTeacher(record) {
-      console.log(record)
+    addClass() {
+      this.formStatus = true
+    },
+    addTeacher() {
+      this.userTag = true
     },
     del(record) {
       console.log(record)
+    },
+    submitForm (values) {
+      console.log(values)
+      setTimeout(() => {
+        this.$refs.form.reset()
+      }, 2000)
+    },
+    chooseUser (item) {
+      console.log(item)
+      setTimeout(() => {
+        this.$refs.chooseUser.reset()
+      }, 2000)
     }
   }
 }
