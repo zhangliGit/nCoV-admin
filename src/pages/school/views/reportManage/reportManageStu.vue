@@ -1,9 +1,7 @@
 <template>
-  <div class="student-leave page-layout qui-fx">
-    <div class="page-left">
+  <div class="page-layout qui-fx">
       <grade-tree @select="select"></grade-tree>
-    </div>
-    <div class="page-right qui-fx-ver">
+     <div class="qui-fx-f1 qui-fx-ver">
    <search-form @search-form="searchForm" :search-label="searchLabel">
       <div slot="right" class="top-btn-group">
         <a-button icon="export" class="del-btn">导出</a-button>
@@ -84,7 +82,7 @@ const searchLabel = [
 const columns = [
   {
     title: '序号',
-    width: '6%',
+    width: '5%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -92,12 +90,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '6%',
+    width: '5%',
     customRender: (text) => {
       if (text === 1) {
         return '男'
@@ -111,53 +109,53 @@ const columns = [
   {
     title: '部门',
     dataIndex: 'grade',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '工号',
     dataIndex: 'num',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '6%',
+    width: '5%',
   },
   {
     title: '测量位置',
     dataIndex: 'remark',
-    width: '7%'
+    width: '6%'
   },
   {
     title: '发热状态',
     dataIndex: 'startTime',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '附带症状',
     dataIndex: 'parents',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '是否接触疫情人员',
     dataIndex: 'parentsTel',
-    width: '8%'
+    width: '12%'
   },  {
     title: '健康状态',
-    dataIndex: 'parentsTel',
-    width: '6%'
+    dataIndex: 'aa',
+    width: '5%'
   },  {
     title: '上报人',
-    dataIndex: 'parentsTel',
-    width: '6%'
+    dataIndex: 'cc',
+    width: '5%'
   },  {
     title: '上报时间',
-    dataIndex: 'parentsTel',
-    width: '8%'
+    dataIndex: 'dd',
+    width: '10%'
   },  {
     title: '所属学校',
-    dataIndex: 'parentsTel',
-    width: '8%'
+    dataIndex: 'ss',
+    width: '10%'
   },
   {
     title: '操作',
@@ -202,15 +200,12 @@ export default {
     searchForm (values) {
       console.log(values)
     },
-    submitForm (values) {
-      console.log(values)
-      setTimeout(() => {
-        this.$refs.form.reset()
-      }, 2000)
-    },
     goDetail (record) {
       console.log(record)
-    }
+    },
+      select(item) {
+      console.log(item)
+    },
   }
 }
 </script>

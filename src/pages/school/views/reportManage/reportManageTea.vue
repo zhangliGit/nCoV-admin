@@ -27,7 +27,7 @@ import SearchForm from '@c/SearchForm'
 const columns = [
   {
     title: '序号',
-    width: '6%',
+    width: '5%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -35,12 +35,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '6%'
+    width: '8%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '6%',
+    width: '8%',
     customRender: (text) => {
       if (text === 1) {
         return '男'
@@ -54,17 +54,17 @@ const columns = [
   {
     title: '部门',
     dataIndex: 'grade',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '工号',
     dataIndex: 'num',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '6%',
+    width: '5%',
   },
   {
     title: '测量位置',
@@ -74,12 +74,12 @@ const columns = [
   {
     title: '发热状态',
     dataIndex: 'startTime',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '附带症状',
     dataIndex: 'parents',
-    width: '6%'
+    width: '5%'
   },
   {
     title: '是否接触疫情人员',
@@ -87,19 +87,19 @@ const columns = [
     width: '8%'
   },  {
     title: '健康状态',
-    dataIndex: 'parentsTel',
-    width: '6%'
+    dataIndex: 'aa',
+    width: '5%'
   },  {
     title: '上报人',
-    dataIndex: 'parentsTel',
-    width: '6%'
+    dataIndex: 'cc',
+    width: '5%'
   },  {
     title: '上报时间',
-    dataIndex: 'parentsTel',
+    dataIndex: 'dd',
     width: '8%'
   },  {
     title: '所属学校',
-    dataIndex: 'parentsTel',
+    dataIndex: 'ss',
     width: '8%'
   },
   {
@@ -177,7 +177,8 @@ export default {
         page: 1,
         size: 20
       },
-      total: 0,      
+      total: 0,    
+       userList: []
     }
   },
   mounted () {
@@ -194,12 +195,6 @@ export default {
     },
     searchForm (values) {
       console.log(values)
-    },
-    submitForm (values) {
-      console.log(values)
-      setTimeout(() => {
-        this.$refs.form.reset()
-      }, 2000)
     },
     goDetail (record) {
       console.log(record)
