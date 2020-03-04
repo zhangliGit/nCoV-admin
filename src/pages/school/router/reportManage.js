@@ -2,7 +2,6 @@ import { RouteView } from '../layouts'
 const ReportManageStu = resolve => require(['../views/reportManage/reportManageStu.vue'], resolve)
 const ReportManageTea = resolve => require(['../views/reportManage/reportManageTea.vue'], resolve)
 
-
 const menu = {
   path: '/reportManage',
   name: '/reportManage',
