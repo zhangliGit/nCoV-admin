@@ -2,6 +2,8 @@
 import { BasicLayout } from '../layouts'
 import system from './system'
 const Home = resolve => require(['../views/Home.vue'], resolve)
+const Daily = resolve => require(['../views/daily/Daily.vue'], resolve)
+const HealthFile = resolve => require(['../views/healthFile/HealthFile.vue'], resolve)
 
 export const asyncRouterMap = [
   {
@@ -18,6 +20,24 @@ export const asyncRouterMap = [
         meta: {
           title: '系统首页',
           icon: 'home'
+        }
+      },
+      {
+        path: '/daily',
+        name: 'daily',
+        component: Daily,
+        meta: {
+          title: '疫情日报',
+          icon: 'menu-fold'
+        }
+      },
+      {
+        path: '/healthFile',
+        name: 'healthFile',
+        component: HealthFile,
+        meta: {
+          title: '健康档案',
+          icon: 'menu-fold'
         }
       },
       system

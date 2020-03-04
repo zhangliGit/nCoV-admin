@@ -1,6 +1,8 @@
 import homeApi from './home'
+import organizeApi from './organize'
 
 const apiList = {
-  ...homeApi
+  ...homeApi,
+  ...organizeApi
 }
 export default apiList
