@@ -101,57 +101,57 @@ export default {
   methods: {
     initUnHealthyChart() {
       this.unHealthyOption={
-	chart: {
-		plotBackgroundColor: null,
-		plotBorderWidth: null,
-		plotShadow: false,
-		type: 'pie'
-	},
-	title: {
-		text: '健康异常上报分布'
-	},
-	tooltip: {
-		pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-  },
-  colors:['#ff8d8c','#9898ff','#9ddc93','#69a7fe','#d68dff','#60b5ff'],
-	plotOptions: {
-		pie: {
-			allowPointSelect: true,
-			cursor: 'pointer',
-			dataLabels: {
-        enabled: true,
-        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-        
-      },
-			showInLegend: true
-		}
-	},
-	series: [{
-		name: 'Brands',
-		colorByPoint: true,
-		data: [{
-			name: '发热',
-			y: 61.41,
-			sliced: true,
-			selected: true
-		}, {
-			name: '咳嗽',
-      y: 11.84
-		}, {
-			name: '腹泻',
-			y: 10.85
-		}, {
-			name: '咽痛',
-			y: 4.67
-		}, {
-			name: '乏力',
-			y: 4.18
-		}, {
-			name: '鼻塞流涕',
-			y: 7.05
-		}]
-	}]
-}
+        chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+        },
+        title: {
+          text: '健康异常上报分布'
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        colors:['#ff8d8c','#9898ff','#9ddc93','#69a7fe','#d68dff','#60b5ff'],
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              
+            },
+            showInLegend: true
+          }
+        },
+        series: [{
+          name: 'Brands',
+          colorByPoint: true,
+          data: [{
+            name: '发热',
+            y: 61.41,
+            sliced: true,
+            selected: true
+          }, {
+            name: '咳嗽',
+            y: 11.84
+          }, {
+            name: '腹泻',
+            y: 10.85
+          }, {
+            name: '咽痛',
+            y: 4.67
+          }, {
+            name: '乏力',
+            y: 4.18
+          }, {
+            name: '鼻塞流涕',
+            y: 7.05
+          }]
+        }]
+      }
       this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption);
     },
     initHeatChart(){
@@ -161,6 +161,11 @@ export default {
         },
         title: {
           text: '发热及健康异常趋势图'
+        },
+        legend: {
+          verticalAlign: 'top',
+          margin: 5,
+          align: 'right'
         },
         xAxis: {
           allowDecimals: false
@@ -196,11 +201,11 @@ export default {
         series: [{
           name: '发热次数',
           color: '#ff0000',
-          data: [ 11, 32, 322,654,11747, 1076, 2555, 12144, 11009, 10950]
+          data: [ 1441, 3222, 1322,6524,11747, 1076, 2555, 12144, 11009, 10950]
         }, {
           name: '异常次数',
           color: '#ffac00',
-          data: [5, 25, 50, 120, 15110, 200, 426, 1605, 2471, 3322]
+          data: [1231, 2125, 3150, 1120, 15110, 200, 426, 1605, 2471, 3322]
         }]
       }
         this.heatChart = new Highcharts.Chart(this.heatId, this.heatOption);
@@ -212,6 +217,11 @@ export default {
         },
         title: {
           text: '未上报人员统计趋势'
+        },
+        legend: {
+          verticalAlign: 'top',
+          margin: 5,
+          align: 'right'
         },
         xAxis: {
           allowDecimals: false
@@ -247,7 +257,7 @@ export default {
         series: [{
           name: '数量',
           color: '#0089ff',
-          data: [ 11, 32, 322,654,11747, 1076, 2555, 12144, 11009, 10950]
+          data: [ 1211, 3312, 3212,6154,11747, 1076, 2555, 12144, 11009, 10950]
         }]
       }
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption);
@@ -314,7 +324,7 @@ export default {
 
 }
   .daily-card {
-    padding: 10px 20px;
+    padding: 10px 30px;
     width: 23.5%;
     float: left;
     margin-left: 2%;
@@ -325,9 +335,9 @@ export default {
       margin: 0;
     }
     .img-box{
-      width: 45px;
-      height: 45px;
-      line-height: 45px;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
       text-align: center;
       border-radius: 50%;
     }
