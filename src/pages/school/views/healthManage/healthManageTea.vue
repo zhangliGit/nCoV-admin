@@ -1,32 +1,26 @@
 <template>
-  <div class="student-leave page-layout qui-fx">
-    <div class="page-left">
-    <org-tree @select="select"></org-tree>
-    </div>
-    <div class="page-right qui-fx-ver">
-   <search-form @search-form="searchForm" :search-label="searchLabel">
-    </search-form>     
-      <table-list
+  <div class="page-layout qui-fx-ver">
+       <search-form @search-form="searchForm" :search-label="searchLabel">
+    </search-form> 
+    <table-list
       :page-list="pageList"
       :columns="columns"
       :table-list="userList">
       <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="查看健康档案">
+       <a-tooltip placement="topLeft" title="查看健康档案">
           <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
         </a-tooltip>
       </template>
     </table-list>
-      <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
-    </div>
+    <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
-import SearchForm from '@c/SearchForm'
-import OrgTree from '@c/OrgTree'
 import PageNum from '@c/PageNum'
+import SearchForm from '@c/SearchForm'
 const searchLabel = [
   {
     value: 'name',
@@ -38,106 +32,60 @@ const searchLabel = [
 const columns = [
   {
     title: '序号',
-    width: '6%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
   },
   {
     title: '姓名',
-    dataIndex: 'name',
-    width: '6%'
+    dataIndex: 'grade',
+    width: '15%'
   },
   {
     title: '性别',
-    dataIndex: 'gender',
-    width: '6%',
-    customRender: (text) => {
-      if (text === 1) {
-        return '男'
-      } else if (text === 2) {
-        return '女'
-      } else {
-        return '未知'
-      }
-    }
+    dataIndex: 'class',
+    width: '15%'
   },
   {
     title: '部门',
-    dataIndex: 'grade',
-    width: '6%'
+    dataIndex: 'name',
+    width: '15%'
   },
   {
     title: '工号',
     dataIndex: 'num',
-    width: '6%'
+    width: '15%'
   },
   {
-    title: '温度',
-    dataIndex: 'temperature',
-    width: '6%',
-  },
-  {
-    title: '测量位置',
-    dataIndex: 'remark',
-    width: '7%'
-  },
-  {
-    title: '发热状态',
+    title: '建档时间',
     dataIndex: 'startTime',
-    width: '6%'
-  },
-  {
-    title: '附带症状',
-    dataIndex: 'parents',
-    width: '6%'
-  },
-  {
-    title: '是否接触疫情人员',
-    dataIndex: 'parentsTel',
-    width: '8%'
-  },  {
-    title: '健康状态',
-    dataIndex: 'parentsTel',
-    width: '6%'
-  },  {
-    title: '上报人',
-    dataIndex: 'parentsTel',
-    width: '6%'
-  },  {
-    title: '上报时间',
-    dataIndex: 'parentsTel',
-    width: '8%'
-  },  {
-    title: '所属学校',
-    dataIndex: 'parentsTel',
-    width: '8%'
+    width: '15%'
   },
   {
     title: '操作',
-    width: '10%',
+    width: '15%',
     scopedSlots: {
       customRender: 'action'
     }
   }
 ]
 export default {
-  name: 'reportManageStu',
+  name: 'healthManageTea',
   components: {
-    OrgTree,
     TableList,
     SearchForm,
     PageNum
   },
-  data() {
+  data () {
     return {
-      searchLabel,
       columns,
-      total: 100,
+     searchLabel,
       pageList: {
         page: 1,
         size: 20
       },
+      total: 0,
       userList: []
     }
   },
@@ -153,26 +101,17 @@ export default {
       this.userList = res.data
       this.total = res.total
     },
-    searchForm (values) {
+        searchForm (values) {
       console.log(values)
-    },
-    submitForm (values) {
-      console.log(values)
-      setTimeout(() => {
-        this.$refs.form.reset()
-      }, 2000)
     },
     goDetail (record) {
       console.log(record)
-    }
+    },
   }
 }
 </script>
 <style lang="less" scoped>
-.student-leave {
-  .page-left {
-    background: #fff;
-    margin-right: 10px;
-  }
+.top{
+  margin-bottom: 10px;
 }
 </style>
