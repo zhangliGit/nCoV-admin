@@ -3,7 +3,7 @@
     <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
     </submit-form>
     <div class="top-btn-group">
-      <a-button icon="plus" class="add-btn" type="primary" @click="modify(0)">新增机构</a-button>
+      <a-button icon="plus" class="add-btn" @click="modify(0)">新增学校</a-button>
     </div>
     <table-list
       :page-list="pageList"
@@ -14,7 +14,7 @@
           <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
         </a-tooltip>
         <a-tooltip placement="topLeft" title="编辑">
-          <a-button size="small" class="edit-action-btn" icon="form" @click="modify(0,action.record)"></a-button>
+          <a-button size="small" class="edit-action-btn" icon="form" @click="modify(1,action.record)"></a-button>
         </a-tooltip>
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del">
           <template slot="title">
@@ -40,16 +40,16 @@ const formData = [
     value: 'name',
     initValue: '',
     type: 'input',
-    label: '机构名称',
+    label: '学校名称',
     max: 50,
-    placeholder: '请输入机构名称'
+    placeholder: '请输入学校名称'
   }, {
     value: 'org',
     initValue: '',
     type: 'input',
-    label: '机构编码',
+    label: '学校编码',
     max: 50,
-    placeholder: '请输入机构编码'
+    placeholder: '请输入学校编码'
   }
 ]
 const columns = [
@@ -61,12 +61,12 @@ const columns = [
     }
   },
   {
-    title: '机构名称',
+    title: '学校名称',
     dataIndex: 'name',
     width: '20%'
   },
   {
-    title: '机构编码',
+    title: '学校编码',
     dataIndex: 'code',
     width: '15%'
   },
@@ -89,7 +89,7 @@ const columns = [
   }
 ]
 export default {
-  name: 'OrgManage',
+  name: 'SchoolManage',
   components: {
     TableList,
     PageNum,
@@ -110,7 +110,7 @@ export default {
         admin: '张三',
         phone: '13340909011'
       }],
-      title: '新增机构',
+      title: '新增学校',
       formStatus: false,
       formData
     }
@@ -119,8 +119,13 @@ export default {
   },
   methods: {
     ...mapActions('home', ['']),
-    goDetail() {
-
+    goDetail(record) {
+      this.$router.push({
+        query: {
+          id: record.id
+        },
+        path: './schoolDetail'
+      })
     },
     showList() {
     },
@@ -130,9 +135,9 @@ export default {
     modify(type, record) {
       this.formStatus = true
       if (type) {
-        this.title = '编辑机构'
+        this.title = '编辑学校'
       } else {
-        this.title = '新增机构'
+        this.title = '新增学校'
       }
     },
     submitForm (values) {

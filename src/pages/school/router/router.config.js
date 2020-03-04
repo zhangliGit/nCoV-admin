@@ -5,6 +5,8 @@ import classManage from './classManage'
 import teacherManage from './teacherManage'
 import studentManage from './studentManage'
 import riskList from './riskList'
+import reportManage from './reportManage'
+import healthManage from './healthManage'
 const Home = resolve => require(['../views/Home.vue'], resolve)
 
 export const asyncRouterMap = [
@@ -28,7 +30,9 @@ export const asyncRouterMap = [
       classManage,
       teacherManage,
       studentManage,
-      riskList
+      riskList,
+      reportManage,
+      healthManage
     ]
   },
   {

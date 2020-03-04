@@ -2,8 +2,10 @@
 import { BasicLayout } from '../layouts'
 // import system from './system'
 const Home = resolve => require(['../views/Home.vue'], resolve)
-const OrgManage = resolve => require(['../views/OrgManage.vue'], resolve)
-const SchoolManage = resolve => require(['../views/SchoolManage.vue'], resolve)
+const OrgManage = resolve => require(['../views/organize/OrgManage.vue'], resolve)
+const OrgDetail = resolve => require(['../views/organize/OrgDetail.vue'], resolve)
+const SchoolManage = resolve => require(['../views/school/SchoolManage.vue'], resolve)
+const SchoolDetail = resolve => require(['../views/school/SchoolDetail.vue'], resolve)
 export const asyncRouterMap = [
   {
     path: '/',
@@ -20,7 +22,8 @@ export const asyncRouterMap = [
           title: '系统首页',
           icon: 'home'
         }
-      }, {
+      },
+      {
         path: 'orgManage',
         name: 'orgManage',
         component: OrgManage,
@@ -28,7 +31,8 @@ export const asyncRouterMap = [
           title: '机构管理',
           icon: 'menu-fold'
         }
-      }, {
+      },
+      {
         path: 'schoolManage',
         name: 'schoolManage',
         component: SchoolManage,
@@ -36,6 +40,26 @@ export const asyncRouterMap = [
           title: '学校管理',
           icon: 'menu-fold'
         }
+      },
+      {
+        path: 'orgDetail',
+        name: 'orgDetail',
+        component: OrgDetail,
+        meta: {
+          title: '机构详情',
+          icon: 'menu-fold'
+        },
+        hidden: true
+      },
+      {
+        path: 'schoolDetail',
+        name: 'schoolDetail',
+        component: SchoolDetail,
+        meta: {
+          title: '机构详情',
+          icon: 'menu-fold'
+        },
+        hidden: true
       }
       // system
     ]
