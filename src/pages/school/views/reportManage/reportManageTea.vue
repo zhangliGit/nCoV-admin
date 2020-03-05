@@ -35,12 +35,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '8%'
+    width: '5%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '8%',
+    width: '5%',
     customRender: (text) => {
       if (text === 1) {
         return '男'
@@ -58,31 +58,49 @@ const columns = [
   },
   {
     title: '测量位置',
-    dataIndex: 'remark',
-    width: '7%'
+    dataIndex: 'position',
+    width: '6%'
   },
   {
     title: '发热状态',
-    dataIndex: 'startTime',
-    width: '5%'
+    dataIndex: 'feverstatus',
+    width: '5%',
+     customRender: (text) => {
+      if (text === 1) {
+        return '未发热'
+      } else if (text === 2) {
+        return '轻微'
+      } else {
+        return '高烧'
+      }
+    }
   },
   {
     title: '附带症状',
-    dataIndex: 'parents',
-    width: '5%'
+    dataIndex: 'Incidentalsymptoms',
+    width: '5%',
   },
   {
     title: '是否接触疫情人员',
-    dataIndex: 'parentsTel',
-    width: '8%'
-  },   {
+    dataIndex: 'isno',
+    width: '12%',
+     customRender: (text) => {
+      if (text === 1) {
+        return '有'
+      } else if (text === 2) {
+        return '没有'
+      } else {
+        return '未知'
+      }
+    }
+  },    {
     title: '上报人',
-    dataIndex: 'cc',
+    dataIndex: 'ReportPerson',
     width: '5%'
   },  {
     title: '上报时间',
-    dataIndex: 'dd',
-    width: '8%'
+    dataIndex: 'ReportTime',
+    width: '10%'
   }, 
   {
     title: '操作',
@@ -149,10 +167,10 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getreportList'
     ]),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getreportList()
       this.userList = res.data
       this.total = res.total
     },
