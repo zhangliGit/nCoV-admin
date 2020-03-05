@@ -1,15 +1,6 @@
 <template>
   <div class="login">
-    <div class="login-dialog">
-      <a-row class="logo">全品管理后台系统</a-row>
-      <a-row>
-        <input type="text" v-model="loginForm.userName" placeholder="账号" />
-      </a-row>
-      <a-row>
-        <input type="password" v-model="loginForm.passWord" placeholder="密码" />
-      </a-row>
-      <div class="login-btn" @click="login">登录</div>
-    </div>
+    <div class="login-dialog"></div>
   </div>
 </template>
 
@@ -42,7 +33,8 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 100;
-  background-color: #3498db;
+  background: url('../../assets/img/login_bg1.png');
+  background-size: contain;
   .login-dialog {
     display: flex;
     flex-direction: column;

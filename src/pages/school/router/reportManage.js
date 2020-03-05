@@ -1,6 +1,8 @@
 import { RouteView } from '../layouts'
 const ReportManageStu = resolve => require(['../views/reportManage/reportManageStu.vue'], resolve)
 const ReportManageTea = resolve => require(['../views/reportManage/reportManageTea.vue'], resolve)
+const ReportManageStuDetail = resolve => require(['../views/reportManage/reportManageStuDetail.vue'], resolve)
+const ReportManageTeaDetail = resolve => require(['../views/reportManage/reportManageTeaDetail.vue'], resolve)
 
 const menu = {
   path: '/reportManage',
@@ -9,7 +11,7 @@ const menu = {
   redirect: '/reportManageTea',
   meta: {
     title: '上报记录',
-    icon: 'menu-fold'
+    icon: 'bars'
   },
   children: [
     {
@@ -17,8 +19,17 @@ const menu = {
       name: 'reportManageTea',
       component: ReportManageTea,
       meta: {
-        title: '上报记录-教职工',
-        icon: 'menu-fold'
+        title: '教职工',
+        icon: 'bars'
+      }
+    },
+    {
+      path: '/reportManageTea/detail',
+      name: 'reportManageTea',
+      component: ReportManageTeaDetail,
+      meta: {
+        title: '档案详情',
+        isHide: true
       }
     },
     {
@@ -26,8 +37,17 @@ const menu = {
       name: 'reportManageStu',
       component: ReportManageStu,
       meta: {
-        title: '上报记录-学生',
-        icon: 'menu-fold'
+        title: '学生',
+        icon: 'bars'
+      }
+    },
+    {
+      path: '/reportManageStu/detail',
+      name: 'reportManageStu',
+      component: ReportManageStuDetail,
+      meta: {
+        title: '档案详情',
+        isHide: true
       }
     }
   ]

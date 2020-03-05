@@ -1,26 +1,30 @@
 <template>
   <div class="page-layout qui-fx-ver">
-    <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
-    </submit-form>
+    <submit-form
+      ref="form"
+      @submit-form="submitForm"
+      :title="title"
+      v-model="formStatus"
+      :form-data="formData"
+    ></submit-form>
     <div class="top-btn-group">
       <a-button icon="plus" class="add-btn" @click="modify(0)">新增机构</a-button>
     </div>
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="orgList"
-      @clickNum="clickNum">
+    <table-list :page-list="pageList" :columns="columns" :table-list="orgList" @clickNum="clickNum">
       <template v-slot:actions="action">
         <!-- <a-tooltip placement="topLeft" title="详情">
           <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
-        </a-tooltip> -->
+        </a-tooltip>-->
         <a-tooltip placement="topLeft" title="编辑">
-          <a-button size="small" class="edit-action-btn" icon="form" @click="modify(1,action.record)"></a-button>
+          <a-button
+            size="small"
+            class="edit-action-btn"
+            icon="form"
+            @click="modify(1,action.record)"
+          ></a-button>
         </a-tooltip>
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del">
-          <template slot="title">
-            您确定删除吗?
-          </template>
+          <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
@@ -44,21 +48,24 @@ const formData = [
     label: '机构名称',
     max: 50,
     placeholder: '请输入机构名称'
-  }, {
+  },
+  {
     value: 'org',
     initValue: '',
     type: 'input',
     label: '机构编码',
     max: 50,
     placeholder: '请输入机构编码'
-  }, {
+  },
+  {
     value: 'admin',
     initValue: '',
     type: 'input',
     label: '管理员',
     max: 50,
     placeholder: '请输入管理员'
-  }, {
+  },
+  {
     value: 'phone',
     initValue: '',
     type: 'input',
@@ -94,7 +101,8 @@ const columns = [
     title: '手机号码',
     dataIndex: 'phone',
     width: '20%'
-  }, {
+  },
+  {
     title: '关联学校数',
     // dataIndex: 'num',
     width: '15%',
@@ -160,7 +168,7 @@ export default {
         this.title = '新增机构'
       }
     },
-    submitForm (values) {
+    submitForm(values) {
       console.log(values)
       this.$refs.form.reset() // 成功调用
       // this.$refs.form.error() // 失败调用
@@ -171,12 +179,11 @@ export default {
         query: {
           id: record.id
         },
-        path: './orgDetail'
+        path: '/orgManage/orgDetail'
       })
     }
   }
 }
 </script>
 <style lang="less" scoped>
-
 </style>

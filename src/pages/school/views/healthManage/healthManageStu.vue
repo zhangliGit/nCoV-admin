@@ -36,39 +36,58 @@ const searchLabel = [
 const columns = [
   {
     title: '序号',
-    width: '10%',
+    width: '9%',
     scopedSlots: {
       customRender: 'index'
     }
   },
   {
     title: '姓名',
-    dataIndex: 'grade',
-    width: '15%'
+    dataIndex: 'name',
+    width: '9%'
   },
   {
     title: '性别',
-    dataIndex: 'class',
-    width: '15%'
+    dataIndex: 'gender',
+    width: '9%',
+    customRender: (text) => {
+      if (text === 1) {
+        return '男'
+      } else if (text === 2) {
+        return '女'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
-    title: '部门',
-    dataIndex: 'name',
-    width: '15%'
+    title: '班级',
+    dataIndex: 'grade',
+    width: '9%'
   },
   {
-    title: '工号',
+    title: '学号',
     dataIndex: 'num',
-    width: '15%'
+    width: '9%'
   },
   {
-    title: '建档时间',
-    dataIndex: 'startTime',
-    width: '15%'
+    title: '出生日期',
+    dataIndex: 'birthday',
+    width: '9%'
+  },
+  {
+    title: '关联家长',
+    dataIndex: 'parents',
+    width: '9%'
+  },
+  {
+    title: '家长电话',
+    dataIndex: 'parentsTel',
+    width: '8%'
   },
   {
     title: '操作',
-    width: '15%',
+    width: '20%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -99,10 +118,10 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getStudentList'
     ]),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getStudentList()
       this.userList = res.data
       this.total = res.total
     },

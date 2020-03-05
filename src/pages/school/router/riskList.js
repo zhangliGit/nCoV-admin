@@ -1,4 +1,3 @@
-
 const RiskList = resolve => require(['../views/riskList/RiskList.vue'], resolve)
 
 const menu = {
@@ -7,7 +6,7 @@ const menu = {
   component: RiskList,
   meta: {
     title: '风险人员名单',
-    icon: 'menu-fold'
+    icon: 'team'
   }
 }
 

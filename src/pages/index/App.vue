@@ -26,6 +26,12 @@ export default {
   data() {
     return {
       systemList: [
+        // {
+        //   id: 0,
+        //   name: '登录',
+        //   url: 'login.html',
+        //   icon: yw
+        // },
         {
           id: 1,
           name: '运维端',

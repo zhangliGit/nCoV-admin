@@ -44,11 +44,15 @@
 
       <!-- layout content -->
       <a-layout-content
+        class="qui-fx"
         :style="{ height: '100%', margin: multiTab ? '24px 24px 0' : '24px 24px 0', paddingTop: fixedHeader ? '64px' : '0' }"
       >
-        <multi-tab v-if="multiTab"></multi-tab>
+        <multi-tab v-if="false"></multi-tab>
         <transition name="page-transition">
-          <route-view />
+          <div class="qui-fx-f1 qui-fx-ver content-bg">
+            <route-navigator></route-navigator>
+            <route-view />
+          </div>
         </transition>
       </a-layout-content>
 
@@ -65,7 +69,7 @@ import { triggerWindowResizeEvent } from '@/utils/util'
 import { mapActions } from 'vuex'
 import { mixin, mixinDevice } from '@/utils/mixin'
 import config from '@/config/defaultSettings'
-
+import RouteNavigator from '@c/RouteNavigator'
 import RouteView from './RouteView'
 import MultiTab from '@/components/MultiTab'
 import SideMenu from '@/components/Menu/SideMenu'
@@ -79,6 +83,7 @@ export default {
   components: {
     RouteView,
     MultiTab,
+    RouteNavigator,
     SideMenu,
     GlobalHeader,
     GlobalFooter

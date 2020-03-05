@@ -1,14 +1,15 @@
 <template>
   <div class="page-layout qui-fx-ver">
-       <search-form @search-form="searchForm" :search-label="searchLabel">
-    </search-form> 
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="userList">
+    <search-form @search-form="searchForm" :search-label="searchLabel"></search-form>
+    <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
-       <a-tooltip placement="topLeft" title="查看健康档案">
-          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
+        <a-tooltip placement="topLeft" title="查看健康档案">
+          <a-button
+            size="small"
+            class="detail-action-btn"
+            icon="ellipsis"
+            @click="goDetail(action.record)"
+          ></a-button>
         </a-tooltip>
       </template>
     </table-list>
@@ -27,7 +28,7 @@ const searchLabel = [
     type: 'input',
     label: '姓名',
     placeholder: '请输入姓名'
-  },
+  }
 ]
 const columns = [
   {
@@ -39,18 +40,36 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'grade',
+    dataIndex: 'name',
     width: '15%'
   },
   {
     title: '性别',
-    dataIndex: 'class',
-    width: '15%'
+    dataIndex: 'gender',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '男'
+      } else if (text === 2) {
+        return '女'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
-    title: '部门',
-    dataIndex: 'name',
-    width: '15%'
+    title: '职位',
+    dataIndex: 'position',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '班主任'
+      } else if (text === 2) {
+        return '非班主任'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '工号',
@@ -58,8 +77,8 @@ const columns = [
     width: '15%'
   },
   {
-    title: '建档时间',
-    dataIndex: 'startTime',
+    title: '手机号',
+    dataIndex: 'tel',
     width: '15%'
   },
   {
@@ -71,16 +90,16 @@ const columns = [
   }
 ]
 export default {
-  name: 'healthManageTea',
+  name: 'HealthManageTea',
   components: {
     TableList,
     SearchForm,
     PageNum
   },
-  data () {
+  data() {
     return {
       columns,
-     searchLabel,
+      searchLabel,
       pageList: {
         page: 1,
         size: 20
@@ -89,29 +108,27 @@ export default {
       userList: []
     }
   },
-  mounted () {
+  mounted() {
     this.showList()
   },
   methods: {
-    ...mapActions('home', [
-      'getClassList'
-    ]),
+    ...mapActions('home', ['getTeacherList']),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getTeacherList()
       this.userList = res.data
       this.total = res.total
     },
-        searchForm (values) {
+    searchForm(values) {
       console.log(values)
     },
-    goDetail (record) {
+    goDetail(record) {
       console.log(record)
-    },
+    }
   }
 }
 </script>
 <style lang="less" scoped>
-.top{
+.top {
   margin-bottom: 10px;
 }
 </style>
