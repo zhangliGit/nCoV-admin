@@ -48,7 +48,7 @@ import UploadMulti from '@c/UploadMulti'
 const columns = [
   {
     title: '序号',
-    width: '8%',
+    width: '9%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -56,12 +56,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '8%'
+    width: '9%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '8%',
+    width: '9%',
     customRender: (text) => {
       if (text === 1) {
         return '男'
@@ -75,35 +75,30 @@ const columns = [
   {
     title: '班级',
     dataIndex: 'grade',
-    width: '8%'
+    width: '9%'
   },
   {
     title: '学号',
     dataIndex: 'num',
-    width: '8%'
+    width: '9%'
   },
   {
     title: '人脸照片',
     dataIndex: 'photoPic',
-    width: '8%',
+    width: '9%',
     scopedSlots: {
       customRender: 'photoPic'
     }
   },
   {
-    title: '备注',
-    dataIndex: 'remark',
-    width: '8%'
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'startTime',
-    width: '8%'
+    title: '出生日期',
+    dataIndex: 'birthday',
+    width: '9%'
   },
   {
     title: '关联家长',
     dataIndex: 'parents',
-    width: '8%'
+    width: '9%'
   },
   {
     title: '家长电话',
@@ -162,7 +157,7 @@ const formData = [
     placeholder: '请选择班级'
   },
   {
-    value: 'sex',
+    value: 'gender',
     initValue: 1,
     required: false,
     list: [
@@ -193,7 +188,15 @@ const formData = [
     label: '人脸照片'
   },
   {
-    value: 'parentName',
+    value: 'birthday',
+    type: 'singleTime',
+    label: '生日',
+    required: false,
+    initValue: '',
+    placeholder: '请选择生日'
+  },
+  {
+    value: 'parents',
     initValue: '',
     type: 'input',
     label: '家长姓名',
@@ -201,20 +204,12 @@ const formData = [
     placeholder: '请输入家长姓名'
   },
   {
-    value: 'parentTel',
+    value: 'parentsTel',
     initValue: '',
     type: 'input',
     label: '家长手机号',
     required: false,
     placeholder: '请输入家长手机号'
-  },
-  {
-    value: 'remark',
-    initValue: '',
-    type: 'input',
-    label: '备注',
-    required: false,
-    placeholder: '请输入备注'
   }
 ]
 export default {
@@ -253,19 +248,22 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getStudentList'
     ]),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getStudentList()
       this.userList = res.data
       this.total = res.total
     },
     add(type, record = {}) {
       this.formStatus = true
       if (type) { // 编辑
+        this.fileList = []
         this.formData = this.$tools.fillForm(formData, record)
+        this.fileList.push({ uid: record.id, url: record.photoPic })
       } else { // 添加
         this.formData = formData
+        this.fileList = []
       }
     },
     del(record) {
