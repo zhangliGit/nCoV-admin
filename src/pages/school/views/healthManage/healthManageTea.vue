@@ -46,7 +46,7 @@ const columns = [
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '10%',
+    width: '15%',
     customRender: text => {
       if (text === 1) {
         return '男'
@@ -60,7 +60,7 @@ const columns = [
   {
     title: '职位',
     dataIndex: 'position',
-    width: '10%',
+    width: '15%',
     customRender: text => {
       if (text === 1) {
         return '班主任'

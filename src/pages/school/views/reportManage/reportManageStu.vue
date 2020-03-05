@@ -71,7 +71,7 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '5%'
+    width: '10%'
   },
   {
     title: '性别',
@@ -90,17 +90,17 @@ const columns = [
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '5%',
+    width: '10%',
   },
   {
     title: '测量位置',
     dataIndex: 'position',
-    width: '6%'
+    width: '10%'
   },
   {
     title: '发热状态',
     dataIndex: 'feverstatus',
-    width: '5%',
+    width: '10%',
      customRender: (text) => {
       if (text === 1) {
         return '未发热'
@@ -114,12 +114,12 @@ const columns = [
   {
     title: '附带症状',
     dataIndex: 'Incidentalsymptoms',
-    width: '5%',
+    width: '10%',
   },
   {
     title: '是否接触疫情人员',
     dataIndex: 'isno',
-    width: '12%',
+    width: '10%',
      customRender: (text) => {
       if (text === 1) {
         return '有'
@@ -129,10 +129,10 @@ const columns = [
         return '未知'
       }
     }
-  },     {
+  },    {
     title: '上报人',
     dataIndex: 'ReportPerson',
-    width: '5%'
+    width: '10%'
   },  {
     title: '上报时间',
     dataIndex: 'ReportTime',

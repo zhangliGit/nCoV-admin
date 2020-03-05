@@ -36,7 +36,7 @@ const searchLabel = [
 const columns = [
   {
     title: '序号',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -44,12 +44,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '9%',
+    width: '10%',
     customRender: (text) => {
       if (text === 1) {
         return '男'
@@ -63,31 +63,31 @@ const columns = [
   {
     title: '班级',
     dataIndex: 'grade',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '学号',
     dataIndex: 'num',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '出生日期',
     dataIndex: 'birthday',
-    width: '9%'
+    width: '15'
   },
   {
     title: '关联家长',
     dataIndex: 'parents',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '家长电话',
     dataIndex: 'parentsTel',
-    width: '8%'
+    width: '15%'
   },
   {
     title: '操作',
-    width: '20%',
+    width: '10%',
     scopedSlots: {
       customRender: 'action'
     }
