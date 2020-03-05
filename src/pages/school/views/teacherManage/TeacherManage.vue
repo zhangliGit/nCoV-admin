@@ -272,6 +272,11 @@ export default {
     },
     goDetail (record) {
       console.log(record)
+      const obj = {
+        path: '/healthManageTea',
+        query: { id: record.id }
+      }
+      this.$router.push(obj)
     }
   }
 }

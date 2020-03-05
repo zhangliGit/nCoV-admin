@@ -280,6 +280,11 @@ export default {
     },
     goDetail (record) {
       console.log(record)
+      const obj = {
+        path: '/healthManageStu',
+        query: { id: record.id }
+      }
+      this.$router.push(obj)
     }
   }
 }
