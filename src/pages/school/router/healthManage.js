@@ -42,7 +42,7 @@ const menu = {
     },
      {
       path: '/healthManageStu/detail',
-      name: 'healthManageTea',
+      name: 'healthManageStu',
       component: HealthManageStuDetail,
       meta: {
         title: '档案详情',

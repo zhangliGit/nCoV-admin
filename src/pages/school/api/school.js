@@ -11,6 +11,7 @@ const schoolApi = {
   getTeacherList: '/teacherManage#get', // 教职工管理列表
   getRiskList: '/riskList#get' ,// 风险人员名单
   getreportList: '/teacher/reports#get' // 上报记录
+
 }
 for (const val in schoolApi) {
   schoolApi[val] = `${hostEnv}${schoolApi[val]}`

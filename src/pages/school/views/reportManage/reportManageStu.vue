@@ -4,7 +4,7 @@
      <div class="qui-fx-f1 qui-fx-ver">
    <search-form @search-form="searchForm" :search-label="searchLabel">
       <div slot="left" class="top-btn-group">
-        <a-button icon="export" class="del-btn">导出</a-button>
+      <a-button icon="export" class="export-btn">导出</a-button>
       </div>
     </search-form>     
       <table-list
