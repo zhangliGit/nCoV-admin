@@ -45,12 +45,30 @@ const columns = [
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '15%'
+    width: '10%',
+    customRender: (text) => {
+      if (text === 1) {
+        return '男'
+      } else if (text === 2) {
+        return '女'
+      } else {
+        return '未知'
+      }
+    }
   },
-  {
+ {
     title: '职位',
-    dataIndex: 'radio',
-    width: '15%'
+    dataIndex: 'position',
+    width: '10%',
+    customRender: (text) => {
+      if (text === 1) {
+        return '班主任'
+      } else if (text === 2) {
+        return '非班主任'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '工号',
@@ -58,8 +76,8 @@ const columns = [
     width: '15%'
   },
   {
-    title: '建档时间',
-    dataIndex: 'birthday',
+    title: '手机号',
+    dataIndex: 'tel',
     width: '15%'
   },
   {
