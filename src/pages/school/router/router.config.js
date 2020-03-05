@@ -8,6 +8,7 @@ import riskList from './riskList'
 import reportManage from './reportManage'
 import healthManage from './healthManage'
 const Home = resolve => require(['../views/Home.vue'], resolve)
+const DailyReport = resolve => require(['../views/dailyReport/DailyReport.vue'], resolve)
 
 export const asyncRouterMap = [
   {
@@ -23,6 +24,15 @@ export const asyncRouterMap = [
         component: Home,
         meta: {
           title: '系统首页',
+          icon: 'home'
+        }
+      },
+      {
+        path: '/dailyReport',
+        name: 'dailyReport',
+        component: DailyReport,
+        meta: {
+          title: '疫情日报',
           icon: 'home'
         }
       },
