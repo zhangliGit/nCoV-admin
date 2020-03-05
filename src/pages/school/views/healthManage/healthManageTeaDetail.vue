@@ -68,77 +68,71 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
-    width: '10%'
+    dataIndex: 'date',
+    width: '7%'
   },
   {
     title: '性别',
-    dataIndex: 'gender',
-    width: '5%',
-    customRender: (text) => {
-      if (text === 1) {
-        return '男'
-      } else if (text === 2) {
-        return '女'
-      } else {
-        return '未知'
-      }
-    }
+    dataIndex: 'dealTime',
+    width: '7%'
+  },
+  {
+    title: '部门',
+    dataIndex: 'photoPic',
+    width: '7%',
+  },
+  {
+    title: '工号',
+    dataIndex: 'snapPic',
+    width: '7%',
   },
   {
     title: '温度',
-    dataIndex: 'temperature',
-    width: '10%',
+    dataIndex: 'snapPic',
+    width: '7%',
   },
   {
     title: '测量位置',
-    dataIndex: 'position',
-    width: '10%'
+    dataIndex: 'snapPic',
+    width: '7%',
   },
   {
     title: '发热状态',
-    dataIndex: 'feverstatus',
-    width: '10%',
-     customRender: (text) => {
-      if (text === 1) {
-        return '未发热'
-      } else if (text === 2) {
-        return '轻微'
-      } else {
-        return '高烧'
-      }
-    }
+    dataIndex: 'snapPic',
+    width: '7%',
   },
   {
     title: '附带症状',
-    dataIndex: 'Incidentalsymptoms',
-    width: '10%',
+    dataIndex: 'snapPic',
+    width: '7%',
   },
   {
     title: '是否接触疫情人员',
-    dataIndex: 'isno',
-    width: '10%',
-     customRender: (text) => {
-      if (text === 1) {
-        return '有'
-      } else if (text === 2) {
-        return '没有'
-      } else {
-        return '未知'
-      }
-    }
-  },    {
+    dataIndex: 'snapPic',
+    width: '7%',
+  },
+  {
+    title: '其他说明',
+    dataIndex: 'snapPic',
+    width: '7%',
+  },
+  {
+    title: '健康状态',
+    dataIndex: 'snapPic',
+    width: '7%',
+  },
+  {
     title: '上报人',
-    dataIndex: 'ReportPerson',
-    width: '10%'
-  },  {
+    dataIndex: 'snapPic',
+    width: '7%',
+  },{
     title: '上报时间',
-    dataIndex: 'ReportTime',
-    width: '10%'
-  }, 
+    dataIndex: 'snapPic',
+    width: '7%',
+  }
 ]
 export default {
-  name: 'TeacherLeaveDetail',
+  name: 'HealthManageTeaDetail',
   components: {
      TableList,
     PageNum
@@ -195,15 +189,22 @@ export default {
       approveImg: ''
     }
   },
+  async mounted () {
+    this.showData()
+  },
   methods: {
-   ...mapActions('home', [
-      'getreportList'
+    ...mapActions('home', [
+      'teachersLeaveProcess'
     ]),
-    async showList () {
-      const res = await this.getreportList(this.pageList)
-      this.detailList = res.data
-      this.total = res.total
-    },
+    async showData () {
+      const res = await this.teachersLeaveProcess()
+      this.leaveData = res.data
+      console.log(this.leaveData)
+      this.approveName = this.leaveData[0].name
+      this.approveTime = this.leaveData[0].dealTime
+      this.approveImg = this.leaveData[0].photoPic
+      this.approveState = this.leaveData[0].status === 1 ? '待审批' : this.leaveData[0].status === 2 ? '审批通过' : '审批不通过'
+    }
   }
 }
 </script>

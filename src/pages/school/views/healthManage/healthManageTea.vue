@@ -8,7 +8,7 @@
             size="small"
             class="detail-action-btn"
             icon="ellipsis"
-            @click="goDetail(action.record)"
+            @click="detail(action.record)"
           ></a-button>
         </a-tooltip>
       </template>
@@ -121,9 +121,13 @@ export default {
     searchForm(values) {
       console.log(values)
     },
-    goDetail(record) {
-      console.log(record)
-    }
+   detail(record) {
+      console.log(record.id)
+      this.$router.push({
+        path: '/healthManageTea/detail',
+        query: { id: record.id }
+      })
+    },
   }
 }
 </script>

@@ -10,7 +10,7 @@
       :table-list="userList">
       <template v-slot:actions="action">
        <a-tooltip placement="topLeft" title="查看健康档案">
-          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
+          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="detail(action.record)"></a-button>
         </a-tooltip>
       </template>
     </table-list>
@@ -128,8 +128,12 @@ export default {
         searchForm (values) {
       console.log(values)
     },
-    goDetail (record) {
-      console.log(record)
+  detail(record) {
+      console.log(record.id)
+      this.$router.push({
+        path: '/healthManageStu/detail',
+        query: { id: record.id }
+      })
     },
       select (item) {
       console.log(item) // { name: '', code: ''}

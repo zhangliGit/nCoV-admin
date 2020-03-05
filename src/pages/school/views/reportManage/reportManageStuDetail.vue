@@ -3,11 +3,7 @@
     <div style="height:130px;background:#fff;">
       <a-tabs defaultActiveKey="1">
         <a-tab-pane tab="基本信息" key="1">
-          <a-row class="padd-l10">
-            <a-col v-for="(item,index) in baseList" :key="index" :span="8" class="mar-b10">
-              {{ item.key }} : {{ item.value }}
-            </a-col>
-          </a-row>
+         
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -36,31 +32,75 @@ const columns = [
     }
   },
   {
-    title: '日期',
-    dataIndex: 'date',
-    width: '15%'
+    title: '姓名',
+    dataIndex: 'name',
+    width: '10%'
   },
   {
-    title: '打卡时间',
-    dataIndex: 'dealTime',
-    width: '30%'
-  },
-  {
-    title: '底照',
-    dataIndex: 'photoPic',
-    width: '15%',
-    scopedSlots: {
-      customRender: 'photoPic'
+    title: '性别',
+    dataIndex: 'gender',
+    width: '5%',
+    customRender: (text) => {
+      if (text === 1) {
+        return '男'
+      } else if (text === 2) {
+        return '女'
+      } else {
+        return '未知'
+      }
     }
   },
   {
-    title: '抓拍照',
-    dataIndex: 'snapPic',
-    width: '30%',
-    scopedSlots: {
-      customRender: 'snapPic'
+    title: '温度',
+    dataIndex: 'temperature',
+    width: '10%',
+  },
+  {
+    title: '测量位置',
+    dataIndex: 'position',
+    width: '10%'
+  },
+  {
+    title: '发热状态',
+    dataIndex: 'feverstatus',
+    width: '10%',
+     customRender: (text) => {
+      if (text === 1) {
+        return '未发热'
+      } else if (text === 2) {
+        return '轻微'
+      } else {
+        return '高烧'
+      }
     }
-  }
+  },
+  {
+    title: '附带症状',
+    dataIndex: 'Incidentalsymptoms',
+    width: '10%',
+  },
+  {
+    title: '是否接触疫情人员',
+    dataIndex: 'isno',
+    width: '10%',
+     customRender: (text) => {
+      if (text === 1) {
+        return '有'
+      } else if (text === 2) {
+        return '没有'
+      } else {
+        return '未知'
+      }
+    }
+  },    {
+    title: '上报人',
+    dataIndex: 'ReportPerson',
+    width: '10%'
+  },  {
+    title: '上报时间',
+    dataIndex: 'ReportTime',
+    width: '10%'
+  }, 
 ]
 export default {
   name: 'ReportManageStuDetail',
@@ -70,7 +110,6 @@ export default {
   },
   data () {
     return {
-      baseList: [],
       pageList: {
         page: 1,
         size: 20
@@ -78,56 +117,20 @@ export default {
       total: 0,
       columns,
       detailList: [],
-      detailId: '',
-      detailInfo: {}
     }
   },
   async mounted () {
-    this.detailId = this.$route.query.id
-    this.infoGet()
     this.showList()
   },
   methods: {
-    ...mapActions('home', [
-      'getStudentDetail', 'getStudentInfo'
+   ...mapActions('home', [
+      'getreportList'
     ]),
-    async infoGet() {
-      const res = await this.getStudentInfo({ id: this.detailId })
-      this.detailInfo = res.data
-      this.baseList = [
-        {
-          key: '姓名',
-          value: res.data.name
-        },
-        {
-          key: '学号',
-          value: res.data.num
-        },
-        {
-          key: '年级',
-          value: res.data.grade
-        },
-        {
-          key: '班级',
-          value: res.data.class
-        },
-        {
-          key: '考勤次数',
-          value: res.data.account
-        }
-      ]
-    },
     async showList () {
-      const res = await this.getStudentDetail(this.pageList)
+      const res = await this.getreportList(this.pageList)
       this.detailList = res.data
       this.total = res.total
     },
-    callback (key) {
-      console.log(key)
-      setTimeout(() => {
-        this.showList()
-      }, 300)
-    }
   }
 }
 </script>
