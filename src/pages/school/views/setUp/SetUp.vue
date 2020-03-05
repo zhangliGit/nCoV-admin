@@ -15,15 +15,13 @@
             >
               <a-input
                 v-decorator="[
-                  'note',
-                  {rules: [{ required: true, message: 'Please input your note!' }]}
+                  'armpit',
+                  { initialValue: appForm.armpit, rules: [{ required: true, message: '请填写腋下、颈部发热温度值' }]}
                 ]"
               />
             </a-form-item>
           </a-col>
-          <a-col :span="13" >
-            （腋下、颈部等测温采用该值，同时未知的测温位置测温默认采用该值）
-          </a-col>
+          <a-col :span="13">（腋下、颈部等测温采用该值，同时未知的测温位置测温默认采用该值）</a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :span="11" >
@@ -34,8 +32,8 @@
             >
               <a-input
                 v-decorator="[
-                  'note',
-                  {rules: [{ required: true, message: 'Please input your note!' }]}
+                  'mouth',
+                  {initialValue: appForm.mouth, rules: [{ required: true, message: '请填写口腔发热温度值' }]}
                 ]"
               />
             </a-form-item>
@@ -53,18 +51,16 @@
             >
               <a-input
                 v-decorator="[
-                  'note',
-                  {rules: [{ required: true, message: 'Please input your note!' }]}
+                  'head',
+                  {initialValue: appForm.head, rules: [{ required: true, message: '请填写额头、面部发热温度值' }]}
                 ]"
               />
             </a-form-item>
           </a-col>
-          <a-col :span="13" >
-            （额头测温枪、人脸测温面板机测温等采用该值）
-          </a-col>
+          <a-col :span="13">（额头测温枪、人脸测温面板机测温等采用该值）</a-col>
         </a-row>
       </div>
-      <div style="height:90px">
+      <div style="height:100px">
         <div class="title-box" style="margin-bottom:10px;">
           <span class="title-icon"></span>
           <span class="title-text">校医人员设置</span>
@@ -77,8 +73,8 @@
           <a-input
             readonly
             v-decorator="[
-              'note',
-              {rules: [{ required: true, message: 'Please input your note!' }]}
+              'teacher',
+              {initialValue: appForm.teacher, rules: [{ required: true, message: '请选择校医人员' }]}
             ]"
             @click="userTag=true"
           />
@@ -111,7 +107,7 @@
           </a-checkbox-group>
         </a-form-item>
       </div>
-      <div style="height:230px">
+      <div style="height:230px;">
         <div class="title-box" style="margin-bottom:10px;">
           <span class="title-icon"></span>
           <span class="title-text">上报提醒</span>
@@ -124,12 +120,10 @@
               :wrapper-col="{ span: 6 }"
               required
             >
-              <a-switch v-decorator="['switch', { valuePropName: 'checked' }]" />
+              <a-switch v-decorator="['switch', { initialValue: appForm.switch,valuePropName: 'checked' }]" />
             </a-form-item>
           </a-col>
-          <a-col :span="13" >
-            （开启后教职工和家长微信公众号将定时收到上报提醒消息）
-          </a-col>
+          <a-col :span="13">（开启后教职工和家长微信公众号将定时收到上报提醒消息）</a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :span="11" >
@@ -151,12 +145,10 @@
               <a-button size="small" class="add-action-btn" icon="plus" @click="add"></a-button>
             </a-form-item>
           </a-col>
-          <a-col :span="13" >
-            （截止时间为发送时间2小时后）
-          </a-col>
+          <a-col :span="13">（截止时间为发送时间2小时后）</a-col>
         </a-row>
         <a-row>
-          <a-col :span="24" :style="{ textAlign: 'center' }" >
+          <a-col :span="24" :style="{ textAlign: 'center',marginBottom:'10px'}" >
             <a-button type="primary" html-type="submit" >
               保存
             </a-button>
@@ -202,16 +194,25 @@ export default {
       ],
       maxHeight: 0,
       timeList: [1, 2],
-      userTag: false
+      userTag: false,
+      appForm: {
+        armpit: '',
+        mouth: '',
+        head: '',
+        teacher: '',
+        switch: ''
+      }
     }
-  },
-  created () {
-    this.maxHeight = (window.screen.height - 780) + 'px'
   },
   methods: {
     moment,
-    handleSubmit() {
-
+    handleSubmit(e) {
+      e.preventDefault()
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('values', values)
+        }
+      })
     },
     add() {
       this.timeList.push(1)
