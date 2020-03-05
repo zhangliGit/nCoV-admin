@@ -13,18 +13,24 @@ export default {
     }
   },
   props: {
-      id: {
-        type: String
-      },
-      option: {
-        type: Object
-      }
+    id: {
+      type: String,
+      default: ''
     },
+    option: {
+      type: Object,
+      default: () => {
+        return {
+
+        }
+      }
+    }
+  },
   mounted() {
-    Highcharts.chart(this.id, this.option)  
+    Highcharts.chart(this.id, this.option)
   },
   methods: {
-  
+
   }
 }
 </script>

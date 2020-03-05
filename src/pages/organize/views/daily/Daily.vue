@@ -6,7 +6,7 @@
           <div class="gutter-box qui-fx-jsb">
             <div class="left">
               <h1>
-                50
+                {{ schoolData.schoolNum }}
                 <span>所</span>
               </h1>
               <p>隶属学校</p>
@@ -21,7 +21,7 @@
             <div class="gutter-box qui-fx-jsb">
               <div class="left">
                 <h1>
-                  50000
+                  {{ schoolData.studentNum }}
                   <span>人</span>
                 </h1>
                 <p>学生人数</p>
@@ -37,7 +37,7 @@
             <div class="gutter-box qui-fx-jsb">
               <div class="left">
                 <h1>
-                  520
+                  {{ schoolData.teacherNum }}
                   <span>人</span>
                 </h1>
                 <p>教职工人数</p>
@@ -99,12 +99,12 @@ import moment from 'moment'
 const columns = [
   {
     title: '学校名称',
-    dataIndex: 'name',
+    dataIndex: 'schoolName',
     width: '20%'
   },
   {
     title: '实上报/应上报（学生）',
-    dataIndex: 'num',
+    dataIndex: 'studentNum',
     width: '20%'
   },
   {
@@ -114,7 +114,7 @@ const columns = [
   },
   {
     title: '实上报/应上报（教职工）',
-    dataIndex: 'teacher',
+    dataIndex: 'teacherNum',
     width: '20%'
   },
   {
@@ -146,13 +146,19 @@ export default {
         size: 20
       },
       total: 0,
-      userList: []
+      userList: [],
+      schoolData: {
+        schoolNum: 0,
+        studentNum: 0,
+        teacherNum: 0
+      }
     }
   },
   created() {
     this.midHeight = document.body.clientHeight * 0.35 + 'px'
     this.charHeight = document.body.clientHeight * 0.35 - 30 + 'px'
     this.autoHeight = document.body.clientHeight * 0.65 - 275 + 'px'
+    this.showBaseData()
   },
   mounted() {
     for (var i = 0; i < 14; i++) {
@@ -163,9 +169,13 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getClassList']),
+    ...mapActions('home', ['getBaseData', 'getDailyList']),
+    async showBaseData() {
+      const res = await this.getBaseData()
+      this.schoolData = res.data
+    },
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getDailyList()
       this.userList = res.data
       this.total = res.total
     },
@@ -217,12 +227,12 @@ export default {
           {
             name: '学生',
             color: '#2163da',
-            data: [49, 71, 106, 129, 144, 176, 135, 148, 216, 194, 95, 54, 34, 91]
+            data: [49, 71, 69, 32, 56, 24, 12, 34, 54, 78, 21, 43, 57, 81]
           },
           {
             name: '教职工',
             color: '#ffb944',
-            data: [83, 78, 98, 93, 106, 84, 105, 104, 91, 83, 106, 92, 120, 59]
+            data: [3, 4, 8, 2, 1, 1, 4, 2, 2, 3, 2, 1, 4, 3]
           }
         ]
       })
@@ -273,7 +283,7 @@ export default {
             marker: {
               symbol: 'square'
             },
-            data: [7, 6, 9, 14, 18, 21, 25]
+            data: [50, 43, 56, 63, 35, 25, 41]
           }
         ]
       })

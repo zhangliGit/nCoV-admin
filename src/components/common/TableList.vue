@@ -54,6 +54,9 @@
       <template slot="action" slot-scope="text, record">
         <slot name="actions" :record="record"></slot>
       </template>
+      <template slot="num" slot-scope="text" >
+        <div class="table-total-num" @click="numDetail(text)">{{ text.num}}</div>
+      </template>
     </a-table>
   </div>
 </template>
@@ -200,10 +203,25 @@ export default {
     // 点击复选框
     onSelectChange(record) {
       if (this.isCheck) this.selectedRowKeys = record
+    },
+    numDetail(record) {
+      this.$emit('clickNum', record)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.table-total-num {
+    display: inline-block;
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    padding: 0 10px;
+    line-height: 20px;
+    font-size: 12px;
+    height: 22px;
+    border-radius: 4px;
+    color: #1890ff;
+    cursor: pointer;
+}
 </style>

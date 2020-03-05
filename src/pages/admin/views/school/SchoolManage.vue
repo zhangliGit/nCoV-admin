@@ -10,16 +10,11 @@
     <div class="top-btn-group">
       <a-button icon="plus" class="add-btn" @click="modify(0)">新增学校</a-button>
     </div>
-    <table-list :page-list="pageList" :columns="columns" :table-list="orgList">
+    <table-list :page-list="pageList" :columns="columns" :table-list="schoolList">
       <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="详情">
-          <a-button
-            size="small"
-            class="detail-action-btn"
-            icon="ellipsis"
-            @click="goDetail(action.record)"
-          ></a-button>
-        </a-tooltip>
+        <!-- <a-tooltip placement="topLeft" title="详情">
+          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
+        </a-tooltip>-->
         <a-tooltip placement="topLeft" title="编辑">
           <a-button
             size="small"
@@ -61,6 +56,22 @@ const formData = [
     label: '学校编码',
     max: 50,
     placeholder: '请输入学校编码'
+  },
+  {
+    value: 'admin',
+    initValue: '',
+    type: 'input',
+    label: '管理员',
+    max: 50,
+    placeholder: '请输入管理员'
+  },
+  {
+    value: 'phone',
+    initValue: '',
+    type: 'input',
+    label: '手机号',
+    max: 50,
+    placeholder: '请输入手机号'
   }
 ]
 const columns = [
@@ -114,32 +125,30 @@ export default {
       },
       total: 100,
       columns,
-      orgList: [
-        {
-          id: 1,
-          name: '里斯',
-          code: 'JSAD',
-          admin: '张三',
-          phone: '13340909011'
-        }
-      ],
+      schoolList: [],
       title: '新增学校',
       formStatus: false,
       formData
     }
   },
-  mounted() {},
+  mounted() {
+    this.showList()
+  },
   methods: {
-    ...mapActions('home', ['']),
-    goDetail(record) {
-      this.$router.push({
-        query: {
-          id: record.id
-        },
-        path: '/schoolManage/schoolDetail'
-      })
+    ...mapActions('home', ['getSchoolList']),
+    // goDetail(record) {
+    //   this.$router.push({
+    //     query: {
+    //       id: record.id
+    //     },
+    //     path: './schoolDetail'
+    //   })
+    // },
+    async showList() {
+      const res = await this.getSchoolList(this.pageList)
+      this.schoolList = res.data
+      this.total = res.total
     },
-    showList() {},
     del(record) {
       console.log(record)
     },
