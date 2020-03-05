@@ -1,7 +1,7 @@
 <template>
   <div class="page-layout qui-fx-ver">
     <search-form @search-form="searchForm" :search-label="searchLabel">
-      <div slot="right" class="top-btn-group">
+      <div slot="left" class="top-btn-group">
         <a-button icon="export" class="del-btn">导出</a-button>
       </div>
     </search-form>
@@ -11,7 +11,7 @@
       :table-list="userList">
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="查看健康档案">
-          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
+          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="detail(action.record)"></a-button>
         </a-tooltip>
       </template>
     </table-list>
@@ -52,16 +52,6 @@ const columns = [
     }
   },
   {
-    title: '部门',
-    dataIndex: 'grade',
-    width: '5%'
-  },
-  {
-    title: '工号',
-    dataIndex: 'num',
-    width: '5%'
-  },
-  {
     title: '温度',
     dataIndex: 'temperature',
     width: '5%',
@@ -85,11 +75,7 @@ const columns = [
     title: '是否接触疫情人员',
     dataIndex: 'parentsTel',
     width: '8%'
-  },  {
-    title: '健康状态',
-    dataIndex: 'aa',
-    width: '5%'
-  },  {
+  },   {
     title: '上报人',
     dataIndex: 'cc',
     width: '5%'
@@ -97,11 +83,7 @@ const columns = [
     title: '上报时间',
     dataIndex: 'dd',
     width: '8%'
-  },  {
-    title: '所属学校',
-    dataIndex: 'ss',
-    width: '8%'
-  },
+  }, 
   {
     title: '操作',
     width: '10%',
@@ -116,11 +98,6 @@ const searchLabel = [
     type: 'input',
     label: '姓名',
     placeholder: '请输入姓名'
-  },
-  {
-    value: 'rangeTime',
-    type: 'rangeTime',
-    label: '上报时间'
   },
     {
     list: [
@@ -141,25 +118,11 @@ const searchLabel = [
     type: 'select',
     label: '发热状态'
   },
-    {
-    list: [
-      {
-        key: '',
-        val: '全部'
-      },
-      {
-        key: 1,
-        val: '正常'
-      },
-      {
-        key: 2,
-        val: '异常'
-      }
-    ],
-    value: 'status',
-    type: 'select',
-    label: '健康状态'
-  },
+  {
+    value: 'rangeTime',
+    type: 'rangeTime',
+    label: '上报时间'
+  }
 ]
 export default {
   name: 'reportManageTea',
@@ -196,9 +159,13 @@ export default {
     searchForm (values) {
       console.log(values)
     },
-    goDetail (record) {
-      console.log(record)
-    }
+     detail(record) {
+      console.log(record.id)
+      this.$router.push({
+        path: '/reportManageTea/detail',
+        query: { id: record.id }
+      })
+    },
   }
 }
 </script>

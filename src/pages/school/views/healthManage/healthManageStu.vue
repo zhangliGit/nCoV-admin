@@ -43,16 +43,16 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'grade',
+    dataIndex: 'name',
     width: '15%'
   },
   {
     title: '性别',
-    dataIndex: 'class',
+    dataIndex: 'sex',
     width: '15%'
   },
   {
-    title: '部门',
+    title: '职位',
     dataIndex: 'name',
     width: '15%'
   },
@@ -61,9 +61,14 @@ const columns = [
     dataIndex: 'num',
     width: '15%'
   },
+   {
+    title: '手机号',
+    dataIndex: 'num',
+    width: '15%'
+  },
   {
     title: '建档时间',
-    dataIndex: 'startTime',
+    dataIndex: 'time',
     width: '15%'
   },
   {

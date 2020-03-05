@@ -39,17 +39,17 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'grade',
+    dataIndex: 'name',
     width: '15%'
   },
   {
     title: '性别',
-    dataIndex: 'class',
+    dataIndex: 'gender',
     width: '15%'
   },
   {
-    title: '部门',
-    dataIndex: 'name',
+    title: '职位',
+    dataIndex: 'radio',
     width: '15%'
   },
   {
@@ -59,7 +59,7 @@ const columns = [
   },
   {
     title: '建档时间',
-    dataIndex: 'startTime',
+    dataIndex: 'birthday',
     width: '15%'
   },
   {
@@ -94,10 +94,10 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getTeacherList'
     ]),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getTeacherList()
       this.userList = res.data
       this.total = res.total
     },
