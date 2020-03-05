@@ -40,7 +40,7 @@ import chooseUser from '@c/ChooseUser'
 const columns = [
   {
     title: '序号',
-    width: '10%',
+    width: '11%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -48,41 +48,41 @@ const columns = [
   {
     title: '年级',
     dataIndex: 'grade',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '班级',
     dataIndex: 'class',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '班主任',
     dataIndex: 'name',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '班级人数',
     dataIndex: 'num',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '已加入学生',
     dataIndex: 'num2',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '备注',
     dataIndex: 'remark',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '创建时间',
     dataIndex: 'startTime',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '操作',
-    width: '10%',
+    width: '11%',
     scopedSlots: {
       customRender: 'action'
     }

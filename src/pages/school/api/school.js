@@ -6,7 +6,7 @@
 import hostEnv from '@/config/host-env'
 
 const schoolApi = {
-  getClassList: '/teacherLeave#get' // 班级管理列表
+  getClassList: '/classManage#get' // 班级管理列表
 }
 for (const val in schoolApi) {
   schoolApi[val] = `${hostEnv}${schoolApi[val]}`
