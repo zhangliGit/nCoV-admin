@@ -9,7 +9,7 @@ const menu = {
   redirect: '/healthManageTea',
   meta: {
     title: '健康档案',
-    icon: 'menu-fold'
+    icon: 'folder-open'
   },
   children: [
     {
@@ -17,8 +17,8 @@ const menu = {
       name: 'healthManageTea',
       component: HealthManageTea,
       meta: {
-        title: '健康档案-教职工',
-        icon: 'menu-fold'
+        title: '教职工',
+        icon: 'folder-open'
       }
     },
     {
@@ -26,8 +26,8 @@ const menu = {
       name: 'healthManageStu',
       component: HealthManageStu,
       meta: {
-        title: '健康档案-学生',
-        icon: 'menu-fold'
+        title: '学生',
+        icon: 'folder-open'
       }
     }
   ]

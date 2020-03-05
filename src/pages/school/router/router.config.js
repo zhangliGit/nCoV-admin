@@ -1,6 +1,5 @@
 // eslint-disable-next-line
 import { BasicLayout } from '../layouts'
-import system from './system'
 import classManage from './classManage'
 import teacherManage from './teacherManage'
 import studentManage from './studentManage'
@@ -24,8 +23,8 @@ export const asyncRouterMap = [
         name: 'home',
         component: Home,
         meta: {
-          title: '系统首页',
-          icon: 'home'
+          title: '疫情预览',
+          icon: 'bar-chart'
         }
       },
       {
@@ -34,10 +33,9 @@ export const asyncRouterMap = [
         component: DailyReport,
         meta: {
           title: '疫情日报',
-          icon: 'home'
+          icon: 'calendar'
         }
       },
-      system,
       classManage,
       teacherManage,
       studentManage,
@@ -67,11 +65,11 @@ export const asyncRouterMap = [
  * @type { *[] }
  */
 const constantRouterMap = [
-  // {
-  //   path: '',
-  //   name: 'login',
-  //   component: () => import(/* webpackChunkName: "login" */ '../views/user/Login')
-  // }
+  {
+    path: '',
+    name: 'login',
+    component: () => import('../views/user/Login')
+  }
 ]
 
 const RouterMap = [...constantRouterMap, ...asyncRouterMap]

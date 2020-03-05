@@ -1,5 +1,7 @@
 <template>
-  <div class="home page-layout">运维端</div>
+  <div class="home page-layout"></div>
+</template>
+  </div>
 </template>
 
 <script>

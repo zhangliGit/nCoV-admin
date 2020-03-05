@@ -1,4 +1,3 @@
-
 const ClassManage = resolve => require(['../views/classManage/ClassManage.vue'], resolve)
 
 const menu = {
@@ -7,7 +6,7 @@ const menu = {
   component: ClassManage,
   meta: {
     title: '班级管理',
-    icon: 'menu-fold'
+    icon: 'setting'
   }
 }
 
