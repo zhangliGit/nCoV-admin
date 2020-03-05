@@ -4,7 +4,7 @@
     </submit-form>
     <choose-user ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
     </choose-user>
-    <div class="top-btn-group">
+    <div class="top-btn-group" style="padding: 8px 0 15px 0;">
       <a-button icon="plus" class="add-btn" @click="addClass()">添加班级</a-button>
       <a-button icon="export" class="export-btn">导出</a-button>
     </div>
@@ -40,7 +40,7 @@ import chooseUser from '@c/ChooseUser'
 const columns = [
   {
     title: '序号',
-    width: '11%',
+    width: '14%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -48,41 +48,31 @@ const columns = [
   {
     title: '年级',
     dataIndex: 'grade',
-    width: '11%'
+    width: '14%'
   },
   {
     title: '班级',
     dataIndex: 'class',
-    width: '11%'
+    width: '14%'
   },
   {
     title: '班主任',
     dataIndex: 'name',
-    width: '11%'
+    width: '14%'
   },
   {
     title: '班级人数',
     dataIndex: 'num',
-    width: '11%'
+    width: '14%'
   },
   {
     title: '已加入学生',
     dataIndex: 'num2',
-    width: '11%'
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark',
-    width: '11%'
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'startTime',
-    width: '11%'
+    width: '14%'
   },
   {
     title: '操作',
-    width: '11%',
+    width: '14%',
     scopedSlots: {
       customRender: 'action'
     }

@@ -49,7 +49,7 @@ import UploadMulti from '@c/UploadMulti'
 const columns = [
   {
     title: '序号',
-    width: '8%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -57,12 +57,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '8%'
+    width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '8%',
+    width: '10%',
     customRender: (text) => {
       if (text === 1) {
         return '男'
@@ -76,40 +76,39 @@ const columns = [
   {
     title: '职位',
     dataIndex: 'position',
-    width: '8%'
+    width: '10%',
+    customRender: (text) => {
+      if (text === 1) {
+        return '班主任'
+      } else if (text === 2) {
+        return '非班主任'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '工号',
     dataIndex: 'num',
-    width: '8%'
+    width: '10%'
   },
   {
     title: '手机号',
     dataIndex: 'tel',
-    width: '8%'
+    width: '10%'
   },
   {
     title: '人脸照片',
     dataIndex: 'photoPic',
-    width: '8%',
+    width: '10%',
     scopedSlots: {
       customRender: 'photoPic'
     }
   },
   {
-    title: '备注',
-    dataIndex: 'remark',
-    width: '8%'
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'startTime',
-    width: '8%'
-  },
-  {
-    title: '所属学校',
-    dataIndex: 'school',
-    width: '8%'
+    title: '出生日期',
+    dataIndex: 'birthday',
+    width: '10%'
   },
   {
     title: '操作',
@@ -142,7 +141,7 @@ const formData = [
     placeholder: '请输入姓名'
   },
   {
-    value: 'phone',
+    value: 'tel',
     initValue: '',
     type: 'input',
     label: '手机号',
@@ -166,7 +165,7 @@ const formData = [
     placeholder: '请选择职位'
   },
   {
-    value: 'sex',
+    value: 'gender',
     initValue: 1,
     required: false,
     list: [
@@ -197,12 +196,12 @@ const formData = [
     label: '人脸照片'
   },
   {
-    value: 'remark',
-    initValue: '',
-    type: 'input',
-    label: '备注',
+    value: 'birthday',
+    type: 'singleTime',
+    label: '生日',
     required: false,
-    placeholder: '请输入备注'
+    initValue: '',
+    placeholder: '请选择生日'
   }
 ]
 export default {
@@ -241,19 +240,22 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getTeacherList'
     ]),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getTeacherList()
       this.userList = res.data
       this.total = res.total
     },
     add(type, record = {}) {
       this.formStatus = true
       if (type) { // 编辑
+        this.fileList = []
         this.formData = this.$tools.fillForm(formData, record)
+        this.fileList.push({ uid: record.id, url: record.photoPic })
       } else { // 添加
         this.formData = formData
+        this.fileList = []
       }
     },
     del(record) {

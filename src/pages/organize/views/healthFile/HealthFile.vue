@@ -7,7 +7,7 @@
             <a-col :span="8">
               <div class="gutter-box qui-fx-jsb">
                 <div class="left">
-                  <h1>50<span>所</span></h1>
+                  <h1>{{ schoolData.schoolNum }}<span>所</span></h1>
                   <p>隶属学校</p>
                 </div>
                 <div class="right">
@@ -19,7 +19,7 @@
               <div class="gutter-box">
                 <div class="gutter-box qui-fx-jsb">
                   <div class="left">
-                    <h1>50000<span>人</span></h1>
+                    <h1>{{ schoolData.studentNum }}<span>人</span></h1>
                     <p>学生人数</p>
                   </div>
                   <div class="right">
@@ -32,7 +32,7 @@
               <div class="gutter-box">
                 <div class="gutter-box qui-fx-jsb">
                   <div class="left">
-                    <h1>520<span>人</span></h1>
+                    <h1>{{ schoolData.teacherNum }}<span>人</span></h1>
                     <p>教职工人数</p>
                   </div>
                   <div class="right">
@@ -52,7 +52,7 @@
                 :columns="heatColumns"
                 :table-list="heatList">
               </table-list>
-              <page-num :marTop="5" :marBot="5" v-model="pageList" :total="heatTotal" @change-page="showList"></page-num>
+              <page-num :marTop="5" :marBot="5" v-model="pageList" :total="heatTotal" @change-page="showTemperatureList"></page-num>
             </div>
           </div>
           <div class="mid qui-fx-ver">
@@ -65,7 +65,7 @@
                 :columns="touchColumns"
                 :table-list="touchList">
               </table-list>
-              <page-num :marTop="5" :marBot="5" v-model="pageList" :total="touchTotal" @change-page="showList"></page-num>
+              <page-num :marTop="5" :marBot="5" v-model="pageList" :total="touchTotal" @change-page="showTouchList"></page-num>
             </div>
           </div>
         </a-row>
@@ -99,7 +99,7 @@ import jzg1Img from '@a/img/organize/jzg.png'
 const heatColumns = [
   {
     title: '学校名称',
-    dataIndex: 'school',
+    dataIndex: 'schoolName',
     width: '20%'
   },
   {
@@ -126,7 +126,7 @@ const heatColumns = [
 const touchColumns = [
   {
     title: '学校名称',
-    dataIndex: 'school',
+    dataIndex: 'schoolName',
     width: '20%'
   },
   {
@@ -153,17 +153,17 @@ const touchColumns = [
 const fillColumns = [
   {
     title: '学校名称',
-    dataIndex: 'name',
+    dataIndex: 'schoolName',
     width: '33.3%'
   },
   {
     title: '学生实上报/应上报',
-    dataIndex: 'num',
+    dataIndex: 'studentNum',
     width: '33.3%'
   },
   {
     title: '教职工实上报/应上报',
-    dataIndex: 'type',
+    dataIndex: 'teacherNum',
     width: '33.3%'
   }
 ]
@@ -193,27 +193,45 @@ export default {
       fillTotal: 0,
       heatList: [],
       touchList: [],
-      fillList: []
+      fillList: [],
+      schoolData: {
+        schoolNum: 0,
+        studentNum: 0,
+        teacherNum: 0
+      }
     }
   },
   created() {
     this.midHeight = (document.body.clientHeight - 265) / 2 + 'px'
     this.rightHeight = (document.body.clientHeight - 135) + 'px'
     this.tabHeight = (document.body.clientHeight - 400) + 'px'
+    this.showBaseData()
   },
   mounted() {
-    this.showList()
+    this.showTemperatureList()
+    this.showTouchList()
+    this.showStatisticsList()
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getTemperature', 'getBaseData', 'getTouch', 'getStatistics'
     ]),
-    async showList() {
-      const res = await this.getClassList()
+    async showBaseData() {
+      const res = await this.getBaseData()
+      this.schoolData = res.data
+    },
+    async showTemperatureList() {
+      const res = await this.getTemperature()
       this.heatList = res.data
-      this.touchList = res.data
       this.heatTotal = res.total
+    },
+    async showTouchList() {
+      const res = await this.getTouch()
+      this.touchList = res.data
       this.touchTotal = res.total
+    },
+    async showStatisticsList() {
+      const res = await this.getStatistics()
       this.fillList = res.data
       this.fillTotal = res.total
     }

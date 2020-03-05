@@ -35,7 +35,7 @@ import chooseUser from '@c/ChooseUser'
 const columns = [
   {
     title: '序号',
-    width: '10%',
+    width: '11%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -43,12 +43,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '10%',
+    width: '11%',
     customRender: (text) => {
       if (text === 1) {
         return '男'
@@ -62,36 +62,31 @@ const columns = [
   {
     title: '身份',
     dataIndex: 'identity',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '部门/班级',
     dataIndex: 'grade',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '工号/学号',
     dataIndex: 'num',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '风险类型',
     dataIndex: 'riskType',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '加入时间',
     dataIndex: 'startTime',
-    width: '10%'
-  },
-  {
-    title: '所属学校',
-    dataIndex: 'school',
-    width: '10%'
+    width: '11%'
   },
   {
     title: '操作',
-    width: '10%',
+    width: '11%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -150,10 +145,10 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getRiskList'
     ]),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getRiskList()
       this.userList = res.data
       this.total = res.total
     },
