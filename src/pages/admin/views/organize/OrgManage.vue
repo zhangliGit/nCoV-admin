@@ -8,11 +8,12 @@
     <table-list
       :page-list="pageList"
       :columns="columns"
-      :table-list="orgList">
+      :table-list="orgList"
+      @clickNum="clickNum">
       <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="详情">
+        <!-- <a-tooltip placement="topLeft" title="详情">
           <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
-        </a-tooltip>
+        </a-tooltip> -->
         <a-tooltip placement="topLeft" title="编辑">
           <a-button size="small" class="edit-action-btn" icon="form" @click="modify(1,action.record)"></a-button>
         </a-tooltip>
@@ -50,6 +51,20 @@ const formData = [
     label: '机构编码',
     max: 50,
     placeholder: '请输入机构编码'
+  }, {
+    value: 'admin',
+    initValue: '',
+    type: 'input',
+    label: '管理员',
+    max: 50,
+    placeholder: '请输入管理员'
+  }, {
+    value: 'phone',
+    initValue: '',
+    type: 'input',
+    label: '手机号',
+    max: 50,
+    placeholder: '请输入手机号'
   }
 ]
 const columns = [
@@ -63,12 +78,12 @@ const columns = [
   {
     title: '机构名称',
     dataIndex: 'name',
-    width: '20%'
+    width: '15%'
   },
   {
     title: '机构编码',
     dataIndex: 'code',
-    width: '15%'
+    width: '10%'
   },
   {
     title: '管理员',
@@ -79,6 +94,13 @@ const columns = [
     title: '手机号码',
     dataIndex: 'phone',
     width: '20%'
+  }, {
+    title: '关联学校数',
+    // dataIndex: 'num',
+    width: '15%',
+    scopedSlots: {
+      customRender: 'num'
+    }
   },
   {
     title: '操作',
@@ -103,22 +125,17 @@ export default {
       },
       total: 100,
       columns,
-      orgList: [{
-        id: 1,
-        name: '里斯',
-        code: 'JSAD',
-        admin: '张三',
-        phone: '13340909011'
-      }],
+      orgList: [],
       title: '新增机构',
       formStatus: false,
       formData
     }
   },
   mounted() {
+    this.showList()
   },
   methods: {
-    ...mapActions('home', ['']),
+    ...mapActions('home', ['getOrgList']),
     goDetail(record) {
       this.$router.push({
         query: {
@@ -127,7 +144,10 @@ export default {
         path: './orgDetail'
       })
     },
-    showList() {
+    async showList() {
+      const res = await this.getOrgList(this.pageList)
+      this.orgList = res.data
+      this.total = res.total
     },
     del(record) {
       console.log(record)
@@ -144,8 +164,19 @@ export default {
       console.log(values)
       this.$refs.form.reset() // 成功调用
       // this.$refs.form.error() // 失败调用
+    },
+    clickNum(record) {
+      console.log(record)
+      this.$router.push({
+        query: {
+          id: record.id
+        },
+        path: './orgDetail'
+      })
     }
   }
 }
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+
+</style>
