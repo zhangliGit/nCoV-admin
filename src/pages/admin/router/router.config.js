@@ -1,7 +1,5 @@
 // eslint-disable-next-line
 import { BasicLayout } from '../layouts'
-// import system from './system'
-const Home = resolve => require(['../views/Home.vue'], resolve)
 const OrgManage = resolve => require(['../views/organize/OrgManage.vue'], resolve)
 const OrgDetail = resolve => require(['../views/organize/OrgDetail.vue'], resolve)
 const SchoolManage = resolve => require(['../views/school/SchoolManage.vue'], resolve)
@@ -11,38 +9,29 @@ export const asyncRouterMap = [
     path: '/',
     name: 'index',
     component: BasicLayout,
-    meta: { title: '系统首页' },
-    redirect: '/home',
+    meta: { title: '机构管理' },
+    redirect: '/orgManage',
     children: [
       {
-        path: '/home',
-        name: 'home',
-        component: Home,
-        meta: {
-          title: '系统首页',
-          icon: 'home'
-        }
-      },
-      {
-        path: 'orgManage',
+        path: '/orgManage',
         name: 'orgManage',
         component: OrgManage,
         meta: {
           title: '机构管理',
-          icon: 'menu-fold'
+          icon: 'bank'
         }
       },
       {
-        path: 'schoolManage',
+        path: '/schoolManage',
         name: 'schoolManage',
         component: SchoolManage,
         meta: {
           title: '学校管理',
-          icon: 'menu-fold'
+          icon: 'flag'
         }
       },
       {
-        path: 'orgDetail',
+        path: '/orgManage/orgDetail',
         name: 'orgDetail',
         component: OrgDetail,
         meta: {
@@ -52,7 +41,7 @@ export const asyncRouterMap = [
         hidden: true
       },
       {
-        path: 'schoolDetail',
+        path: '/schoolManage/schoolDetail',
         name: 'schoolDetail',
         component: SchoolDetail,
         meta: {
@@ -61,7 +50,6 @@ export const asyncRouterMap = [
         },
         hidden: true
       }
-      // system
     ]
   },
   {
@@ -76,11 +64,11 @@ export const asyncRouterMap = [
  * @type { *[] }
  */
 const constantRouterMap = [
-  // {
-  //   path: '',
-  //   name: 'login',
-  //   component: () => import(/* webpackChunkName: "login" */ '../views/user/Login')
-  // }
+  {
+    path: '',
+    name: 'login',
+    component: () => import('../views/user/Login')
+  }
 ]
 
 const RouterMap = [...constantRouterMap, ...asyncRouterMap]

@@ -44,11 +44,15 @@
 
       <!-- layout content -->
       <a-layout-content
+        class="qui-fx"
         :style="{ height: '100%', margin: multiTab ? '24px 24px 0' : '24px 24px 0', paddingTop: fixedHeader ? '64px' : '0' }"
       >
-        <multi-tab v-if="multiTab"></multi-tab>
+        <multi-tab v-if="false"></multi-tab>
         <transition name="page-transition">
-          <route-view />
+          <div class="qui-fx-f1 qui-fx-ver">
+            <route-navigator></route-navigator>
+            <route-view />
+          </div>
         </transition>
       </a-layout-content>
 
@@ -67,6 +71,7 @@ import { mixin, mixinDevice } from '@/utils/mixin'
 import config from '@/config/defaultSettings'
 
 import RouteView from './RouteView'
+import RouteNavigator from '@c/RouteNavigator'
 import MultiTab from '@/components/MultiTab'
 import SideMenu from '@/components/Menu/SideMenu'
 import GlobalHeader from '@/components/GlobalHeader'
@@ -80,6 +85,7 @@ export default {
     RouteView,
     MultiTab,
     SideMenu,
+    RouteNavigator,
     GlobalHeader,
     GlobalFooter
   },

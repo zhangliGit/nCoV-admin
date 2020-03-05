@@ -1,7 +1,16 @@
 /**
  * @des atnd图标按需引入，需要用的的图标在此处导出
  */
-// 导入Form
+// 导入folder-openbar-chartcalendar
+export { default as CalendarOutline } from '@ant-design/icons/lib/outline/CalendarOutline'
+export { default as BarsOutline } from '@ant-design/icons/lib/outline/BarsOutline'
+export { default as SettingOutline } from '@ant-design/icons/lib/outline/SettingOutline'
+export { default as BarChartOutline } from '@ant-design/icons/lib/outline/BarChartOutline'
+export { default as FolderOpenOutline } from '@ant-design/icons/lib/outline/FolderOpenOutline'
+export { default as FlagOutline } from '@ant-design/icons/lib/outline/FlagOutline'
+export { default as BankOutline } from '@ant-design/icons/lib/outline/BankOutline'
+export { default as MessageOutline } from '@ant-design/icons/lib/outline/MessageOutline'
+export { default as MobileOutline } from '@ant-design/icons/lib/outline/MobileOutline'
 export { default as TeamOutline } from '@ant-design/icons/lib/outline/TeamOutline'
 export { default as LockOutline } from '@ant-design/icons/lib/outline/LockOutline'
 export { default as EllipsisOutline } from '@ant-design/icons/lib/outline/EllipsisOutline'

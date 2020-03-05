@@ -5,11 +5,14 @@
         <a-col :span="8">
           <div class="gutter-box qui-fx-jsb">
             <div class="left">
-              <h1>50<span>所</span></h1>
+              <h1>
+                50
+                <span>所</span>
+              </h1>
               <p>隶属学校</p>
             </div>
             <div class="right">
-              <img :src="xsImg" alt="">
+              <img :src="xsImg" alt />
             </div>
           </div>
         </a-col>
@@ -17,11 +20,14 @@
           <div class="gutter-box">
             <div class="gutter-box qui-fx-jsb">
               <div class="left">
-                <h1>50000<span>人</span></h1>
+                <h1>
+                  50000
+                  <span>人</span>
+                </h1>
                 <p>学生人数</p>
               </div>
               <div class="right">
-                <img :src="xxImg" alt="">
+                <img :src="xxImg" alt />
               </div>
             </div>
           </div>
@@ -30,11 +36,14 @@
           <div class="gutter-box">
             <div class="gutter-box qui-fx-jsb">
               <div class="left">
-                <h1>520<span>人</span></h1>
+                <h1>
+                  520
+                  <span>人</span>
+                </h1>
                 <p>教职工人数</p>
               </div>
               <div class="right">
-                <img :src="jzgImg" alt="">
+                <img :src="jzgImg" alt />
               </div>
             </div>
           </div>
@@ -71,11 +80,7 @@
             <a-month-picker :allowClear="false" :defaultValue="chooseMonth" @change="panelChange" />
           </div>
         </div>
-        <table-list
-          :page-list="pageList"
-          :columns="columns"
-          :table-list="userList">
-        </table-list>
+        <table-list :page-list="pageList" :columns="columns" :table-list="userList"></table-list>
         <!-- <page-num v-model="pageList" :total="total" @change-page="showList"></page-num> -->
       </div>
     </div>
@@ -145,9 +150,9 @@ export default {
     }
   },
   created() {
-    this.midHeight = (document.body.clientHeight * 0.35) + 'px'
-    this.charHeight = (document.body.clientHeight * 0.35 - 30) + 'px'
-    this.autoHeight = (document.body.clientHeight * 0.65 - 275) + 'px'
+    this.midHeight = document.body.clientHeight * 0.35 + 'px'
+    this.charHeight = document.body.clientHeight * 0.35 - 30 + 'px'
+    this.autoHeight = document.body.clientHeight * 0.65 - 275 + 'px'
   },
   mounted() {
     for (var i = 0; i < 14; i++) {
@@ -158,9 +163,7 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', [
-      'getClassList'
-    ]),
+    ...mapActions('home', ['getClassList']),
     async showList() {
       const res = await this.getClassList()
       this.userList = res.data
@@ -196,10 +199,11 @@ export default {
           }
         },
         tooltip: {
-        // head + 每个 point + footer 拼接成完整的 table
+          // head + 每个 point + footer 拼接成完整的 table
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-          '<td style="padding:0"><b>{point.y:.1f} 人</b></td></tr>',
+          pointFormat:
+            '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} 人</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -209,15 +213,18 @@ export default {
             borderWidth: 0
           }
         },
-        series: [{
-          name: '学生',
-          color: '#2163da',
-          data: [49, 71, 106, 129, 144, 176, 135, 148, 216, 194, 95, 54, 34, 91]
-        }, {
-          name: '教职工',
-          color: '#ffb944',
-          data: [83, 78, 98, 93, 106, 84, 105, 104, 91, 83, 106, 92, 120, 59]
-        }]
+        series: [
+          {
+            name: '学生',
+            color: '#2163da',
+            data: [49, 71, 106, 129, 144, 176, 135, 148, 216, 194, 95, 54, 34, 91]
+          },
+          {
+            name: '教职工',
+            color: '#ffb944',
+            data: [83, 78, 98, 93, 106, 84, 105, 104, 91, 83, 106, 92, 120, 59]
+          }
+        ]
       })
     },
     showLine(id, xDate) {
@@ -247,9 +254,8 @@ export default {
         tooltip: {
           crosshairs: true,
           shared: true,
-          pointFormatter: function () {
-            return '<span style="color:this.series.color"></span>' +
-              this.series.name + '：' + this.y + '人'
+          pointFormatter: function() {
+            return '<span style="color:this.series.color"></span>' + this.series.name + '：' + this.y + '人'
           }
         },
         plotOptions: {
@@ -261,58 +267,62 @@ export default {
             }
           }
         },
-        series: [{
-          name: '未上报',
-          marker: {
-            symbol: 'square'
-          },
-          data: [7, 6, 9, 14, 18, 21, 25]
-        }]
+        series: [
+          {
+            name: '未上报',
+            marker: {
+              symbol: 'square'
+            },
+            data: [7, 6, 9, 14, 18, 21, 25]
+          }
+        ]
       })
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.daily{
-  .title{
+.daily {
+  .title {
     padding: 5px 0 0 10px;
     height: 25px;
     line-height: 25px;
-    h3{
+    h3 {
       background: url('../li.png') no-repeat left center;
       text-indent: 15px;
       margin-bottom: 0;
     }
   }
-  .top,.mid,.bottom{
+  .top,
+  .mid,
+  .bottom {
     margin: 5px 5px 10px 5px;
-    .gutter-box{
+    .gutter-box {
       background: #fff;
       border-radius: 4px;
     }
   }
-  .top{
-    .gutter-box{
-      .left{
+  .top {
+    .gutter-box {
+      .left {
         margin: 20px 0 20px 40px;
-        h1{
+        h1 {
           margin-bottom: 0;
           color: #2163da;
-          span{
+          span {
             margin-left: 10px;
             font-size: 12px;
           }
         }
-        p{
+        p {
           margin-bottom: 0;
           font-size: 12px;
           color: #999;
         }
       }
-      .right{
-        margin:20px 40px 20px 0;
-        img{
+      .right {
+        margin: 20px 40px 20px 0;
+        img {
           width: 66px;
           height: 66px;
           border-radius: 100%;
@@ -320,11 +330,11 @@ export default {
       }
     }
   }
-  .bottom{
-    .gutter-box{
-      .momth{
-        margin:5px;
-        height:33px;
+  .bottom {
+    .gutter-box {
+      .momth {
+        margin: 5px;
+        height: 33px;
       }
     }
   }

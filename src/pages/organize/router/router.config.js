@@ -1,7 +1,5 @@
 // eslint-disable-next-line
 import { BasicLayout } from '../layouts'
-import system from './system'
-const Home = resolve => require(['../views/Home.vue'], resolve)
 const Daily = resolve => require(['../views/daily/Daily.vue'], resolve)
 const HealthFile = resolve => require(['../views/healthFile/HealthFile.vue'], resolve)
 
@@ -11,24 +9,15 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '系统首页' },
-    redirect: '/home',
+    redirect: '/daily',
     children: [
-      {
-        path: '/home',
-        name: 'home',
-        component: Home,
-        meta: {
-          title: '系统首页',
-          icon: 'home'
-        }
-      },
       {
         path: '/daily',
         name: 'daily',
         component: Daily,
         meta: {
           title: '疫情日报',
-          icon: 'menu-fold'
+          icon: 'bar-chart'
         }
       },
       {
@@ -37,10 +26,9 @@ export const asyncRouterMap = [
         component: HealthFile,
         meta: {
           title: '健康档案',
-          icon: 'menu-fold'
+          icon: 'folder-open'
         }
-      },
-      system
+      }
     ]
   },
   {
@@ -55,11 +43,11 @@ export const asyncRouterMap = [
  * @type { *[] }
  */
 const constantRouterMap = [
-  // {
-  //   path: '',
-  //   name: 'login',
-  //   component: () => import(/* webpackChunkName: "login" */ '../views/user/Login')
-  // }
+  {
+    path: '',
+    name: 'login',
+    component: () => import('../views/user/Login')
+  }
 ]
 
 const RouterMap = [...constantRouterMap, ...asyncRouterMap]

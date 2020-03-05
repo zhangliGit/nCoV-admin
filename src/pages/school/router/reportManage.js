@@ -9,7 +9,7 @@ const menu = {
   redirect: '/reportManageTea',
   meta: {
     title: '上报记录',
-    icon: 'menu-fold'
+    icon: 'bars'
   },
   children: [
     {
@@ -17,8 +17,8 @@ const menu = {
       name: 'reportManageTea',
       component: ReportManageTea,
       meta: {
-        title: '上报记录-教职工',
-        icon: 'menu-fold'
+        title: '教职工',
+        icon: 'bars'
       }
     },
     {
@@ -26,8 +26,8 @@ const menu = {
       name: 'reportManageStu',
       component: ReportManageStu,
       meta: {
-        title: '上报记录-学生',
-        icon: 'menu-fold'
+        title: '学生',
+        icon: 'bars'
       }
     }
   ]
