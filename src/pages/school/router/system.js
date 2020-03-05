@@ -1,7 +1,6 @@
 import { RouteView } from '../layouts'
 const TimeSet = resolve => require(['../views/system/TimeSet.vue'], resolve)
 const ConfigSet = resolve => require(['../views/system/ConfigSet.vue'], resolve)
-const SetUp = resolve => require(['../views/system/SetUp.vue'], resolve)
 
 const menu = {
   path: '/system',
@@ -28,15 +27,6 @@ const menu = {
       component: ConfigSet,
       meta: {
         title: '配置设置',
-        icon: 'menu-fold'
-      }
-    },
-    {
-      path: '/setUp',
-      name: 'setUp',
-      component: SetUp,
-      meta: {
-        title: '系统设置',
         icon: 'menu-fold'
       }
     }

@@ -9,6 +9,7 @@ import reportManage from './reportManage'
 import healthManage from './healthManage'
 const Home = resolve => require(['../views/Home.vue'], resolve)
 const DailyReport = resolve => require(['../views/dailyReport/DailyReport.vue'], resolve)
+const SetUp = resolve => require(['../views/setUp/SetUp.vue'], resolve)
 
 export const asyncRouterMap = [
   {
@@ -42,7 +43,16 @@ export const asyncRouterMap = [
       studentManage,
       riskList,
       reportManage,
-      healthManage
+      healthManage,
+      {
+        path: '/setUp',
+        name: 'setUp',
+        component: SetUp,
+        meta: {
+          title: '系统设置',
+          icon: 'menu-fold'
+        }
+      }
     ]
   },
   {
