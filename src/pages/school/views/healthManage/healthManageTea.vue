@@ -40,18 +40,36 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'grade',
+    dataIndex: 'name',
     width: '15%'
   },
   {
     title: '性别',
-    dataIndex: 'class',
-    width: '15%'
+    dataIndex: 'gender',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '男'
+      } else if (text === 2) {
+        return '女'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
-    title: '部门',
-    dataIndex: 'name',
-    width: '15%'
+    title: '职位',
+    dataIndex: 'position',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '班主任'
+      } else if (text === 2) {
+        return '非班主任'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '工号',
@@ -59,8 +77,8 @@ const columns = [
     width: '15%'
   },
   {
-    title: '建档时间',
-    dataIndex: 'startTime',
+    title: '手机号',
+    dataIndex: 'tel',
     width: '15%'
   },
   {
@@ -72,7 +90,7 @@ const columns = [
   }
 ]
 export default {
-  name: 'healthManageTea',
+  name: 'HealthManageTea',
   components: {
     TableList,
     SearchForm,
@@ -94,9 +112,9 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getClassList']),
+    ...mapActions('home', ['getTeacherList']),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getTeacherList()
       this.userList = res.data
       this.total = res.total
     },
