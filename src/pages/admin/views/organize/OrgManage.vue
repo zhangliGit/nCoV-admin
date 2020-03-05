@@ -149,7 +149,7 @@ export default {
         query: {
           id: record.id
         },
-        path: '/orgManage/orgDetail'
+        path: './orgDetail'
       })
     },
     async showList() {
@@ -179,7 +179,7 @@ export default {
         query: {
           id: record.id
         },
-        path: './orgDetail'
+        path: '/orgManage/orgDetail'
       })
     }
   }
