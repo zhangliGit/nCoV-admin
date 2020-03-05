@@ -5,17 +5,17 @@
         <a-button icon="plus" class="add-btn" @click="add()">添加</a-button>
       </div>
     </search-form>
-    <choose-user ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
-    </choose-user>
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="userList">
+    <choose-user
+      ref="chooseUser"
+      v-if="userTag"
+      v-model="userTag"
+      @submit="chooseUser"
+      title="选择教职工"
+    ></choose-user>
+    <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-          <template slot="title">
-            您确定删除吗?
-          </template>
+          <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
@@ -49,7 +49,7 @@ const columns = [
     title: '性别',
     dataIndex: 'gender',
     width: '11%',
-    customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '男'
       } else if (text === 2) {
@@ -127,7 +127,7 @@ export default {
     chooseUser,
     PageNum
   },
-  data () {
+  data() {
     return {
       columns,
       searchLabel,
@@ -140,13 +140,11 @@ export default {
       userList: []
     }
   },
-  mounted () {
+  mounted() {
     this.showList()
   },
   methods: {
-    ...mapActions('home', [
-      'getRiskList'
-    ]),
+    ...mapActions('home', ['getRiskList']),
     async showList() {
       const res = await this.getRiskList()
       this.userList = res.data
@@ -158,10 +156,10 @@ export default {
     del(record) {
       console.log(record)
     },
-    searchForm (values) {
+    searchForm(values) {
       console.log(values)
     },
-    chooseUser (item) {
+    chooseUser(item) {
       console.log(item)
       setTimeout(() => {
         this.$refs.chooseUser.reset()
@@ -171,7 +169,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.top{
+.top {
   margin-bottom: 10px;
 }
 </style>

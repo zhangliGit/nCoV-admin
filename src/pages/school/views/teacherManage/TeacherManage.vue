@@ -9,29 +9,35 @@
         <a-button icon="export" class="del-btn">导出</a-button>
       </div>
     </search-form>
-    <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
+    <submit-form
+      ref="form"
+      @submit-form="submitForm"
+      :title="title"
+      v-model="formStatus"
+      :form-data="formData"
+    >
       <div slot="upload">
-        <upload-multi :length="1" v-model="fileList" :fileInfo="fileInfo" ></upload-multi>
+        <upload-multi :length="1" v-model="fileList" :fileInfo="fileInfo"></upload-multi>
       </div>
     </submit-form>
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="userList">
+    <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="编辑" @click="add(1,action.record)">
           <a-button size="small" class="edit-action-btn" icon="form"></a-button>
         </a-tooltip>
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-          <template slot="title">
-            您确定删除吗?
-          </template>
+          <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
         </a-popconfirm>
         <a-tooltip placement="topLeft" title="查看健康档案">
-          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
+          <a-button
+            size="small"
+            class="detail-action-btn"
+            icon="ellipsis"
+            @click="goDetail(action.record)"
+          ></a-button>
         </a-tooltip>
       </template>
     </table-list>
@@ -63,7 +69,7 @@ const columns = [
     title: '性别',
     dataIndex: 'gender',
     width: '10%',
-    customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '男'
       } else if (text === 2) {
@@ -77,7 +83,7 @@ const columns = [
     title: '职位',
     dataIndex: 'position',
     width: '10%',
-    customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '班主任'
       } else if (text === 2) {
@@ -213,7 +219,7 @@ export default {
     UploadMulti,
     PageNum
   },
-  data () {
+  data() {
     return {
       columns,
       searchLabel,
@@ -235,13 +241,11 @@ export default {
       fileList: []
     }
   },
-  mounted () {
+  mounted() {
     this.showList()
   },
   methods: {
-    ...mapActions('home', [
-      'getTeacherList'
-    ]),
+    ...mapActions('home', ['getTeacherList']),
     async showList() {
       const res = await this.getTeacherList()
       this.userList = res.data
@@ -249,11 +253,13 @@ export default {
     },
     add(type, record = {}) {
       this.formStatus = true
-      if (type) { // 编辑
+      if (type) {
+        // 编辑
         this.fileList = []
         this.formData = this.$tools.fillForm(formData, record)
         this.fileList.push({ uid: record.id, url: record.photoPic })
-      } else { // 添加
+      } else {
+        // 添加
         this.formData = formData
         this.fileList = []
       }
@@ -261,19 +267,18 @@ export default {
     del(record) {
       console.log(record)
     },
-    searchForm (values) {
+    searchForm(values) {
       console.log(values)
     },
-    submitForm (values) {
+    submitForm(values) {
       console.log(values)
       setTimeout(() => {
         this.$refs.form.reset()
       }, 2000)
     },
-    goDetail (record) {
-      console.log(record)
+    goDetail(record) {
       const obj = {
-        path: '/healthManageTea',
+        path: '/reportManageTea/detail',
         query: { id: record.id }
       }
       this.$router.push(obj)
@@ -282,7 +287,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.top{
+.top {
   margin-bottom: 10px;
 }
 </style>

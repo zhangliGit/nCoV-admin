@@ -30,7 +30,8 @@ const menu = {
       meta: {
         title: '档案详情',
         isHide: true
-      }
+      },
+      hidden: true
     },
     {
       path: '/reportManageStu',
@@ -48,7 +49,8 @@ const menu = {
       meta: {
         title: '档案详情',
         isHide: true
-      }
+      },
+      hidden: true
     }
   ]
 }

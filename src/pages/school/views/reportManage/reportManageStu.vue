@@ -1,22 +1,24 @@
 <template>
   <div class="page-layout qui-fx">
-      <grade-tree @select="select"></grade-tree>
-     <div class="qui-fx-f1 qui-fx-ver">
-   <search-form @search-form="searchForm" :search-label="searchLabel">
-      <div slot="left" class="top-btn-group">
-        <a-button icon="export" class="del-btn">导出</a-button>
-      </div>
-    </search-form>     
-      <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="userList">
-      <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="查看健康档案">
-          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="detail(action.record)"></a-button>
-        </a-tooltip>
-      </template>
-    </table-list>
+    <grade-tree @select="select"></grade-tree>
+    <div class="qui-fx-f1 qui-fx-ver">
+      <search-form @search-form="searchForm" :search-label="searchLabel">
+        <div slot="left" class="top-btn-group">
+          <a-button icon="export" class="del-btn">导出</a-button>
+        </div>
+      </search-form>
+      <table-list :page-list="pageList" :columns="columns" :table-list="userList">
+        <template v-slot:actions="action">
+          <a-tooltip placement="topLeft" title="查看健康档案">
+            <a-button
+              size="small"
+              class="detail-action-btn"
+              icon="ellipsis"
+              @click="detail(action.record)"
+            ></a-button>
+          </a-tooltip>
+        </template>
+      </table-list>
       <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
     </div>
   </div>
@@ -35,7 +37,7 @@ const searchLabel = [
     label: '姓名',
     placeholder: '请输入姓名'
   },
-    {
+  {
     list: [
       {
         key: '',
@@ -54,11 +56,11 @@ const searchLabel = [
     type: 'select',
     label: '发热状态'
   },
-   {
+  {
     value: 'rangeTime',
     type: 'rangeTime',
     label: '上报时间'
-  },
+  }
 ]
 const columns = [
   {
@@ -77,7 +79,7 @@ const columns = [
     title: '性别',
     dataIndex: 'gender',
     width: '5%',
-    customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '男'
       } else if (text === 2) {
@@ -90,7 +92,7 @@ const columns = [
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '5%',
+    width: '5%'
   },
   {
     title: '测量位置',
@@ -111,15 +113,17 @@ const columns = [
     title: '是否接触疫情人员',
     dataIndex: 'parentsTel',
     width: '12%'
-  },    {
+  },
+  {
     title: '上报人',
     dataIndex: 'cc',
     width: '5%'
-  },  {
+  },
+  {
     title: '上报时间',
     dataIndex: 'dd',
     width: '10%'
-  }, 
+  },
   {
     title: '操作',
     width: '10%',
@@ -129,7 +133,7 @@ const columns = [
   }
 ]
 export default {
-  name: 'reportManageStu',
+  name: 'ReportManageStu',
   components: {
     GradeTree,
     TableList,
@@ -148,31 +152,29 @@ export default {
       userList: []
     }
   },
-  mounted () {
+  mounted() {
     this.showList()
   },
   methods: {
-    ...mapActions('home', [
-      'getClassList'
-    ]),
+    ...mapActions('home', ['getClassList']),
     async showList() {
       const res = await this.getClassList()
       this.userList = res.data
       this.total = res.total
     },
-    searchForm (values) {
+    searchForm(values) {
       console.log(values)
     },
     detail(record) {
       console.log(record.id)
       this.$router.push({
-        path: '/reportManageStu/detail',
+        path: '/reportManageTea/detail',
         query: { id: record.id }
       })
     },
-      select(item) {
+    select(item) {
       console.log(item)
-    },
+    }
   }
 }
 </script>

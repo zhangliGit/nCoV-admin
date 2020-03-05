@@ -5,13 +5,15 @@
         <a-button icon="export" class="del-btn">导出</a-button>
       </div>
     </search-form>
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="userList">
+    <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="查看健康档案">
-          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="detail(action.record)"></a-button>
+          <a-button
+            size="small"
+            class="detail-action-btn"
+            icon="ellipsis"
+            @click="detail(action.record)"
+          ></a-button>
         </a-tooltip>
       </template>
     </table-list>
@@ -41,7 +43,7 @@ const columns = [
     title: '性别',
     dataIndex: 'gender',
     width: '8%',
-    customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '男'
       } else if (text === 2) {
@@ -54,7 +56,7 @@ const columns = [
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '5%',
+    width: '5%'
   },
   {
     title: '测量位置',
@@ -75,15 +77,17 @@ const columns = [
     title: '是否接触疫情人员',
     dataIndex: 'parentsTel',
     width: '8%'
-  },   {
+  },
+  {
     title: '上报人',
     dataIndex: 'cc',
     width: '5%'
-  },  {
+  },
+  {
     title: '上报时间',
     dataIndex: 'dd',
     width: '8%'
-  }, 
+  },
   {
     title: '操作',
     width: '10%',
@@ -99,7 +103,7 @@ const searchLabel = [
     label: '姓名',
     placeholder: '请输入姓名'
   },
-    {
+  {
     list: [
       {
         key: '',
@@ -131,46 +135,44 @@ export default {
     SearchForm,
     PageNum
   },
-  data () {
+  data() {
     return {
       columns,
       searchLabel,
-     
+
       pageList: {
         page: 1,
         size: 20
       },
-      total: 0,    
-       userList: []
+      total: 0,
+      userList: []
     }
   },
-  mounted () {
+  mounted() {
     this.showList()
   },
   methods: {
-    ...mapActions('home', [
-      'getClassList'
-    ]),
+    ...mapActions('home', ['getClassList']),
     async showList() {
       const res = await this.getClassList()
       this.userList = res.data
       this.total = res.total
     },
-    searchForm (values) {
+    searchForm(values) {
       console.log(values)
     },
-     detail(record) {
+    detail(record) {
       console.log(record.id)
       this.$router.push({
         path: '/reportManageTea/detail',
         query: { id: record.id }
       })
-    },
+    }
   }
 }
 </script>
 <style lang="less" scoped>
-.top{
+.top {
   margin-bottom: 10px;
 }
 </style>
