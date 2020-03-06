@@ -1,32 +1,37 @@
 <template>
-  <div class="page-layout qui-fx-ver">
+  <div class="page-layout qui-fx">
     <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
     </submit-form>
     <choose-user ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
     </choose-user>
-    <div class="top-btn-group" style="padding: 8px 0 15px 0;">
-      <a-button icon="plus" class="add-btn" @click="addClass()">添加班级</a-button>
-      <a-button icon="export" class="export-btn">导出</a-button>
+    <div class="page-left qui-fx-ver">
+      <grade-tree @select="select"></grade-tree>
     </div>
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="userList">
-      <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="绑定班主任">
-          <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher()"></a-button>
-        </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-          <template slot="title">
-            您确定删除吗?
-          </template>
-          <a-tooltip placement="topLeft" title="删除">
-            <a-button size="small" class="del-action-btn" icon="delete"></a-button>
+    <div class="page-right qui-fx-ver">
+      <div class="top-btn-group" style="padding: 8px 0 15px 0;">
+        <a-button icon="plus" class="add-btn" @click="addClass()">添加班级</a-button>
+        <a-button icon="export" class="export-btn">导出</a-button>
+      </div>
+      <table-list
+        :page-list="pageList"
+        :columns="columns"
+        :table-list="userList">
+        <template v-slot:actions="action">
+          <a-tooltip placement="topLeft" title="绑定班主任">
+            <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher()"></a-button>
           </a-tooltip>
-        </a-popconfirm>
-      </template>
-    </table-list>
-    <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+          <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
+            <template slot="title">
+              您确定删除吗?
+            </template>
+            <a-tooltip placement="topLeft" title="删除">
+              <a-button size="small" class="del-action-btn" icon="delete"></a-button>
+            </a-tooltip>
+          </a-popconfirm>
+        </template>
+      </table-list>
+      <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+    </div>
   </div>
 </template>
 
@@ -37,6 +42,7 @@ import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
 import chooseUser from '@c/ChooseUser'
+import GradeTree from '@c/GradeTree'
 const columns = [
   {
     title: '序号',
@@ -81,8 +87,22 @@ const columns = [
 const formData = [
   {
     value: 'className',
-    initValue: '',
-    type: 'input',
+    initValue: [],
+    list: [
+      {
+        key: 1,
+        val: '高一'
+      },
+      {
+        key: 2,
+        val: '高二'
+      },
+      {
+        key: 3,
+        val: '高三'
+      }
+    ],
+    type: 'select',
     label: '年级',
     placeholder: '请输入年级名称'
   },
@@ -92,13 +112,6 @@ const formData = [
     type: 'input',
     label: '新增班级数',
     placeholder: '请输入新增班级个数'
-  },
-  {
-    value: 'startNum',
-    initValue: '',
-    type: 'input',
-    label: '起始编号',
-    placeholder: '请输入起始编号'
   }
 ]
 export default {
@@ -108,7 +121,8 @@ export default {
     SearchForm,
     SubmitForm,
     chooseUser,
-    PageNum
+    PageNum,
+    GradeTree
   },
   data () {
     return {
@@ -132,6 +146,9 @@ export default {
     ...mapActions('home', [
       'getClassList'
     ]),
+    select(item) {
+      console.log(item)
+    },
     async showList() {
       const res = await this.getClassList()
       this.userList = res.data
@@ -162,7 +179,14 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.top{
-  margin-bottom: 10px;
-}
+  .top{
+    margin-bottom: 10px;
+  }
+  .page-left {
+    background: #fff;
+    margin-right: 10px;
+  }
+  .page-right {
+    width: 100%;
+  }
 </style>

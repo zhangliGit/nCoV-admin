@@ -1,40 +1,45 @@
 <template>
-  <div class="page-layout qui-fx-ver">
-    <search-form @search-form="searchForm" :search-label="searchLabel">
-      <div slot="left" class="top-btn-group">
-        <a-button icon="plus" class="add-btn" @click="add(0)">添加学生</a-button>
-        <a-button icon="export" class="export-btn">导入学生</a-button>
-        <a-button icon="export" class="export-all-btn">导入人脸</a-button>
-        <a-button icon="export" class="del-btn">导出</a-button>
-      </div>
-    </search-form>
-    <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
-      <div slot="upload">
-        <upload-multi :length="1" v-model="fileList" :fileInfo="fileInfo" ></upload-multi>
-      </div>
-    </submit-form>
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="userList">
-      <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="编辑" @click="add(1,action.record)">
-          <a-button size="small" class="edit-action-btn" icon="form"></a-button>
-        </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-          <template slot="title">
-            您确定删除吗?
-          </template>
-          <a-tooltip placement="topLeft" title="删除">
-            <a-button size="small" class="del-action-btn" icon="delete"></a-button>
+  <div class="page-layout qui-fx">
+    <div class="page-left qui-fx-ver">
+      <grade-tree @select="select"></grade-tree>
+    </div>
+    <div class="page-right qui-fx-ver">
+      <search-form @search-form="searchForm" :search-label="searchLabel">
+        <div slot="left" class="top-btn-group">
+          <a-button icon="plus" class="add-btn" @click="add(0)">添加学生</a-button>
+          <!--<a-button icon="export" class="export-btn">导入学生</a-button>
+          <a-button icon="export" class="export-all-btn">导入人脸</a-button> -->
+          <a-button icon="export" class="del-btn">导出</a-button>
+        </div>
+      </search-form>
+      <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
+        <div slot="upload">
+          <upload-multi :length="1" v-model="fileList" :fileInfo="fileInfo" ></upload-multi>
+        </div>
+      </submit-form>
+      <table-list
+        :page-list="pageList"
+        :columns="columns"
+        :table-list="userList">
+        <template v-slot:actions="action">
+          <a-tooltip placement="topLeft" title="编辑" @click="add(1,action.record)">
+            <a-button size="small" class="edit-action-btn" icon="form"></a-button>
           </a-tooltip>
-        </a-popconfirm>
-        <a-tooltip placement="topLeft" title="查看健康档案">
-          <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
-        </a-tooltip>
-      </template>
-    </table-list>
-    <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+          <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
+            <template slot="title">
+              您确定删除吗?
+            </template>
+            <a-tooltip placement="topLeft" title="删除">
+              <a-button size="small" class="del-action-btn" icon="delete"></a-button>
+            </a-tooltip>
+          </a-popconfirm>
+          <a-tooltip placement="topLeft" title="查看健康档案">
+            <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
+          </a-tooltip>
+        </template>
+      </table-list>
+      <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+    </div>
   </div>
 </template>
 
@@ -45,6 +50,7 @@ import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
 import UploadMulti from '@c/UploadMulti'
+import GradeTree from '@c/GradeTree'
 const columns = [
   {
     title: '序号',
@@ -103,7 +109,7 @@ const columns = [
   {
     title: '家长电话',
     dataIndex: 'parentsTel',
-    width: '8%'
+    width: '9%'
   },
   {
     title: '操作',
@@ -137,6 +143,27 @@ const formData = [
   },
   {
     value: 'grade',
+    initValue: [],
+    list: [
+      {
+        key: 1,
+        val: '高一'
+      },
+      {
+        key: 2,
+        val: '高二'
+      },
+      {
+        key: 3,
+        val: '高三'
+      }
+    ],
+    type: 'select',
+    label: '年级',
+    placeholder: '请选择年级'
+  },
+  {
+    value: 'class',
     initValue: [],
     list: [
       {
@@ -219,7 +246,8 @@ export default {
     SearchForm,
     SubmitForm,
     UploadMulti,
-    PageNum
+    PageNum,
+    GradeTree
   },
   data () {
     return {
@@ -250,6 +278,9 @@ export default {
     ...mapActions('home', [
       'getStudentList'
     ]),
+    select(item) {
+      console.log(item)
+    },
     async showList() {
       const res = await this.getStudentList()
       this.userList = res.data
@@ -281,7 +312,7 @@ export default {
     goDetail (record) {
       console.log(record)
       const obj = {
-        path: '/healthManageStu',
+        path: '/healthManageTea/detail',
         query: { id: record.id }
       }
       this.$router.push(obj)
@@ -290,7 +321,14 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.top{
-  margin-bottom: 10px;
-}
+  .top{
+    margin-bottom: 10px;
+  }
+  .page-left {
+    background: #fff;
+    margin-right: 10px;
+  }
+  .page-right {
+    width: 100%;
+  }
 </style>
