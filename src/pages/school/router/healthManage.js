@@ -1,7 +1,6 @@
 import { RouteView } from '../layouts'
 const HealthManageTea = resolve => require(['../views/healthManage/healthManageTea.vue'], resolve)
 const HealthManageStu = resolve => require(['../views/healthManage/healthManageStu.vue'], resolve)
-const PersonalDetail = resolve => require(['../views/component/PersonalDetail.vue'], resolve)
 const menu = {
   path: '/healthManage',
   name: '/healthManage',
@@ -30,15 +29,6 @@ const menu = {
         icon: 'folder-open'
       }
     },
-    {
-      path: '/component/detail',
-      name: 'PersonalDetail',
-      component: PersonalDetail,
-      meta: {
-        title: '档案详情',
-        isHide: true
-      }
-    }
   ]
 }
 
