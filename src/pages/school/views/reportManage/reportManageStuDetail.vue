@@ -1,11 +1,9 @@
 <template>
   <div class="leave-detail page-layout qui-fx-ver">
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">
-        基本信息
-      </a-menu-item>
+      <a-menu-item key="title">基本信息</a-menu-item>
     </a-menu>
-   <div class="info qui-fx-wp">
+    <div class="info qui-fx-wp">
       <p v-for="item in detailInfo" :key="item.key">
         <span>{{ item.key }}</span>
         <span>:</span>
@@ -13,31 +11,26 @@
       </p>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">体验数据</a-menu-item>
+      <a-menu-item key="title">体检数据</a-menu-item>
     </a-menu>
-   <div class="info qui-fx-wp">
+    <div class="info qui-fx-wp">
       <p v-for="item in detailInfo" :key="item.key">
         <span>{{ item.key }}</span>
         <span>:</span>
         <span>{{ item.val }}</span>
       </p>
     </div>
-   <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">体温走势</a-menu-item>
     </a-menu>
-  <div style="margin-top:10px;" >
-          <chart-component :style="{height:chartHeight}" :id="unReportId" :option="unReportOption"></chart-component>
+    <div style="margin-top:10px;">
+      <chart-component :style="{height:chartHeight}" :id="unReportId" :option="unReportOption"></chart-component>
     </div>
-  <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">疫情上报记录</a-menu-item>
     </a-menu>
-     <div class="qui-fx-f1 qui-fx-ver">
-      <table-list
-        is-zoom
-        :page-list="pageList"
-        :columns="columns"
-        :table-list="detailList">
-      </table-list>
+    <div class="qui-fx-f1 qui-fx-ver">
+      <table-list is-zoom :page-list="pageList" :columns="columns" :table-list="detailList"></table-list>
       <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
     </div>
   </div>
@@ -66,7 +59,7 @@ const columns = [
     title: '性别',
     dataIndex: 'gender',
     width: '5%',
-    customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '男'
       } else if (text === 2) {
@@ -79,7 +72,7 @@ const columns = [
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '10%',
+    width: '10%'
   },
   {
     title: '测量位置',
@@ -90,7 +83,7 @@ const columns = [
     title: '发热状态',
     dataIndex: 'feverstatus',
     width: '10%',
-     customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '未发热'
       } else if (text === 2) {
@@ -103,13 +96,13 @@ const columns = [
   {
     title: '附带症状',
     dataIndex: 'Incidentalsymptoms',
-    width: '10%',
+    width: '10%'
   },
   {
     title: '是否接触疫情人员',
     dataIndex: 'isno',
     width: '10%',
-     customRender: (text) => {
+    customRender: text => {
       if (text === 1) {
         return '有'
       } else if (text === 2) {
@@ -118,24 +111,26 @@ const columns = [
         return '未知'
       }
     }
-  },    {
+  },
+  {
     title: '上报人',
     dataIndex: 'ReportPerson',
     width: '10%'
-  },  {
+  },
+  {
     title: '上报时间',
     dataIndex: 'ReportTime',
     width: '10%'
-  }, 
+  }
 ]
 export default {
   name: 'ReportManageStuDetail',
   components: {
-     TableList,
+    TableList,
     PageNum,
     ChartComponent
   },
-  data () {
+  data() {
     return {
       pageList: {
         page: 1,
@@ -148,7 +143,7 @@ export default {
       detailList: [],
       detailId: '',
       baseList: [],
-       detailInfo: [
+      detailInfo: [
         {
           key: '姓名',
           val: '张三'
@@ -177,23 +172,20 @@ export default {
           key: '审批状态',
           val: '审批通过'
         }
-      ],
+      ]
     }
   },
 
   mounted() {
     this.initUnReportChart()
-        this.showList()
-
+    this.showList()
   },
   created() {
-    this.chartHeight = (document.body.clientHeight * 0.35) + 'px'
+    this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
   methods: {
-   ...mapActions('home', [
-      'getreportList'
-    ]),
-      async showList () {
+    ...mapActions('home', ['getreportList']),
+    async showList() {
       const res = await this.getreportList(this.pageList)
       this.detailList = res.data
       this.total = res.total
@@ -212,20 +204,23 @@ export default {
           align: 'right'
         },
         xAxis: {
-          allowDecimals: false
+          categories: ['2.1', '2.2', '2.3', '2.4', '2.5', '2.6']
+        },
+        credits: {
+          enabled: false
         },
         yAxis: {
           title: {
             text: ''
           },
           labels: {
-            formatter: function () {
+            formatter: function() {
               return this.value
             }
           }
         },
         tooltip: {
-          pointFormat: '{series.name} <b>{point.y:,.0f}</b>人'
+          pointFormat: '{series.name} <b>{point.y:,.0f}</b>℃'
         },
         plotOptions: {
           area: {
@@ -242,50 +237,53 @@ export default {
             }
           }
         },
-        series: [{
-          name: '温度',
-          color: 'rgb(105, 167, 254)',
-          data: [0, 10, 20, 30, 40, 30, 20, 10, 9, 0]
-        }]
+        series: [
+          {
+            name: '体温',
+            color: 'rgb(105, 167, 254)',
+            data: [0, 36, 37, 38, 39, 38, 37, 36, 0]
+          }
+        ]
       }
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
-    },
+    }
   }
 }
 </script>
 <style lang="less" scoped>
-.leave-detail{
-    min-height: 400px;
+.leave-detail {
+  min-height: 400px;
   max-height: 600px;
   overflow-y: auto;
   overflow-x: hidden;
 }
-.leave-detail{
+.leave-detail {
   background: #fff;
-  .info,.pic{
-    margin-top:20px;
+  .info,
+  .pic {
+    margin-top: 20px;
     padding: 0 20px;
-    p{
+    p {
       margin-right: 50px;
-      span{
-        margin:0 5px;
+      span {
+        margin: 0 5px;
       }
     }
   }
-  .pic{
-    margin-top:0;
+  .pic {
+    margin-top: 0;
   }
-  .title{
-    margin:10px;
-    p{
-      margin:0;
+  .title {
+    margin: 10px;
+    p {
+      margin: 0;
       font-weight: bold;
     }
   }
-  .process{
+  .process {
     width: 400px;
-    margin:10px;
-    img{
+    margin: 10px;
+    img {
       width: 60px;
       height: 60px;
       background: #ddd;
