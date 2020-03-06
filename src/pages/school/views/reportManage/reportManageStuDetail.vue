@@ -204,7 +204,10 @@ export default {
           align: 'right'
         },
         xAxis: {
-          allowDecimals: false
+          categories: ['2.1', '2.2', '2.3', '2.4', '2.5', '2.6']
+        },
+        credits: {
+          enabled: false
         },
         yAxis: {
           title: {
@@ -217,7 +220,7 @@ export default {
           }
         },
         tooltip: {
-          pointFormat: '{series.name} <b>{point.y:,.0f}</b>人'
+          pointFormat: '{series.name} <b>{point.y:,.0f}</b>℃'
         },
         plotOptions: {
           area: {
@@ -236,9 +239,9 @@ export default {
         },
         series: [
           {
-            name: '温度',
+            name: '体温',
             color: 'rgb(105, 167, 254)',
-            data: [0, 10, 20, 30, 40, 30, 20, 10, 9, 0]
+            data: [0, 36, 37, 38, 39, 38, 37, 36, 0]
           }
         ]
       }

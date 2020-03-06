@@ -107,6 +107,9 @@ export default {
           plotShadow: false,
           type: 'pie'
         },
+        credits: {
+          enabled: false
+        },
         title: {
           text: '健康异常上报分布'
         },
@@ -158,6 +161,9 @@ export default {
       this.heatOption = {
         chart: {
           type: 'area'
+        },
+        credits: {
+          enabled: false
         },
         title: {
           text: '发热及健康异常趋势图'
@@ -215,6 +221,9 @@ export default {
         chart: {
           type: 'area'
         },
+        credits: {
+          enabled: false
+        },
         title: {
           text: '未上报人员统计趋势'
         },
@@ -266,6 +275,9 @@ export default {
       this.userPieOption = {
         chart: {
           spacing: [40, 0, 40, 0]
+        },
+        credits: {
+          enabled: false
         },
         title: {
           floating: true,
