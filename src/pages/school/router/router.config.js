@@ -9,6 +9,7 @@ import healthManage from './healthManage'
 const Home = resolve => require(['../views/Home.vue'], resolve)
 const DailyReport = resolve => require(['../views/dailyReport/DailyReport.vue'], resolve)
 const SetUp = resolve => require(['../views/setUp/SetUp.vue'], resolve)
+const PersonalDetail = resolve => require(['../views/component/PersonalDetail.vue'], resolve)
 
 export const asyncRouterMap = [
   {
@@ -27,6 +28,16 @@ export const asyncRouterMap = [
           icon: 'bar-chart'
         }
       },
+       {
+      path: '/component/detail',
+      name: 'PersonalDetail',
+      component: PersonalDetail,
+      meta: {
+        title: '档案详情',
+        isHide: true
+      },
+      hidden: true
+    },
       {
         path: '/dailyReport',
         name: 'dailyReport',

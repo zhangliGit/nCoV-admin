@@ -156,7 +156,7 @@ export default {
     GradeTree,
     TableList,
     SearchForm,
-    PageNum
+    PageNum,
   },
   data() {
     return {
@@ -186,7 +186,7 @@ export default {
     detail(record) {
       console.log(record.id)
       this.$router.push({
-        path: '/reportManageTea/detail',
+      path: '/component/detail',
         query: { id: record.id }
       })
     },

@@ -58,13 +58,28 @@ const formData = [
     placeholder: '请输入机构编码'
   },
   {
-    value: 'admin',
+    value: 'account',
     initValue: '',
     type: 'input',
-    label: '管理员',
+    label: '账号',
     max: 50,
-    placeholder: '请输入管理员'
+    placeholder: '请输入账号'
+  }, {
+    value: 'psdWord',
+    initValue: '',
+    type: 'input',
+    label: '密码',
+    max: 50,
+    placeholder: '请输入密码'
   },
+  // {
+  //   value: 'admin',
+  //   initValue: '',
+  //   type: 'input',
+  //   label: '管理员',
+  //   max: 50,
+  //   placeholder: '请输入管理员'
+  // },
   {
     value: 'phone',
     initValue: '',
@@ -77,42 +92,46 @@ const formData = [
 const columns = [
   {
     title: '序号',
-    width: '10%',
+    width: '8%',
     scopedSlots: {
       customRender: 'index'
     }
-  },
-  {
+  }, {
     title: '机构名称',
     dataIndex: 'name',
-    width: '15%'
-  },
-  {
+    width: '14%'
+  }, {
     title: '机构编码',
     dataIndex: 'code',
-    width: '10%'
+    width: '12%'
+  }, {
+    title: '账号',
+    dataIndex: 'account',
+    width: '14%'
+  }, {
+    title: '密码',
+    dataIndex: 'psdWord',
+    width: '14%'
   },
-  {
-    title: '管理员',
-    dataIndex: 'admin',
-    width: '15%'
-  },
+  // {
+  //   title: '管理员',
+  //   dataIndex: 'admin',
+  //   width: '15%'
+  // },
   {
     title: '手机号码',
     dataIndex: 'phone',
-    width: '20%'
-  },
-  {
+    width: '14%'
+  }, {
     title: '关联学校数',
     // dataIndex: 'num',
-    width: '15%',
+    width: '10%',
     scopedSlots: {
       customRender: 'num'
     }
-  },
-  {
+  }, {
     title: '操作',
-    width: '20%',
+    width: '14%',
     scopedSlots: {
       customRender: 'action'
     }

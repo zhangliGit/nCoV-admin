@@ -87,7 +87,7 @@ const columns = [
       if (text === 1) {
         return '班主任'
       } else if (text === 2) {
-        return '非班主任'
+        return '教职工'
       } else {
         return '未知'
       }
@@ -163,7 +163,7 @@ const formData = [
       },
       {
         key: 2,
-        val: '非班主任'
+        val: '教职工'
       }
     ],
     type: 'radio',
