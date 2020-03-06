@@ -5,13 +5,13 @@
         <a-button icon="plus" class="add-btn" @click="add()">添加</a-button>
       </div>
     </search-form>
-    <choose-user
+    <choose-person
       ref="chooseUser"
       v-if="userTag"
       v-model="userTag"
       @submit="chooseUser"
-      title="选择教职工"
-    ></choose-user>
+      title="选择风险人员"
+    ></choose-person>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
@@ -31,7 +31,7 @@ import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import chooseUser from '@c/ChooseUser'
+import ChoosePerson from '../component/ChoosePerson'
 const columns = [
   {
     title: '序号',
@@ -124,7 +124,7 @@ export default {
   components: {
     TableList,
     SearchForm,
-    chooseUser,
+    ChoosePerson,
     PageNum
   },
   data() {
