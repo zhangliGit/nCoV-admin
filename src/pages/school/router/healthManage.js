@@ -1,8 +1,7 @@
 import { RouteView } from '../layouts'
 const HealthManageTea = resolve => require(['../views/healthManage/healthManageTea.vue'], resolve)
 const HealthManageStu = resolve => require(['../views/healthManage/healthManageStu.vue'], resolve)
-const HealthManageTeaDetail = resolve => require(['../views/healthManage/healthManageTeaDetail.vue'], resolve)
-const HealthManageStuDetail = resolve => require(['../views/healthManage/healthManageStuDetail.vue'], resolve)
+const PersonalDetail = resolve => require(['../views/component/PersonalDetail.vue'], resolve)
 const menu = {
   path: '/healthManage',
   name: '/healthManage',
@@ -23,15 +22,6 @@ const menu = {
       }
     },
     {
-      path: '/healthManageTea/detail',
-      name: 'healthManageTea',
-      component: HealthManageTeaDetail,
-      meta: {
-        title: '档案详情',
-        isHide: true
-      }
-    },
-    {
       path: '/healthManageStu',
       name: 'healthManageStu',
       component: HealthManageStu,
@@ -40,10 +30,10 @@ const menu = {
         icon: 'folder-open'
       }
     },
-     {
-      path: '/healthManageStu/detail',
-      name: 'healthManageStu',
-      component: HealthManageStuDetail,
+    {
+      path: '/component/detail',
+      name: 'PersonalDetail',
+      component: PersonalDetail,
       meta: {
         title: '档案详情',
         isHide: true
