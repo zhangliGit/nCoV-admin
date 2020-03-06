@@ -124,7 +124,7 @@ const columns = [
   }
 ]
 export default {
-  name: 'ReportManageStuDetail',
+  name: 'HealthManageTeaDetail',
   components: {
     TableList,
     PageNum,
@@ -188,6 +188,8 @@ export default {
     async showList() {
       const res = await this.getreportList(this.pageList)
       this.detailList = res.data
+      console.log(this.detailList)
+
       this.total = res.total
     },
     initUnReportChart() {
@@ -204,7 +206,7 @@ export default {
           align: 'right'
         },
         xAxis: {
-          allowDecimals: false
+          categories: ['2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7']
         },
         yAxis: {
           title: {
@@ -217,7 +219,7 @@ export default {
           }
         },
         tooltip: {
-          pointFormat: '{series.name} <b>{point.y:,.0f}</b>人'
+          pointFormat: '{series.name} <b>{point.y:,.0f}</b>摄氏度'
         },
         plotOptions: {
           area: {
@@ -236,7 +238,7 @@ export default {
         },
         series: [
           {
-            name: '温度',
+            name: '体温',
             color: 'rgb(105, 167, 254)',
             data: [0, 10, 20, 30, 40, 30, 20, 10, 9, 0]
           }

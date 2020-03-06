@@ -2,7 +2,7 @@
   <div class="page-layout qui-fx-ver">
     <search-form @search-form="searchForm" :search-label="searchLabel">
       <div slot="left" class="top-btn-group">
-        <a-button icon="export" class="del-btn">导出</a-button>
+        <a-button icon="export" class="export-btn">导出</a-button>
       </div>
     </search-form>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
@@ -37,12 +37,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    width: '8%'
+    width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '8%',
+    width: '5%',
     customRender: text => {
       if (text === 1) {
         return '男'
@@ -56,37 +56,55 @@ const columns = [
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '5%'
+    width: '10%'
   },
   {
     title: '测量位置',
-    dataIndex: 'remark',
-    width: '7%'
+    dataIndex: 'position',
+    width: '10%'
   },
   {
     title: '发热状态',
-    dataIndex: 'startTime',
-    width: '5%'
+    dataIndex: 'feverstatus',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '未发热'
+      } else if (text === 2) {
+        return '轻微'
+      } else {
+        return '高烧'
+      }
+    }
   },
   {
     title: '附带症状',
-    dataIndex: 'parents',
-    width: '5%'
+    dataIndex: 'Incidentalsymptoms',
+    width: '10%'
   },
   {
     title: '是否接触疫情人员',
-    dataIndex: 'parentsTel',
-    width: '8%'
+    dataIndex: 'isno',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '有'
+      } else if (text === 2) {
+        return '没有'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '上报人',
-    dataIndex: 'cc',
-    width: '5%'
+    dataIndex: 'ReportPerson',
+    width: '10%'
   },
   {
     title: '上报时间',
-    dataIndex: 'dd',
-    width: '8%'
+    dataIndex: 'ReportTime',
+    width: '10%'
   },
   {
     title: '操作',
@@ -152,9 +170,9 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getClassList']),
+    ...mapActions('home', ['getreportList']),
     async showList() {
-      const res = await this.getClassList()
+      const res = await this.getreportList()
       this.userList = res.data
       this.total = res.total
     },

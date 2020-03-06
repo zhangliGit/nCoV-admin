@@ -1,17 +1,8 @@
 <template>
   <div class="leave-detail page-layout qui-fx-ver">
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">
-        {{ title }}
-      </a-menu-item>
+      <a-menu-item key="title">基本信息</a-menu-item>
     </a-menu>
-         <div class="pic qui-fx-wp">
-      <p>
-        <span>图片</span>
-        <span>:</span>
-        <span></span>
-      </p>
-    </div>
     <div class="info qui-fx-wp">
       <p v-for="item in detailInfo" :key="item.key">
         <span>{{ item.key }}</span>
@@ -20,41 +11,34 @@
       </p>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">体验数据</a-menu-item>
+      <a-menu-item key="title">体检数据</a-menu-item>
     </a-menu>
-    <div class="title">
-      <p>审批人</p>
+    <div class="info qui-fx-wp">
+      <p v-for="item in detailInfo" :key="item.key">
+        <span>{{ item.key }}</span>
+        <span>:</span>
+        <span>{{ item.val }}</span>
+      </p>
     </div>
-    <div class="process qui-fx-jsb qui-fx-ac">
-      <div class="qui-fx-jsa qui-fx-ac">
-        <img :src="approveImg" alt="">
-        <div class="qui-fx-ver">
-          <span>{{ approveName }}</span>
-          <span>{{ approveState }}</span>
-        </div>
-      </div>
-      <span>{{ approveTime }}</span>
-    </div>
-   <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">体温走势</a-menu-item>
     </a-menu>
-  <div>曲线图</div>
-  <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+    <div style="margin-top:10px;">
+      <chart-component :style="{height:chartHeight}" :id="unReportId" :option="unReportOption"></chart-component>
+    </div>
+    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">疫情上报记录</a-menu-item>
     </a-menu>
-     <div class="qui-fx-f1 qui-fx-ver">
-      <table-list
-        is-zoom
-        :page-list="pageList"
-        :columns="columns"
-        :table-list="detailList">
-      </table-list>
+    <div class="qui-fx-f1 qui-fx-ver">
+      <table-list is-zoom :page-list="pageList" :columns="columns" :table-list="detailList"></table-list>
       <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
     </div>
   </div>
 </template>
 
 <script>
+import Highcharts from 'highcharts/highstock'
+import ChartComponent from '../component/ChartComponent'
 import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
@@ -68,85 +52,97 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'date',
-    width: '7%'
+    dataIndex: 'name',
+    width: '10%'
   },
   {
     title: '性别',
-    dataIndex: 'dealTime',
-    width: '7%'
-  },
-  {
-    title: '部门',
-    dataIndex: 'photoPic',
-    width: '7%',
-  },
-  {
-    title: '工号',
-    dataIndex: 'snapPic',
-    width: '7%',
+    dataIndex: 'gender',
+    width: '5%',
+    customRender: text => {
+      if (text === 1) {
+        return '男'
+      } else if (text === 2) {
+        return '女'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '温度',
-    dataIndex: 'snapPic',
-    width: '7%',
+    dataIndex: 'temperature',
+    width: '10%'
   },
   {
     title: '测量位置',
-    dataIndex: 'snapPic',
-    width: '7%',
+    dataIndex: 'position',
+    width: '10%'
   },
   {
     title: '发热状态',
-    dataIndex: 'snapPic',
-    width: '7%',
+    dataIndex: 'feverstatus',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '未发热'
+      } else if (text === 2) {
+        return '轻微'
+      } else {
+        return '高烧'
+      }
+    }
   },
   {
     title: '附带症状',
-    dataIndex: 'snapPic',
-    width: '7%',
+    dataIndex: 'Incidentalsymptoms',
+    width: '10%'
   },
   {
     title: '是否接触疫情人员',
-    dataIndex: 'snapPic',
-    width: '7%',
-  },
-  {
-    title: '其他说明',
-    dataIndex: 'snapPic',
-    width: '7%',
-  },
-  {
-    title: '健康状态',
-    dataIndex: 'snapPic',
-    width: '7%',
+    dataIndex: 'isno',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '有'
+      } else if (text === 2) {
+        return '没有'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '上报人',
-    dataIndex: 'snapPic',
-    width: '7%',
-  },{
+    dataIndex: 'ReportPerson',
+    width: '10%'
+  },
+  {
     title: '上报时间',
-    dataIndex: 'snapPic',
-    width: '7%',
+    dataIndex: 'ReportTime',
+    width: '10%'
   }
 ]
 export default {
-  name: 'TeacherLeaveDetail',
+  name: 'ReportManageTeaDetail',
   components: {
-     TableList,
-    PageNum
+    TableList,
+    PageNum,
+    ChartComponent
   },
-  data () {
+  data() {
     return {
-          pageList: {
+      pageList: {
         page: 1,
         size: 20
       },
+      unReportId: 'unReportId',
+      unReportOption: {},
       total: 0,
       columns,
       detailList: [],
-      current: 'title',
+      detailId: '',
+      baseList: [],
       detailInfo: [
         {
           key: '姓名',
@@ -165,12 +161,8 @@ export default {
           val: '是'
         },
         {
-          key: '审批单号',
-          val: '20191210113331957'
-        },
-        {
           key: '请假时间',
-          val: '2019-12-10 11:31:00 ~ 2019-12-11 11:31:00'
+          val: '2019-12-10'
         },
         {
           key: '请假时长',
@@ -180,61 +172,115 @@ export default {
           key: '审批状态',
           val: '审批通过'
         }
-      ],
-      title: '基本信息',
-      leaveData: [],
-      approveName: '',
-      approveState: 0,
-      approveTime: '',
-      approveImg: ''
+      ]
     }
   },
-  async mounted () {
-    this.showData()
+
+  mounted() {
+    this.initUnReportChart()
+    this.showList()
+  },
+  created() {
+    this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
   methods: {
-    ...mapActions('home', [
-      'teachersLeaveProcess'
-    ]),
-    async showData () {
-      const res = await this.teachersLeaveProcess()
-      this.leaveData = res.data
-      console.log(this.leaveData)
-      this.approveName = this.leaveData[0].name
-      this.approveTime = this.leaveData[0].dealTime
-      this.approveImg = this.leaveData[0].photoPic
-      this.approveState = this.leaveData[0].status === 1 ? '待审批' : this.leaveData[0].status === 2 ? '审批通过' : '审批不通过'
+    ...mapActions('home', ['getreportList']),
+    async showList() {
+      const res = await this.getreportList(this.pageList)
+      this.detailList = res.data
+      this.total = res.total
+    },
+    initUnReportChart() {
+      this.unReportOption = {
+        chart: {
+          type: 'areaspline'
+        },
+        title: {
+          text: ''
+        },
+        legend: {
+          verticalAlign: 'top',
+          margin: 5,
+          align: 'right'
+        },
+        xAxis: {
+          allowDecimals: false
+        },
+        yAxis: {
+          title: {
+            text: ''
+          },
+          labels: {
+            formatter: function() {
+              return this.value
+            }
+          }
+        },
+        tooltip: {
+          pointFormat: '{series.name} <b>{point.y:,.0f}</b>人'
+        },
+        plotOptions: {
+          area: {
+            pointStart: 2,
+            marker: {
+              enabled: false,
+              symbol: 'circle',
+              radius: 2,
+              states: {
+                hover: {
+                  enabled: true
+                }
+              }
+            }
+          }
+        },
+        series: [
+          {
+            name: '温度',
+            color: 'rgb(105, 167, 254)',
+            data: [0, 10, 20, 30, 40, 30, 20, 10, 9, 0]
+          }
+        ]
+      }
+      this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
     }
   }
 }
 </script>
 <style lang="less" scoped>
-.leave-detail{
+.leave-detail {
+  min-height: 400px;
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.leave-detail {
   background: #fff;
-  .info,.pic{
-    margin-top:20px;
+  .info,
+  .pic {
+    margin-top: 20px;
     padding: 0 20px;
-    p{
+    p {
       margin-right: 50px;
-      span{
-        margin:0 5px;
+      span {
+        margin: 0 5px;
       }
     }
   }
-  .pic{
-    margin-top:0;
+  .pic {
+    margin-top: 0;
   }
-  .title{
-    margin:10px;
-    p{
-      margin:0;
+  .title {
+    margin: 10px;
+    p {
+      margin: 0;
       font-weight: bold;
     }
   }
-  .process{
+  .process {
     width: 400px;
-    margin:10px;
-    img{
+    margin: 10px;
+    img {
       width: 60px;
       height: 60px;
       background: #ddd;

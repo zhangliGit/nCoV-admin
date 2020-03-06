@@ -1,5 +1,6 @@
 // eslint-disable-next-line
 import { BasicLayout } from '../layouts'
+const YqType = resolve => require(['../views/YqType.vue'], resolve)
 const OrgManage = resolve => require(['../views/organize/OrgManage.vue'], resolve)
 const OrgDetail = resolve => require(['../views/organize/OrgDetail.vue'], resolve)
 const SchoolManage = resolve => require(['../views/school/SchoolManage.vue'], resolve)
@@ -28,6 +29,15 @@ export const asyncRouterMap = [
         meta: {
           title: '学校管理',
           icon: 'flag'
+        }
+      },
+      {
+        path: '/yqType',
+        name: 'yqType',
+        component: YqType,
+        meta: {
+          title: '风险类型',
+          icon: 'setting'
         }
       },
       {

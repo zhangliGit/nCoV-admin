@@ -124,7 +124,7 @@ const columns = [
   }
 ]
 export default {
-  name: 'ReportManageStuDetail',
+  name: 'HealthManageStuDetail',
   components: {
     TableList,
     PageNum,

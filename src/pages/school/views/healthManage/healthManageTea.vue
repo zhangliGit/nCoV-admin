@@ -8,7 +8,7 @@
             size="small"
             class="detail-action-btn"
             icon="ellipsis"
-            @click="goDetail(action.record)"
+            @click="detail(action.record)"
           ></a-button>
         </a-tooltip>
       </template>
@@ -46,7 +46,7 @@ const columns = [
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '10%',
+    width: '15%',
     customRender: text => {
       if (text === 1) {
         return '男'
@@ -60,7 +60,7 @@ const columns = [
   {
     title: '职位',
     dataIndex: 'position',
-    width: '10%',
+    width: '15%',
     customRender: text => {
       if (text === 1) {
         return '班主任'
@@ -121,9 +121,13 @@ export default {
     searchForm(values) {
       console.log(values)
     },
-    goDetail(record) {
-      console.log(record)
-    }
+   detail(record) {
+      console.log(record.id)
+      this.$router.push({
+        path: '/healthManageTea/detail',
+        query: { id: record.id }
+      })
+    },
   }
 }
 </script>
