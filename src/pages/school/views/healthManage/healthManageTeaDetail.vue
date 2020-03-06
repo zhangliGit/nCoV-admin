@@ -239,6 +239,7 @@ export default {
             }
           }
         },
+<<<<<<< HEAD
         series: [
           {
             name: '体温',
@@ -246,6 +247,13 @@ export default {
             data: [0, 36, 37, 38, 39, 38, 37, 36, 0]
           }
         ]
+=======
+        series: [{
+          name: '体温',
+          color: 'rgb(105, 167, 254)',
+          data: [0, 36, 37, 38, 39, 38, 37, 36, 0]
+        }]
+>>>>>>> e99703439b62ee0c3c7f516547edea9bc6d2820e
       }
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
     }
