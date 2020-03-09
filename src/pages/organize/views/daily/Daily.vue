@@ -12,7 +12,7 @@
               <p>隶属学校</p>
             </div>
             <div class="right">
-              <img :src="xsImg" alt />
+              <img :src="xxImg" alt />
             </div>
           </div>
         </a-col>
@@ -27,7 +27,7 @@
                 <p>学生人数</p>
               </div>
               <div class="right">
-                <img :src="xxImg" alt />
+                <img :src="xsImg" alt />
               </div>
             </div>
           </div>
