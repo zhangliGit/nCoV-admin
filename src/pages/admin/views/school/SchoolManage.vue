@@ -32,6 +32,7 @@
       </template>
     </table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+    <add-school ref="addSchool" :title="title"></add-school>
   </div>
 </template>
 
@@ -40,6 +41,7 @@ import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SubmitForm from '@c/SubmitForm'
+import AddSchool from './AddSchool'
 const formData = [
   {
     value: 'name',
@@ -48,23 +50,36 @@ const formData = [
     label: '学校名称',
     max: 50,
     placeholder: '请输入学校名称'
-  },
-  {
+  }, {
     value: 'org',
     initValue: '',
     type: 'input',
     label: '学校编码',
     max: 50,
     placeholder: '请输入学校编码'
-  },
-  {
-    value: 'admin',
+  }, {
+    value: 'account',
     initValue: '',
     type: 'input',
-    label: '管理员',
+    label: '账号',
     max: 50,
-    placeholder: '请输入管理员'
+    placeholder: '请输入账号'
+  }, {
+    value: 'psdWord',
+    initValue: '',
+    type: 'input',
+    label: '密码',
+    max: 50,
+    placeholder: '请输入密码'
   },
+  // {
+  //   value: 'admin',
+  //   initValue: '',
+  //   type: 'input',
+  //   label: '管理员',
+  //   max: 50,
+  //   placeholder: '请输入管理员'
+  // },
   {
     value: 'phone',
     initValue: '',
@@ -81,28 +96,33 @@ const columns = [
     scopedSlots: {
       customRender: 'index'
     }
-  },
-  {
+  }, {
     title: '学校名称',
     dataIndex: 'name',
     width: '20%'
-  },
-  {
+  }, {
     title: '学校编码',
     dataIndex: 'code',
     width: '15%'
+  }, {
+    title: '账号',
+    dataIndex: 'account',
+    width: '10%'
+  }, {
+    title: '密码',
+    dataIndex: 'psdWord',
+    width: '10%'
   },
-  {
-    title: '管理员',
-    dataIndex: 'admin',
-    width: '15%'
-  },
+  // {
+  //   title: '管理员',
+  //   dataIndex: 'admin',
+  //   width: '15%'
+  // },
   {
     title: '手机号码',
     dataIndex: 'phone',
     width: '20%'
-  },
-  {
+  }, {
     title: '操作',
     width: '20%',
     scopedSlots: {
@@ -115,7 +135,8 @@ export default {
   components: {
     TableList,
     PageNum,
-    SubmitForm
+    SubmitForm,
+    AddSchool
   },
   data() {
     return {
@@ -153,7 +174,8 @@ export default {
       console.log(record)
     },
     modify(type, record) {
-      this.formStatus = true
+      this.$refs.addSchool.visible = true
+      // this.formStatus = true
       if (type) {
         this.title = '编辑学校'
       } else {

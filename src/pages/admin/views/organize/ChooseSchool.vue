@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    width="800px"
+    width="900px"
     :title="title"
     v-model="status"
     @ok="submitOk"
@@ -40,7 +40,7 @@
       <div class="user-box qui-fx-ver">
         <div class="title qui-fx-jsb">
           <span>已选择</span>
-          <span>{{ totalList.length }}人</span>
+          <span>{{ totalList.length }}个</span>
         </div>
         <div class="qui-fx-f1" style="overflow: auto">
           <ul>
@@ -62,20 +62,20 @@ import $ajax from '@u/ajax-serve'
 const columns = [
   {
     title: '序号',
-    width: '15%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
   },
   {
     title: '名称',
-    dataIndex: 'userName',
-    width: '20%'
+    dataIndex: 'name',
+    width: '25%'
   },
   {
     title: '编码',
     dataIndex: 'code',
-    width: '30%'
+    width: '25%'
   },
   {
     title: '手机号',
@@ -111,7 +111,8 @@ export default {
   },
   async mounted() {
     const userData = await $ajax.get({
-      url: 'http://yapi.demo.qunar.com/mock/81652/getTable'
+      // url: 'http://yapi.demo.qunar.com/mock/81652/getTable'
+      url: 'http://yapi.demo.qunar.com/mock/85606/school/list'
     })
     this.total = userData.total
     this.userList = userData.data
