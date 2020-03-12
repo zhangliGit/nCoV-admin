@@ -115,7 +115,7 @@ export default {
     }
   },
   created() {
-    this.chartHeight = ((document.body.clientHeight - 195) * 0.4) + 'px'
+    this.chartHeight = ((document.body.clientHeight - 310) * 0.5) + 'px'
   },
   mounted() {
     this.initHeatChart()
