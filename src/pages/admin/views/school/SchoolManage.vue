@@ -1,12 +1,12 @@
 <template>
   <div class="page-layout qui-fx-ver">
-    <submit-form
+    <!-- <submit-form
       ref="form"
       @submit-form="submitForm"
       :title="title"
       v-model="formStatus"
       :form-data="formData"
-    ></submit-form>
+    ></submit-form> -->
     <div class="top-btn-group">
       <a-button icon="plus" class="add-btn" @click="modify(0)">新增学校</a-button>
     </div>
@@ -40,7 +40,7 @@
 import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
-import SubmitForm from '@c/SubmitForm'
+// import SubmitForm from '@c/SubmitForm'
 import AddSchool from './AddSchool'
 const formData = [
   {
@@ -135,7 +135,7 @@ export default {
   components: {
     TableList,
     PageNum,
-    SubmitForm,
+    // SubmitForm,
     AddSchool
   },
   data() {
@@ -148,7 +148,7 @@ export default {
       columns,
       schoolList: [],
       title: '新增学校',
-      formStatus: false,
+      // formStatus: false,
       formData
     }
   },
@@ -156,7 +156,7 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getSchoolList']),
+    ...mapActions('home', ['getSchoolList', 'addSchool', 'updateSchool', 'delSchool']),
     // goDetail(record) {
     //   this.$router.push({
     //     query: {
@@ -171,22 +171,28 @@ export default {
       this.total = res.total
     },
     del(record) {
+      this.delSchool({ id: record.id }).then(() => {
+        this.$message.success('操作成功')
+        this.showList()
+      })
       console.log(record)
     },
     modify(type, record) {
       this.$refs.addSchool.visible = true
       // this.formStatus = true
       if (type) {
+        this.$refs.addSchool.recordId = record.id
+        this.$refs.addSchool.appForm = record
         this.title = '编辑学校'
       } else {
         this.title = '新增学校'
       }
-    },
-    submitForm(values) {
-      console.log(values)
-      this.$refs.form.reset() // 成功调用
-      // this.$refs.form.error() // 失败调用
     }
+    // submitForm(values) {
+    //   console.log(values)
+    //   this.$refs.form.reset() // 成功调用
+    //   this.$refs.form.error() // 失败调用
+    // }
   }
 }
 </script>

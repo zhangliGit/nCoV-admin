@@ -50,7 +50,7 @@ const formData = [
     placeholder: '请输入机构名称'
   },
   {
-    value: 'org',
+    value: 'code',
     initValue: '',
     type: 'input',
     label: '机构编码',
@@ -155,14 +155,15 @@ export default {
       orgList: [],
       title: '新增机构',
       formStatus: false,
-      formData
+      formData,
+      recordId: ''
     }
   },
   mounted() {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getOrgList']),
+    ...mapActions('home', ['getOrgList', 'addOrg', 'delOrg', 'updateOrg']),
     goDetail(record) {
       this.$router.push({
         query: {
@@ -178,19 +179,42 @@ export default {
     },
     del(record) {
       console.log(record)
+      this.delOrg({ id: record.id }).then(() => {
+        this.$message.success('操作成功')
+        this.showList()
+      })
     },
     modify(type, record) {
       this.formStatus = true
       if (type) {
         this.title = '编辑机构'
+        this.recordId = record.id
+        this.formData = this.$tools.fillForm(formData, record)
       } else {
         this.title = '新增机构'
       }
     },
-    submitForm(values) {
+    async submitForm (values) {
       console.log(values)
-      this.$refs.form.reset() // 成功调用
-      // this.$refs.form.error() // 失败调用
+      try {
+        let res
+        if (this.title === '编辑机构') {
+          values.id = this.recordId
+          res = await this.updateOrg(values)
+        } else {
+          res = await this.addOrg(values)
+        }
+        if (res.message === 'SUCCESS') {
+          const msg = this.type ? '编辑成功' : '添加成功'
+          this.$message.success(msg)
+          setTimeout(() => {
+            this.showList()
+            this.$refs.form.reset()
+          }, 1000)
+        }
+      } catch (err) {
+        this.$refs.form.error()
+      }
     },
     clickNum(record) {
       console.log(record)

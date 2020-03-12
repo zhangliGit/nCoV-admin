@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'AddSchool',
   components: {
@@ -138,16 +139,35 @@ export default {
       primary: '01',
       middle: '02',
       high: '03',
-      checkedList: []
+      checkedList: [],
+      recordId: ''
     }
   },
   methods: {
+    ...mapActions('home', ['addSchool', 'updateSchool']),
     submitOk (e) {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('values', values)
-          // this.$emit('submit-form', values)
+          console.log(values)
+          if (this.title === '编辑学校') {
+            values.id = this.recordId
+            this.updateSchool(values).then(() => {
+              this.$message.success('操作成功')
+              setTimeout(() => {
+                this.showList()
+                this.visible = true
+              }, 1000)
+            })
+          } else {
+            this.addSchool(values).then(() => {
+              this.$message.success('操作成功')
+              setTimeout(() => {
+                this.showList()
+                this.visible = true
+              }, 1000)
+            })
+          }
         }
       })
     }
