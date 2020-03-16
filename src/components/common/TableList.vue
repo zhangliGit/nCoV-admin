@@ -55,7 +55,7 @@
         <slot name="actions" :record="record"></slot>
       </template>
       <template slot="num" slot-scope="text" >
-        <div class="table-total-num" @click="numDetail(text)">{{ text.num}}</div>
+        <div class="table-total-num" @click="numDetail(text)">{{ text.number === null ? 0 : text.number}}</div>
       </template>
     </a-table>
   </div>

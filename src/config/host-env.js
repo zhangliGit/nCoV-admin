@@ -4,14 +4,21 @@
  */
 
 const ConfigEnv = process.env.VUE_APP_URL
-let hostEnv = ''
+const hostEnv = ''
+let admin = ''
 
 if (ConfigEnv === 'test') {
-  hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
+  admin = '/admin'
+  // hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
 } else if (ConfigEnv === 'prod') { // 线上接口
-  hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
+  // hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
+  admin = '/admin'
 } else {
-  hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
+  // hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
+  admin = '/admin'
 }
 
-export default hostEnv
+export default {
+  admin,
+  hostEnv
+}

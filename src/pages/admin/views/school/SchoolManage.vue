@@ -23,7 +23,7 @@
             @click="modify(1,action.record)"
           ></a-button>
         </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del">
+        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
           <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
@@ -98,19 +98,19 @@ const columns = [
     }
   }, {
     title: '学校名称',
-    dataIndex: 'name',
+    dataIndex: 'organizationName',
     width: '20%'
   }, {
     title: '学校编码',
-    dataIndex: 'code',
+    dataIndex: 'organizationCode',
     width: '15%'
   }, {
     title: '账号',
-    dataIndex: 'account',
+    dataIndex: 'manageName',
     width: '10%'
   }, {
     title: '密码',
-    dataIndex: 'psdWord',
+    dataIndex: 'password',
     width: '10%'
   },
   // {
@@ -142,7 +142,8 @@ export default {
     return {
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        organizationType: '2'
       },
       total: 100,
       columns,
@@ -156,7 +157,7 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getSchoolList', 'addSchool', 'updateSchool', 'delSchool']),
+    ...mapActions('home', ['getOrgList', 'delOrg']),
     // goDetail(record) {
     //   this.$router.push({
     //     query: {
@@ -166,12 +167,12 @@ export default {
     //   })
     // },
     async showList() {
-      const res = await this.getSchoolList(this.pageList)
-      this.schoolList = res.data
-      this.total = res.total
+      const res = await this.getOrgList(this.pageList)
+      this.schoolList = res.result.list
+      this.total = res.result.totalCount
     },
     del(record) {
-      this.delSchool({ id: record.id }).then(() => {
+      this.delOrg({ id: record.id }).then(() => {
         this.$message.success('操作成功')
         this.showList()
       })
@@ -182,6 +183,7 @@ export default {
       // this.formStatus = true
       if (type) {
         this.$refs.addSchool.recordId = record.id
+        record.checkedList = record.educCode.split(',')
         this.$refs.addSchool.appForm = record
         this.title = '编辑学校'
       } else {

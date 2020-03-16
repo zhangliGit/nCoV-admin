@@ -97,14 +97,18 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getSchoolList']),
+    ...mapActions('home', ['getOrgList', 'unBindSchool', 'bindSchool']),
     async showList() {
-      const res = await this.getSchoolList(this.pageList)
+      const res = await this.getOrgList(this.pageList)
       this.schoolList = res.data
       this.total = res.total
     },
-    del() {
-
+    del(record) {
+      console.log(record)
+      this.unBindSchool({ schoolCode: record.id }).then(() => {
+        this.$message.success('操作成功')
+        this.showList()
+      })
     },
     modify() {
       this.userTag = true
