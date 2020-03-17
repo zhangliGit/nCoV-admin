@@ -38,6 +38,21 @@ const formData = [
     label: '风险类型',
     max: 50,
     placeholder: '请输入风险类型'
+  }, {
+    value: 'riskCode',
+    initValue: '',
+    type: 'input',
+    label: '风险编码',
+    max: 50,
+    placeholder: '请输入风险编码'
+  }, {
+    value: 'remarks',
+    initValue: '',
+    type: 'input',
+    label: '备注',
+    max: 50,
+    required: false,
+    placeholder: '请输入备注'
   }
 ]
 const columns = [
@@ -51,16 +66,26 @@ const columns = [
   {
     title: '疫情类型',
     dataIndex: 'riskName',
-    width: '30%'
+    width: '15%'
+  },
+  {
+    title: '疫情编码',
+    dataIndex: 'riskCode',
+    width: '20%'
   },
   {
     title: '创建时间',
-    dataIndex: 'time',
-    width: '30%'
+    dataIndex: 'createTime',
+    width: '20%'
+  },
+  {
+    title: '备注',
+    dataIndex: 'remarks',
+    width: '15%'
   },
   {
     title: '操作',
-    width: '30%',
+    width: '20%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -75,23 +100,7 @@ export default {
       formStatus: false,
       formData,
       columns,
-      yqList: [
-        {
-          id: 1,
-          name: '确诊',
-          time: '2010-03-05'
-        },
-        {
-          id: 2,
-          name: '疑似',
-          time: '2010-03-05'
-        },
-        {
-          id: 3,
-          name: '隔离',
-          time: '2010-03-05'
-        }
-      ],
+      yqList: [],
       recordId: ''
     }
   },
@@ -102,7 +111,7 @@ export default {
     ...mapActions('home', ['getRiskList', 'addRisk', 'updateRisk', 'delRisk']),
     async showList() {
       const res = await this.getRiskList()
-      this.yqList = res.data.list
+      this.yqList = res.result
     },
     modify(type, record) {
       this.formStatus = true
@@ -112,6 +121,7 @@ export default {
         this.formData = this.$tools.fillForm(formData, record)
       } else {
         this.title = '新增类型'
+        this.formData = this.$tools.fillForm(formData, {})
       }
     },
     async submitForm (values) {
@@ -124,12 +134,12 @@ export default {
         } else {
           res = await this.addRisk(values)
         }
-        if (res.message === 'SUCCESS') {
+        if (res.message === 'SUCCESS' || res.message === '操作成功') {
           const msg = this.type ? '编辑成功' : '添加成功'
           this.$message.success(msg)
           this.formStatus = false
           setTimeout(() => {
-            // this.showList()
+            this.showList()
             this.$refs.form.reset()
           }, 1000)
         }

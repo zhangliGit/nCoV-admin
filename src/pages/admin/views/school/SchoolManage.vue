@@ -32,7 +32,7 @@
       </template>
     </table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
-    <add-school ref="addSchool" :title="title"></add-school>
+    <add-school ref="addSchool" @update="showList" :title="title"></add-school>
   </div>
 </template>
 
@@ -42,53 +42,53 @@ import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 // import SubmitForm from '@c/SubmitForm'
 import AddSchool from './AddSchool'
-const formData = [
-  {
-    value: 'name',
-    initValue: '',
-    type: 'input',
-    label: '学校名称',
-    max: 50,
-    placeholder: '请输入学校名称'
-  }, {
-    value: 'org',
-    initValue: '',
-    type: 'input',
-    label: '学校编码',
-    max: 50,
-    placeholder: '请输入学校编码'
-  }, {
-    value: 'account',
-    initValue: '',
-    type: 'input',
-    label: '账号',
-    max: 50,
-    placeholder: '请输入账号'
-  }, {
-    value: 'psdWord',
-    initValue: '',
-    type: 'input',
-    label: '密码',
-    max: 50,
-    placeholder: '请输入密码'
-  },
-  // {
-  //   value: 'admin',
-  //   initValue: '',
-  //   type: 'input',
-  //   label: '管理员',
-  //   max: 50,
-  //   placeholder: '请输入管理员'
-  // },
-  {
-    value: 'phone',
-    initValue: '',
-    type: 'input',
-    label: '手机号',
-    max: 50,
-    placeholder: '请输入手机号'
-  }
-]
+// const formData = [
+//   {
+//     value: 'name',
+//     initValue: '',
+//     type: 'input',
+//     label: '学校名称',
+//     max: 50,
+//     placeholder: '请输入学校名称'
+//   }, {
+//     value: 'org',
+//     initValue: '',
+//     type: 'input',
+//     label: '学校编码',
+//     max: 50,
+//     placeholder: '请输入学校编码'
+//   }, {
+//     value: 'account',
+//     initValue: '',
+//     type: 'input',
+//     label: '账号',
+//     max: 50,
+//     placeholder: '请输入账号'
+//   }, {
+//     value: 'psdWord',
+//     initValue: '',
+//     type: 'input',
+//     label: '密码',
+//     max: 50,
+//     placeholder: '请输入密码'
+//   },
+//   // {
+//   //   value: 'admin',
+//   //   initValue: '',
+//   //   type: 'input',
+//   //   label: '管理员',
+//   //   max: 50,
+//   //   placeholder: '请输入管理员'
+//   // },
+//   {
+//     value: 'phone',
+//     initValue: '',
+//     type: 'input',
+//     label: '手机号',
+//     max: 50,
+//     placeholder: '请输入手机号'
+//   }
+// ]
 const columns = [
   {
     title: '序号',
@@ -148,9 +148,9 @@ export default {
       total: 100,
       columns,
       schoolList: [],
-      title: '新增学校',
+      title: '新增学校'
       // formStatus: false,
-      formData
+      // formData
     }
   },
   mounted() {
@@ -172,7 +172,7 @@ export default {
       this.total = res.result.totalCount
     },
     del(record) {
-      this.delOrg({ id: record.id }).then(() => {
+      this.delOrg(record.id).then(() => {
         this.$message.success('操作成功')
         this.showList()
       })

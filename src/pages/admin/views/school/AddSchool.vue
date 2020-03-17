@@ -150,6 +150,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
+          this.confirmLoading = true
           values.organizationType = '2'
           values.educCode = values.checkedList.join(',')
           console.log(values)
@@ -157,19 +158,19 @@ export default {
             values.id = this.recordId
             this.updateOrg(values).then(() => {
               this.$message.success('操作成功')
-              this.visible = true
+              this.confirmLoading = false
+              this.visible = false
               setTimeout(() => {
-                this.confirmLoading = false
-                this.showList()
+                this.$emit('update')
               }, 1000)
             })
           } else {
             this.addOrg(values).then(() => {
               this.$message.success('操作成功')
-              this.visible = true
+              this.confirmLoading = false
+              this.visible = false
               setTimeout(() => {
-                this.confirmLoading = false
-                this.showList()
+                this.$emit('update')
               }, 1000)
             })
           }
