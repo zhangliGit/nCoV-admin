@@ -103,7 +103,7 @@ module.exports = {
         }
       },
       '/admin': {
-        target: 'http://pugai.natapp1.cc',
+        target: 'http://wxz-test-001.natapp1.cc',
         changeOrigin: true,
         pathRewrite: {
           '^/admin': ''

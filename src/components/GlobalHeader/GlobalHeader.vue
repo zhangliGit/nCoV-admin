@@ -16,8 +16,13 @@
             :type="collapsed ? 'menu-fold' : 'menu-unfold'"
             @click="toggle"
           />
-          <a-icon v-else class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggle" />
-          <span style="font-size: 20px">{{ userInfo.systemName }}</span>
+          <a-icon
+            v-else
+            class="trigger"
+            :type="collapsed ? 'menu-unfold' : 'menu-fold'"
+            @click="toggle"
+          />
+          <span style="font-size: 20px">{{ systemName }}</span>
           <user-menu></user-menu>
         </div>
       </a-layout-header>
@@ -38,7 +43,7 @@ export default {
     SMenu
   },
   computed: {
-    ...mapState('home', ['userInfo'])
+    ...mapState('home', ['userInfo', 'systemName'])
   },
   mixins: [mixin],
   props: {

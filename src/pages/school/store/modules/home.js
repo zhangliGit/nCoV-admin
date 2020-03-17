@@ -43,9 +43,9 @@ const getState = (state, val) => {
 const home = {
   namespaced: true,
   state: {
+    systemName: '管理平台',
     userInfo: getState('userInfo', {
-      systemName: '管理平台',
-      userName: '超级管理员'
+      orgName: '超级管理员'
     })
   },
   actions: {
@@ -57,7 +57,7 @@ const home = {
      * @param { key } state属性
      * @param { data } 存在的数据
      */
-    updataState(state, { key, data, isLocal = true }) {
+    updateState(state, { key, data, isLocal = true }) {
       if (isLocal) {
         const localData = JSON.parse(localStorage.getItem(projectName) || '{}')
         localData[key] = data

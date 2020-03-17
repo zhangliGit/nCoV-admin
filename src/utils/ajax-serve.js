@@ -5,10 +5,7 @@
 
 import axios from 'axios'
 import qs from 'qs'
-import {
-  Modal,
-  message
-} from 'ant-design-vue'
+import { Modal, message } from 'ant-design-vue'
 import Vue from 'vue'
 
 let loading
@@ -22,37 +19,42 @@ axios.defaults.timeout = 15000
 axios.defaults.withCredentials = true // 让ajax携带cookie
 
 // 拦截请求
-axios.interceptors.request.use(function (config) {
-  return config
-}, function (error) {
-  return Promise.reject(error)
-})
+axios.interceptors.request.use(
+  function(config) {
+    return config
+  },
+  function(error) {
+    return Promise.reject(error)
+  }
+)
 
 // 拦截响应
-axios.interceptors.response.use(function (response) {
-  return response
-}, function (error) {
-  return Promise.reject(error)
-})
+axios.interceptors.response.use(
+  function(response) {
+    return response
+  },
+  function(error) {
+    return Promise.reject(error)
+  }
+)
 
 const showToast = (tip = '') => {
   loading = vm.$message.loading('数据处理中...', 0)
 }
 
 // 处理响应结果
-function responseRes (res) {
+function responseRes(res) {
   // 清除加载
   setTimeout(loading, 0)
   return new Promise((resolve, reject) => {
-    if (res.code === '1' || res.status === true) {
+    if (res.code === '1' || res.success === true) {
       resolve(res)
     } else if (res.code === 401) {
       Modal.warning({
         title: '提示',
         okText: '确定',
         content: '认证过期，请重新登录',
-        onOk: function () {
-        }
+        onOk: function() {}
       })
     } else {
       Modal.warning({
@@ -64,7 +66,7 @@ function responseRes (res) {
   })
 }
 const $ajax = {
-  async get (obj, tag = true) {
+  async get(obj, tag = true) {
     if (tag) showToast()
     try {
       let res = await axios.get(obj.url, {
@@ -76,7 +78,7 @@ const $ajax = {
       return responseRes(err.response.data)
     }
   },
-  async postForm (obj, tag = true) {
+  async postForm(obj, tag = true) {
     if (tag) showToast()
     try {
       let res = await axios.post(obj.url, qs.stringify(obj.params))
@@ -86,7 +88,7 @@ const $ajax = {
       return responseRes(err.response.data)
     }
   },
-  async post (obj, tag = true) {
+  async post(obj, tag = true) {
     try {
       let res = await axios({
         url: obj.url,
@@ -102,7 +104,7 @@ const $ajax = {
       return responseRes(err.response.data)
     }
   },
-  async del (obj, tag = true) {
+  async del(obj, tag = true) {
     if (tag) showToast()
     try {
       let res = await axios.delete(obj.url, {})
