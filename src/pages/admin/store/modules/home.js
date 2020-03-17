@@ -53,12 +53,40 @@ for (const key in apiList) {
       },
       isLoad
     )
+    return resultBack(res)
+  }
+}
+const projectName = 'admin' // 此处写项目名作为存储值，避免不同项目冲突
+const localData = window.localStorage.getItem(projectName) || '{}'
+const getState = (state, val) => {
+  return JSON.parse(localData)[state] || val
+}
+const home = {
+  namespaced: true,
+  state: {
+    systemName: '管理平台',
+    userInfo: getState('userInfo', {
+      orgName: '超级管理员'
+    })
+  },
+  actions: {
+    ...actions
+  },
+  mutations: {
     /**
      * @des 数据请求成功后，设置全局vuex属性
      * @param {key} 请求的url路径
      * @param {res} 请求返回的结果
      */
-    return resultBack(res)
+    // return resultBack(res)
+    updateState(state, { key, data, isLocal = true }) {
+      if (isLocal) {
+        const localData = JSON.parse(localStorage.getItem(projectName) || '{}')
+        localData[key] = data
+        window.localStorage.setItem(projectName, JSON.stringify(localData))
+      }
+      state[key] = data
+    }
   }
 }
 

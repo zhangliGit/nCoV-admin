@@ -35,7 +35,7 @@ for (const key in apiList) {
     return resultBack(res)
   }
 }
-const projectName = 'admin' // 此处写项目名作为存储值，避免不同项目冲突
+const projectName = 'organize' // 此处写项目名作为存储值，避免不同项目冲突
 const localData = window.localStorage.getItem(projectName) || '{}'
 const getState = (state, val) => {
   return JSON.parse(localData)[state] || val
@@ -43,9 +43,9 @@ const getState = (state, val) => {
 const home = {
   namespaced: true,
   state: {
+    systemName: '管理平台',
     userInfo: getState('userInfo', {
-      systemName: '管理平台',
-      userName: '超级管理员'
+      orgName: '超级管理员'
     })
   },
   actions: {
@@ -57,7 +57,7 @@ const home = {
      * @param { key } state属性
      * @param { data } 存在的数据
      */
-    updataState(state, { key, data, isLocal = true }) {
+    updateState(state, { key, data, isLocal = true }) {
       if (isLocal) {
         const localData = JSON.parse(localStorage.getItem(projectName) || '{}')
         localData[key] = data
