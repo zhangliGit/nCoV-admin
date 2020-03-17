@@ -36,13 +36,13 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '5%',
+    width: '8%',
     customRender: text => {
       if (text === 1) {
         return '男'
@@ -54,61 +54,62 @@ const columns = [
     }
   },
   {
-    title: '温度',
-    dataIndex: 'temperature',
+    title: '工号',
+    dataIndex: 'workNo',
     width: '10%'
   },
   {
-    title: '测量位置',
-    dataIndex: 'position',
+    title: '手机号',
+    dataIndex: 'phone',
+    width: '10%'
+  }, 
+    {
+    title: '生日',
+    dataIndex: 'birthday',
     width: '10%'
   },
-  {
-    title: '发热状态',
-    dataIndex: 'feverstatus',
+   {
+    title: '职位',
+    dataIndex: 'classChargeMark',
     width: '10%',
     customRender: text => {
       if (text === 1) {
-        return '未发热'
-      } else if (text === 2) {
-        return '轻微'
-      } else {
-        return '高烧'
+        return '班主任'
+      } else{
+        return '教职工'
       }
     }
   },
   {
-    title: '附带症状',
-    dataIndex: 'Incidentalsymptoms',
-    width: '10%'
-  },
-  {
-    title: '是否接触疫情人员',
-    dataIndex: 'isno',
+    title: '风险类型 ',
+    dataIndex: 'healthyState',
     width: '10%',
     customRender: text => {
       if (text === 1) {
-        return '有'
+        return '疑似'
       } else if (text === 2) {
-        return '没有'
+        return '确诊'
       } else {
-        return '未知'
+        return '健康'
       }
     }
   },
   {
-    title: '上报人',
-    dataIndex: 'ReportPerson',
+    title: '风险时间',
+    dataIndex: 'riskTime',
     width: '10%'
   },
-  {
-    title: '上报时间',
-    dataIndex: 'ReportTime',
-    width: '10%'
+    {
+    title: '人脸图像',
+    dataIndex: 'profilePhoto',
+    width: '10%',
+    scopedSlots: {
+      customRender: 'profilePhoto'
+    }
   },
   {
     title: '操作',
-    width: '10%',
+    width: '7%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -116,7 +117,7 @@ const columns = [
 ]
 const searchLabel = [
   {
-    value: 'name',
+    value: 'userName',
     type: 'input',
     label: '姓名',
     placeholder: '请输入姓名'
@@ -124,24 +125,24 @@ const searchLabel = [
   {
     list: [
       {
-        key: '',
-        val: '全部'
-      },
-      {
         key: 1,
-        val: '发热'
+        val: '疑似'
       },
       {
         key: 2,
-        val: '未发热'
+        val: '确诊'
+      },
+      {
+        key: 3,
+        val: '健康'
       }
     ],
-    value: 'status',
+    value: 'healthyState',
     type: 'select',
-    label: '发热状态'
+    label: '风险类型'
   },
   {
-    value: 'rangeTime',
+    value: 'riskTime',
     type: 'rangeTime',
     label: '上报时间'
   }
@@ -157,10 +158,10 @@ export default {
     return {
       columns,
       searchLabel,
-
-      pageList: {
+     pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        userType: '1'
       },
       total: 0,
       userList: []
@@ -172,18 +173,19 @@ export default {
   methods: {
     ...mapActions('home', ['getreportList']),
     async showList() {
-      const res = await this.getreportList()
-      this.userList = res.data
+      const res = await this.getreportList(this.pageList)
+      this.userList = res.result.list
       this.total = res.total
     },
     searchForm(values) {
+      this.pageList = Object.assign(values, this.pageList)
+          this.showList()
       console.log(values)
     },
     detail(record) {
-      console.log(record.id)
       this.$router.push({
       path: '/component/detail',
-        query: { id: record.id }
+        query: { id: record.userCode }
       })
     }
   }

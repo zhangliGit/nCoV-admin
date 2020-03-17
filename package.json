@@ -140,5 +140,6 @@
   "collective": {
     "type": "opencollective",
     "url": "https://opencollective.com/ant-design-pro-vue"
-  }
+  },
+  "__npminstall_done": false
 }

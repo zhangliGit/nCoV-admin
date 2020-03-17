@@ -105,9 +105,10 @@ export default {
     return {
       columns,
      searchLabel,
-      pageList: {
+       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        classChargeMark: '2'
       },
       total: 0,
       userList: []
@@ -118,12 +119,12 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getStudentList'
+      'getreportList'
     ]),
-    async showList() {
-      const res = await this.getStudentList()
-      this.userList = res.data
-      this.total = res.total
+      async showList() {
+      const res = await this.getreportList(this.pageList)
+      this.userList = res.data.list
+      this.total = res.data.totalCount
     },
         searchForm (values) {
       console.log(values)

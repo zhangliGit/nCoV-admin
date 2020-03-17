@@ -1,6 +1,6 @@
 <template>
   <div class="page-layout qui-fx">
-    <grade-tree @select="select"></grade-tree>
+    <!-- <grade-tree @select="select"></grade-tree> -->
     <div class="qui-fx-f1 qui-fx-ver">
       <search-form @search-form="searchForm" :search-label="searchLabel">
         <div slot="left" class="top-btn-group">
@@ -32,7 +32,7 @@ import GradeTree from '@c/GradeTree'
 import PageNum from '@c/PageNum'
 const searchLabel = [
   {
-    value: 'name',
+    value: 'userName',
     type: 'input',
     label: '姓名',
     placeholder: '请输入姓名'
@@ -72,13 +72,13 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '5%',
+    width: '10%',
     customRender: text => {
       if (text === 1) {
         return '男'
@@ -90,57 +90,46 @@ const columns = [
     }
   },
   {
-    title: '温度',
-    dataIndex: 'temperature',
+    title: '学号',
+    dataIndex: 'workNo',
     width: '10%'
   },
   {
-    title: '测量位置',
-    dataIndex: 'position',
+    title: '班级',
+    dataIndex: 'className',
+    width: '10%'
+  }, 
+    {
+    title: '生日',
+    dataIndex: 'birthday',
     width: '10%'
   },
   {
-    title: '发热状态',
-    dataIndex: 'feverstatus',
+    title: '风险类型 ',
+    dataIndex: 'healthyState',
     width: '10%',
     customRender: text => {
       if (text === 1) {
-        return '未发热'
+        return '疑似'
       } else if (text === 2) {
-        return '轻微'
+        return '确诊'
       } else {
-        return '高烧'
+        return '健康'
       }
     }
   },
   {
-    title: '附带症状',
-    dataIndex: 'Incidentalsymptoms',
+    title: '风险时间',
+    dataIndex: 'riskTime',
     width: '10%'
   },
-  {
-    title: '是否接触疫情人员',
-    dataIndex: 'isno',
-    width: '10%',
-    customRender: text => {
-      if (text === 1) {
-        return '有'
-      } else if (text === 2) {
-        return '没有'
-      } else {
-        return '未知'
-      }
+    {
+    title: '人脸图像',
+    dataIndex: 'profilePhoto',
+    width: '15%',
+    scopedSlots: {
+      customRender: 'profilePhoto'
     }
-  },
-  {
-    title: '上报人',
-    dataIndex: 'ReportPerson',
-    width: '10%'
-  },
-  {
-    title: '上报时间',
-    dataIndex: 'ReportTime',
-    width: '10%'
   },
   {
     title: '操作',
@@ -163,9 +152,10 @@ export default {
       searchLabel,
       columns,
       total: 100,
-      pageList: {
+     pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        userType: '2'
       },
       userList: []
     }
@@ -176,18 +166,19 @@ export default {
   methods: {
     ...mapActions('home', ['getreportList']),
     async showList() {
-      const res = await this.getreportList()
-      this.userList = res.data
+      const res = await this.getreportList(this.pageList)
+      this.userList = res.result.list
       this.total = res.total
     },
     searchForm(values) {
-      console.log(values)
-    },
+    this.pageList = Object.assign(values, this.pageList)
+      this.showList()   
+   },
     detail(record) {
       console.log(record.id)
       this.$router.push({
       path: '/component/detail',
-        query: { id: record.id }
+        query: { id: record.userCode }
       })
     },
     select(item) {

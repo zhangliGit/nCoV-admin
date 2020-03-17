@@ -60,7 +60,7 @@ import PageNum from '@c/PageNum'
 import SubmitForm from '@c/SubmitForm'
 const formData = [
   {
-    value: 'hight',
+    value: 'userHeight',
     initValue: '',
     type: 'input',
     label: '身高',
@@ -72,13 +72,6 @@ const formData = [
     type: 'input',
     label: '体重',
     placeholder: '请输入体重'
-  },
-  {
-    value: 'vision',
-    initValue: '',
-    type: 'input',
-    label: '视力',
-    placeholder: '请输入视力'
   },
   {
     value: 'majordicalhistory',
@@ -202,26 +195,7 @@ export default {
       detailId: '',
       baseList: [],
       detailData: [
-        {
-          key: '身高  ',
-          val: '175'
-        },
-        {
-          key: '体重',
-          val: '50kg'
-        },
-        {
-          key: '视力',
-          val: '5.1'
-        },
-        {
-          key: '重大病史',
-          val: 'XXXXXXXXXXXXXXXXXXX'
-        },
-        {
-          key: '家族病史',
-          val: 'XXXXXXXXXXXXXXXXXX'
-        }
+        
       ],
       detailInfo: [
         {
@@ -260,17 +234,19 @@ export default {
     this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
   methods: {
-    ...mapActions('home', ['getreportList']),
+    ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo']),
     updateReport() {
       this.formStatus = true
     },
     submitForm(values) {
       console.log(values)
     },
-    async showList() {
-      const res = await this.getreportList(this.pageList)
-      this.detailList = res.data
-      this.total = res.total
+     async showList() {
+       console.log('111',this.$route.query)
+      const userCode = this.$route.query.id;
+      const req = "userCode="+userCode+"&schoolCode=1"
+      const res = await this.getLatestMedicalInfo(req)
+      this.detailData = res.result
     },
     initUnReportChart() {
       this.unReportOption = {

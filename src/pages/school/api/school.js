@@ -10,10 +10,12 @@ const schoolApi = {
   getStudentList: '/studentManage#get', // 学生管理列表
   getTeacherList: '/teacherManage#get', // 教职工管理列表
   getRiskList: '/riskList#get' ,// 风险人员名单
-  getreportList: '/teacher/reports#get' // 上报记录
+  getreportList: '/school/userinfo/getUserInfoList#post' ,// 上报记录
+  getLatestMedicalInfo:'/school/medicalinfo/getLatestMedicalInfo#postQuery', // 获取体检最新一条记录
+  updateInfo: '/school/medicalinfo/update#post'// 修改体检数据
 
 }
 for (const val in schoolApi) {
-  schoolApi[val] = `${hostEnv}${schoolApi[val]}`
+  schoolApi[val] = `${hostEnv.admin}${schoolApi[val]}`
 }
 export default schoolApi
