@@ -12,7 +12,7 @@
               <p>隶属学校</p>
             </div>
             <div class="right">
-              <img :src="xsImg" alt />
+              <img :src="xxImg" alt />
             </div>
           </div>
         </a-col>
@@ -27,7 +27,7 @@
                 <p>学生人数</p>
               </div>
               <div class="right">
-                <img :src="xxImg" alt />
+                <img :src="xsImg" alt />
               </div>
             </div>
           </div>
@@ -80,7 +80,13 @@
             <a-month-picker :allowClear="false" :defaultValue="chooseMonth" @change="panelChange" />
           </div>
         </div>
-        <table-list :page-list="pageList" :columns="columns" :table-list="userList"></table-list>
+        <table-list :page-list="pageList" :columns="columns" :table-list="userList">
+          <template v-slot:actions="action">
+            <a-tooltip placement="topLeft" title="详情">
+              <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="schoolDetail(action.record)"></a-button>
+            </a-tooltip>
+          </template>
+        </table-list>
         <!-- <page-num v-model="pageList" :total="total" @change-page="showList"></page-num> -->
       </div>
     </div>
@@ -98,29 +104,36 @@ import jzgImg from '@a/img/organize/jzg.png'
 import moment from 'moment'
 const columns = [
   {
-    title: '学校名称',
+    title: '学校',
     dataIndex: 'schoolName',
-    width: '20%'
+    width: '16%'
   },
   {
     title: '实上报/应上报（学生）',
     dataIndex: 'studentNum',
-    width: '20%'
+    width: '16%'
   },
   {
     title: '体温异常学生',
     dataIndex: 'anomalyStudent',
-    width: '20%'
+    width: '16%'
   },
   {
     title: '实上报/应上报（教职工）',
     dataIndex: 'teacherNum',
-    width: '20%'
+    width: '16%'
   },
   {
     title: '体温异常教职工',
     dataIndex: 'anomalyTeacher',
-    width: '20%'
+    width: '16%'
+  },
+  {
+    title: '操作',
+    width: '16%',
+    scopedSlots: {
+      customRender: 'action'
+    }
   }
 ]
 export default {
@@ -181,6 +194,10 @@ export default {
     },
     panelChange(value) {
       console.log(value.format('YYYY-MM'))
+    },
+    schoolDetail(record) {
+      console.log(record)
+      this.$router.push({ path: '/overview', query: { id: record.id } })
     },
     showBI(id, xDate) {
       Highcharts.chart(id, {

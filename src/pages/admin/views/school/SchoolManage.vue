@@ -1,12 +1,12 @@
 <template>
   <div class="page-layout qui-fx-ver">
-    <submit-form
+    <!-- <submit-form
       ref="form"
       @submit-form="submitForm"
       :title="title"
       v-model="formStatus"
       :form-data="formData"
-    ></submit-form>
+    ></submit-form> -->
     <div class="top-btn-group">
       <a-button icon="plus" class="add-btn" @click="modify(0)">新增学校</a-button>
     </div>
@@ -23,7 +23,7 @@
             @click="modify(1,action.record)"
           ></a-button>
         </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del">
+        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
           <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
@@ -40,7 +40,7 @@
 import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
-import SubmitForm from '@c/SubmitForm'
+// import SubmitForm from '@c/SubmitForm'
 import AddSchool from './AddSchool'
 const formData = [
   {
@@ -98,19 +98,19 @@ const columns = [
     }
   }, {
     title: '学校名称',
-    dataIndex: 'name',
+    dataIndex: 'organizationName',
     width: '20%'
   }, {
     title: '学校编码',
-    dataIndex: 'code',
+    dataIndex: 'organizationCode',
     width: '15%'
   }, {
     title: '账号',
-    dataIndex: 'account',
+    dataIndex: 'manageName',
     width: '10%'
   }, {
     title: '密码',
-    dataIndex: 'psdWord',
+    dataIndex: 'password',
     width: '10%'
   },
   // {
@@ -135,20 +135,21 @@ export default {
   components: {
     TableList,
     PageNum,
-    SubmitForm,
+    // SubmitForm,
     AddSchool
   },
   data() {
     return {
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        organizationType: '2'
       },
       total: 100,
       columns,
       schoolList: [],
       title: '新增学校',
-      formStatus: false,
+      // formStatus: false,
       formData
     }
   },
@@ -156,7 +157,7 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getSchoolList']),
+    ...mapActions('home', ['getOrgList', 'delOrg']),
     // goDetail(record) {
     //   this.$router.push({
     //     query: {
@@ -166,27 +167,34 @@ export default {
     //   })
     // },
     async showList() {
-      const res = await this.getSchoolList(this.pageList)
-      this.schoolList = res.data
-      this.total = res.total
+      const res = await this.getOrgList(this.pageList)
+      this.schoolList = res.result.list
+      this.total = res.result.totalCount
     },
     del(record) {
+      this.delOrg({ id: record.id }).then(() => {
+        this.$message.success('操作成功')
+        this.showList()
+      })
       console.log(record)
     },
     modify(type, record) {
       this.$refs.addSchool.visible = true
       // this.formStatus = true
       if (type) {
+        this.$refs.addSchool.recordId = record.id
+        record.checkedList = record.educCode.split(',')
+        this.$refs.addSchool.appForm = record
         this.title = '编辑学校'
       } else {
         this.title = '新增学校'
       }
-    },
-    submitForm(values) {
-      console.log(values)
-      this.$refs.form.reset() // 成功调用
-      // this.$refs.form.error() // 失败调用
     }
+    // submitForm(values) {
+    //   console.log(values)
+    //   this.$refs.form.reset() // 成功调用
+    //   this.$refs.form.error() // 失败调用
+    // }
   }
 }
 </script>

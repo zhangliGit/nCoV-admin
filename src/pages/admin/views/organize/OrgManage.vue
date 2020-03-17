@@ -23,7 +23,7 @@
             @click="modify(1,action.record)"
           ></a-button>
         </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del">
+        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
           <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
@@ -42,7 +42,7 @@ import PageNum from '@c/PageNum'
 import SubmitForm from '@c/SubmitForm'
 const formData = [
   {
-    value: 'name',
+    value: 'organizationName',
     initValue: '',
     type: 'input',
     label: '机构名称',
@@ -50,7 +50,7 @@ const formData = [
     placeholder: '请输入机构名称'
   },
   {
-    value: 'org',
+    value: 'organizationCode',
     initValue: '',
     type: 'input',
     label: '机构编码',
@@ -58,14 +58,14 @@ const formData = [
     placeholder: '请输入机构编码'
   },
   {
-    value: 'account',
+    value: 'manageName',
     initValue: '',
     type: 'input',
     label: '账号',
     max: 50,
     placeholder: '请输入账号'
   }, {
-    value: 'psdWord',
+    value: 'password',
     initValue: '',
     type: 'input',
     label: '密码',
@@ -98,19 +98,19 @@ const columns = [
     }
   }, {
     title: '机构名称',
-    dataIndex: 'name',
+    dataIndex: 'organizationName',
     width: '14%'
   }, {
     title: '机构编码',
-    dataIndex: 'code',
+    dataIndex: 'organizationCode',
     width: '12%'
   }, {
     title: '账号',
-    dataIndex: 'account',
+    dataIndex: 'manageName',
     width: '14%'
   }, {
     title: '密码',
-    dataIndex: 'psdWord',
+    dataIndex: 'password',
     width: '14%'
   },
   // {
@@ -148,21 +148,24 @@ export default {
     return {
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        organizationType: '1'
       },
       total: 100,
       columns,
       orgList: [],
       title: '新增机构',
       formStatus: false,
-      formData
+      formData,
+      recordId: '',
+      managerId: ''
     }
   },
   mounted() {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getOrgList']),
+    ...mapActions('home', ['getOrgList', 'addOrg', 'delOrg', 'updateOrg']),
     goDetail(record) {
       this.$router.push({
         query: {
@@ -173,24 +176,51 @@ export default {
     },
     async showList() {
       const res = await this.getOrgList(this.pageList)
-      this.orgList = res.data
-      this.total = res.total
+      this.orgList = res.result.list
+      this.total = res.result.totalCount
     },
     del(record) {
       console.log(record)
+      this.delOrg(record.id).then(() => {
+        this.$message.success('操作成功')
+        this.showList()
+      })
     },
     modify(type, record) {
       this.formStatus = true
       if (type) {
         this.title = '编辑机构'
+        this.recordId = record.id
+        this.managerId = record.managerId
+        this.formData = this.$tools.fillForm(formData, record)
       } else {
         this.title = '新增机构'
       }
     },
-    submitForm(values) {
-      console.log(values)
-      this.$refs.form.reset() // 成功调用
-      // this.$refs.form.error() // 失败调用
+    async submitForm (values) {
+      values.organizationType = '1'
+      // console.log(values)
+      try {
+        let res
+        if (this.title === '编辑机构') {
+          values.id = this.recordId
+          values.managerId = this.managerId
+          res = await this.updateOrg(values)
+        } else {
+          res = await this.addOrg(values)
+        }
+        if (res.message === 'SUCCESS' || res.message === '操作成功') {
+          const msg = this.type ? '编辑成功' : '添加成功'
+          this.$message.success(msg)
+          this.formStatus = false
+          setTimeout(() => {
+            this.showList()
+            this.$refs.form.reset()
+          }, 1000)
+        }
+      } catch (err) {
+        this.$refs.form.error()
+      }
     },
     clickNum(record) {
       console.log(record)

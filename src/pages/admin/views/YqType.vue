@@ -8,12 +8,12 @@
       :form-data="formData"
     ></submit-form>
     <div class="top-btn-group">
-      <a-button icon="plus" class="add-btn" @click="formStatus = true">新增类型</a-button>
+      <a-button icon="plus" class="add-btn" @click="modify(0)">新增类型</a-button>
     </div>
     <table-list :columns="columns" :table-list="yqList">
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="编辑">
-          <a-button size="small" class="edit-action-btn" icon="form" @click="formStatus = true"></a-button>
+          <a-button size="small" class="edit-action-btn" icon="form" @click="modify(1, action.record)"></a-button>
         </a-tooltip>
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del">
           <template slot="title">您确定删除吗?</template>
@@ -27,11 +27,12 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import SubmitForm from '@c/SubmitForm'
 const formData = [
   {
-    value: 'name',
+    value: 'riskName',
     initValue: '',
     type: 'input',
     label: '风险类型',
@@ -49,7 +50,7 @@ const columns = [
   },
   {
     title: '疫情类型',
-    dataIndex: 'name',
+    dataIndex: 'riskName',
     width: '30%'
   },
   {
@@ -90,13 +91,58 @@ export default {
           name: '隔离',
           time: '2010-03-05'
         }
-      ]
+      ],
+      recordId: ''
     }
   },
-  mounted() {},
+  mounted() {
+    this.showList()
+  },
   methods: {
-    submitForm() {
-      this.formStatus = false
+    ...mapActions('home', ['getRiskList', 'addRisk', 'updateRisk', 'delRisk']),
+    async showList() {
+      const res = await this.getRiskList()
+      this.yqList = res.data.list
+    },
+    modify(type, record) {
+      this.formStatus = true
+      if (type) {
+        this.title = '编辑类型'
+        this.recordId = record.id
+        this.formData = this.$tools.fillForm(formData, record)
+      } else {
+        this.title = '新增类型'
+      }
+    },
+    async submitForm (values) {
+      console.log(values)
+      try {
+        let res
+        if (this.title === '编辑类型') {
+          values.id = this.recordId
+          res = await this.updateRisk(values)
+        } else {
+          res = await this.addRisk(values)
+        }
+        if (res.message === 'SUCCESS') {
+          const msg = this.type ? '编辑成功' : '添加成功'
+          this.$message.success(msg)
+          this.formStatus = false
+          setTimeout(() => {
+            // this.showList()
+            this.$refs.form.reset()
+          }, 1000)
+        }
+      } catch (err) {
+        this.$refs.form.error()
+      }
+    },
+    del(record) {
+      console.log(record)
+      this.delRisk({ id: record.id }).then(() => {
+        this.$message.success('操作成功')
+        this.showList()
+      })
     }
   }
 }

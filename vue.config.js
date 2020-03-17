@@ -101,6 +101,13 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/admin': {
+        target: 'http://pugai.natapp1.cc',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/admin': ''
+        }
       }
     }
   },

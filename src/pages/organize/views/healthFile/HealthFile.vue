@@ -82,6 +82,11 @@
             :columns="fillColumns"
             :dataSource="fillList"
           >
+            <template slot="action" slot-scope="text, record">
+              <a-tooltip placement="topLeft" title="详情">
+                <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="schoolDetail(record)"></a-button>
+              </a-tooltip>
+            </template>
           </a-table>
         </div>
       </a-col>
@@ -152,19 +157,26 @@ const touchColumns = [
 ]
 const fillColumns = [
   {
-    title: '学校名称',
+    title: '学校',
     dataIndex: 'schoolName',
-    width: '33.3%'
+    width: '20%'
   },
   {
     title: '学生实上报/应上报',
     dataIndex: 'studentNum',
-    width: '33.3%'
+    width: '30%'
   },
   {
     title: '教职工实上报/应上报',
     dataIndex: 'teacherNum',
-    width: '33.3%'
+    width: '30%'
+  },
+  {
+    title: '操作',
+    width: '20%',
+    scopedSlots: {
+      customRender: 'action'
+    }
   }
 ]
 export default {
@@ -234,6 +246,10 @@ export default {
       const res = await this.getStatistics()
       this.fillList = res.data
       this.fillTotal = res.total
+    },
+    schoolDetail(record) {
+      console.log(record)
+      this.$router.push({ path: '/overview', query: { id: record.id } })
     }
   }
 }
