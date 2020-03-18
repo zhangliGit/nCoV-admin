@@ -39,20 +39,20 @@ const columns = [
   },
   {
     title: '学校名称',
-    dataIndex: 'name',
+    dataIndex: 'organizationName',
     width: '15%'
   },
   {
     title: '学校编码',
-    dataIndex: 'code',
+    dataIndex: 'organizationCode',
     width: '15%'
   }, {
     title: '账号',
-    dataIndex: 'account',
+    dataIndex: 'manageName',
     width: '15%'
   }, {
     title: '密码',
-    dataIndex: 'psdWord',
+    dataIndex: 'password',
     width: '15%'
   },
   // {
@@ -87,37 +87,55 @@ export default {
       title: '添加管理员',
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        type: '2',
+        pcode: ''
       },
       total: 100,
-      userTag: false
+      userTag: false,
+      params: {
+        orgCode: '',
+        schoolCodeList: []
+      }
     }
   },
   mounted() {
+    this.pageList.pcode = this.$route.query.pcode
+    this.params.orgCode = this.$route.query.pcode
     this.showList()
   },
   methods: {
     ...mapActions('home', ['getOrgList', 'unBindSchool', 'bindSchool']),
     async showList() {
       const res = await this.getOrgList(this.pageList)
-      this.schoolList = res.data
-      this.total = res.total
+      this.schoolList = res.result.list
+      this.total = res.result.totalCount
     },
     del(record) {
       console.log(record)
-      this.unBindSchool({ schoolCode: record.id }).then(() => {
+      this.unBindSchool({ schoolCode: record.organizationCode }).then(() => {
         this.$message.success('操作成功')
-        this.showList()
+        this.$tools.goNext(() => {
+          this.showList()
+        })
       })
     },
     modify() {
       this.userTag = true
+      this.$refs.chooseSchool.schoolGet()
     },
     chooseSchool (item) {
-      console.log(item)
-      setTimeout(() => {
-        this.$refs.chooseSchool.reset()
-      }, 2000)
+      console.log('+++', item)
+      this.params.schoolCodeList = item.map((item) => {
+        return item.id
+      })
+      this.bindSchool(this.params).then(() => {
+        this.$message.success('操作成功')
+        this.$tools.goNext(() => {
+          this.$refs.chooseSchool.reset()
+          this.showList()
+        })
+      })
     }
   }
 }
