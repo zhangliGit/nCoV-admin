@@ -9,17 +9,16 @@
     ></submit-form>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">基本信息</a-menu-item>
-      <a-button class="add-btn" @click="updateReport()">更新档案</a-button>
     </a-menu>
     <div class="process qui-fx-jsb qui-fx-ac">
-      <img :src="approveImg" alt />
+      <img :src="detailInfo.profilePhoto" alt />
       <a-row class="padd-l10">
-        <a-col
-          v-for="item in detailInfo"
-          :key="item.key"
-          :span="12"
-          class="mar-b10"
-        >{{ item.key }} : {{ item.val }}</a-col>
+        <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName}}</a-col>
+        <a-col class="mar-b10" :span="12">性别 : {{ detailInfo.gender ? '女' : '男'}}</a-col>
+        <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo}}</a-col>
+        <a-col class="mar-b10" :span="12">生日 : {{detailInfo. birthday}}</a-col>
+        <a-col class="mar-b10" :span="12">职位 : {{ detailInfo.classChargeMark}}</a-col>
+        <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime}}</a-col>
       </a-row>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
@@ -27,12 +26,15 @@
     </a-menu>
     <div class="process qui-fx-jsb qui-fx-ac">
       <a-row class="padd-l10">
-        <a-col
-          v-for="item in detailData"
-          :key="item.key"
-          :span="12"
-          class="mar-b10"
-        >{{ item.key }} : {{ item.val }}</a-col>
+          <a-col class="mar-b10" :span="24">
+          <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button>
+        </a-col>
+        <a-col class="mar-b10" :span="12">身高 : </a-col>
+        <a-col class="mar-b10" :span="12">体重 :</a-col>
+        <a-col class="mar-b10" :span="12">视力 : </a-col>
+        <a-col class="mar-b10" :span="12">重大病史 : </a-col>
+        <a-col class="mar-b10" :span="12">家族病史 : </a-col>
+      
       </a-row>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
@@ -98,13 +100,13 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '5%',
+    width: '8%',
     customRender: text => {
       if (text === 1) {
         return '男'
@@ -116,57 +118,65 @@ const columns = [
     }
   },
   {
-    title: '温度',
-    dataIndex: 'temperature',
+    title: '工号',
+    dataIndex: 'workNo',
     width: '10%'
   },
   {
-    title: '测量位置',
-    dataIndex: 'position',
+    title: '手机号',
+    dataIndex: 'phone',
+    width: '10%'
+  }, 
+    {
+    title: '生日',
+    dataIndex: 'birthday',
     width: '10%'
   },
-  {
-    title: '发热状态',
-    dataIndex: 'feverstatus',
+   {
+    title: '职位',
+    dataIndex: 'classChargeMark',
     width: '10%',
     customRender: text => {
       if (text === 1) {
-        return '未发热'
-      } else if (text === 2) {
-        return '轻微'
-      } else {
-        return '高烧'
+        return '班主任'
+      } else{
+        return '教职工'
       }
     }
   },
   {
-    title: '附带症状',
-    dataIndex: 'Incidentalsymptoms',
-    width: '10%'
-  },
-  {
-    title: '是否接触疫情人员',
-    dataIndex: 'isno',
+    title: '风险类型 ',
+    dataIndex: 'healthyState',
     width: '10%',
     customRender: text => {
       if (text === 1) {
-        return '有'
+        return '疑似'
       } else if (text === 2) {
-        return '没有'
+        return '确诊'
       } else {
-        return '未知'
+        return '健康'
       }
     }
   },
   {
-    title: '上报人',
-    dataIndex: 'ReportPerson',
+    title: '风险时间',
+    dataIndex: 'riskTime',
     width: '10%'
   },
+    {
+    title: '人脸图像',
+    dataIndex: 'profilePhoto',
+    width: '10%',
+    scopedSlots: {
+      customRender: 'profilePhoto'
+    }
+  },
   {
-    title: '上报时间',
-    dataIndex: 'ReportTime',
-    width: '10%'
+    title: '操作',
+    width: '7%',
+    scopedSlots: {
+      customRender: 'action'
+    }
   }
 ]
 export default {
@@ -182,7 +192,6 @@ export default {
       formData,
       title: '更新健康档案',
       formStatus: false,
-      approveImg: '',
       pageList: {
         page: 1,
         size: 20
@@ -192,61 +201,67 @@ export default {
       total: 0,
       columns,
       detailList: [],
-      detailId: '',
-      baseList: [],
-      detailData: [
-        
-      ],
-      detailInfo: [
-        {
-          key: '姓名',
-          val: '张三'
-        },
-        {
-          key: '性别',
-          val: '男'
-        },
-        {
-          key: '出生年月',
-          val: '1994-9-17'
-        },
-        {
-          key: '年龄',
-          val: '26'
-        },
-        {
-          key: '部门',
-          val: '研发部'
-        },
-        {
-          key: '建档时间',
-          val: '2018-03-19'
-        }
-      ]
+      detailData: '',
+      detailInfo: ''
     }
   },
 
   mounted() {
     this.initUnReportChart()
-    this.showList()
+    this.showList();
+    this.gettem();
+    this.getReportList();
   },
   created() {
     this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
   methods: {
-    ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo']),
-    updateReport() {
+    ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo', 'getTemperatureData', 'getReportInfoList']),
+    //更新体检数据
+    updateReport(record) {
       this.formStatus = true
+      this.recordId = record.id
+      this.formData = this.$tools.fillForm(formData, record)
     },
     submitForm(values) {
       console.log(values)
+      try {
+        let res
+        values.id = this.recordId
+        // res = await this.updateInfo(values)
+        if (res.message === 'SUCCESS' || res.message === '操作成功') {
+          const msg = '添加成功'
+          this.$message.success(msg)
+          this.formStatus = false
+          setTimeout(() => {
+            this.showList()
+            this.$refs.form.reset()
+          }, 1000)
+        }
+      } catch (err) {
+        this.$refs.form.error()
+      }
     },
-     async showList() {
-       console.log('111',this.$route.query)
-      const userCode = this.$route.query.id;
-      const req = "userCode="+userCode+"&schoolCode=1"
+    //获取体检数据加个人信息
+    async showList() {
+      this.detailInfo = this.$route.query
+      const userCode = this.$route.query.id
+      const req = 'userCode=' + userCode + '&schoolCode=CANPOINT'
       const res = await this.getLatestMedicalInfo(req)
       this.detailData = res.result
+    },
+    //获取个人体温数据
+        async gettem() {
+      const userCode = this.$route.query.id
+      const req = 'userCode=' + userCode + '&schoolCode=CANPOINT'+'&startTime=2020-03-09 12:12：12'+'&endTime=2020-03-19 12:12:12'
+      const res = await this.getTemperatureData(req)
+      this.unReportOption = res.result
+    },
+    //获取上报信息记录
+     async getReportList() {
+       const res = await this.getReportInfoList(this.pageList)
+      this.detailList = res.result.list
+      this.total = res.total
     },
     initUnReportChart() {
       this.unReportOption = {

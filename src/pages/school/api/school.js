@@ -12,7 +12,9 @@ const schoolApi = {
   getRiskList: '/riskList#get' ,// 风险人员名单
   getreportList: '/school/userinfo/getUserInfoList#post' ,// 上报记录
   getLatestMedicalInfo:'/school/medicalinfo/getLatestMedicalInfo#postQuery', // 获取体检最新一条记录
-  updateInfo: '/school/medicalinfo/update#post'// 修改体检数据
+  updateInfo: '/school/medicalinfo/update#post',// 修改体检数据
+  getTemperatureData: '/school/reportinfo/getTemperatureData#postQuery',// 获取个人体温数据
+  getReportInfoList: '/school/reportinfo/getReportInfoList#post',// 获取上报信息记录
 
 }
 for (const val in schoolApi) {
