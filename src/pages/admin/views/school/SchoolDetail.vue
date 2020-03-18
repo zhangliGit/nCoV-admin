@@ -126,10 +126,10 @@ export default {
     },
     submitForm (values) {
       console.log(values)
-      setTimeout(() => {
+      this.$tools.goNext(() => {
         this.$refs.form.reset() // 成功调用
         // this.$refs.form.error() // 失败调用
-      }, 2000)
+      })
     }
   }
 }

@@ -183,7 +183,9 @@ export default {
       console.log(record)
       this.delOrg(record.id).then(() => {
         this.$message.success('操作成功')
-        this.showList()
+        this.$tools.goNext(() => {
+          this.showList()
+        })
       })
     },
     modify(type, record) {
@@ -210,13 +212,12 @@ export default {
           res = await this.addOrg(values)
         }
         if (res.message === 'SUCCESS' || res.message === '操作成功') {
-          const msg = this.type ? '编辑成功' : '添加成功'
-          this.$message.success(msg)
+          this.$message.success('操作成功')
           this.formStatus = false
-          setTimeout(() => {
+          this.$tools.goNext(() => {
             this.showList()
             this.$refs.form.reset()
-          }, 1000)
+          })
         }
       } catch (err) {
         this.$refs.form.error()
@@ -226,7 +227,7 @@ export default {
       console.log(record)
       this.$router.push({
         query: {
-          id: record.id
+          pcode: record.organizationCode
         },
         path: '/orgManage/orgDetail'
       })

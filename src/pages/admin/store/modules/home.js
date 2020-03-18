@@ -57,7 +57,7 @@ const home = {
      * @param { key } state属性
      * @param { data } 存在的数据
      */
-    updataState(state, { key, data, isLocal = true }) {
+    updateState(state, { key, data, isLocal = true }) {
       if (isLocal) {
         const localData = JSON.parse(localStorage.getItem(projectName) || '{}')
         localData[key] = data

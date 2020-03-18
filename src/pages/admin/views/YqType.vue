@@ -15,7 +15,7 @@
         <a-tooltip placement="topLeft" title="编辑">
           <a-button size="small" class="edit-action-btn" icon="form" @click="modify(1, action.record)"></a-button>
         </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del">
+        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
           <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
@@ -38,13 +38,6 @@ const formData = [
     label: '风险类型',
     max: 50,
     placeholder: '请输入风险类型'
-  }, {
-    value: 'riskCode',
-    initValue: '',
-    type: 'input',
-    label: '风险编码',
-    max: 50,
-    placeholder: '请输入风险编码'
   }, {
     value: 'remarks',
     initValue: '',
@@ -76,7 +69,15 @@ const columns = [
   {
     title: '创建时间',
     dataIndex: 'createTime',
-    width: '20%'
+    width: '20%',
+    customRender: (text) => {
+      return new Date(text).getFullYear() + '-' +
+            ((new Date(text).getMonth() + 1) > 9 ? new Date(text).getMonth() + 1 : '0' +
+            (new Date(text).getMonth() + 1)) + '-' + (new Date(text).getDate() > 9 ? new Date(text).getDate() : '0' +
+            new Date(text).getDate()) + ' ' + (new Date(text).getHours() > 9 ? new Date(text).getHours() : '0' +
+            new Date(text).getHours()) + ':' + (new Date(text).getMinutes() > 9 ? new Date(text).getMinutes() : '0' +
+            new Date(text).getMinutes()) + ':' + (new Date(text).getSeconds() > 9 ? new Date(text).getSeconds() : '0' + new Date(text).getSeconds())
+    }
   },
   {
     title: '备注',
@@ -138,20 +139,21 @@ export default {
           const msg = this.type ? '编辑成功' : '添加成功'
           this.$message.success(msg)
           this.formStatus = false
-          setTimeout(() => {
+          this.$tools.goNext(() => {
             this.showList()
             this.$refs.form.reset()
-          }, 1000)
+          })
         }
       } catch (err) {
         this.$refs.form.error()
       }
     },
     del(record) {
-      console.log(record)
-      this.delRisk({ id: record.id }).then(() => {
+      this.delRisk(record.id).then(() => {
         this.$message.success('操作成功')
-        this.showList()
+        this.$tools.goNext(() => {
+          this.showList()
+        })
       })
     }
   }
