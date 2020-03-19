@@ -108,7 +108,7 @@ const $ajax = {
     if (tag) showToast()
     try {
       let res = await axios({
-        url: obj.url+"?"+obj.params,
+        url: obj.url + '?' + obj.params,
         method: 'post',
         // data: JSON.stringify(obj.params),
         headers: {
@@ -125,6 +125,19 @@ const $ajax = {
     if (tag) showToast()
     try {
       let res = await axios.delete(obj.url, {})
+      res = res.data
+      return responseRes(res)
+    } catch (err) {
+      return responseRes(err.response.data)
+    }
+  },
+  async postWithPara (obj, tag = true) {
+    if (tag) showToast()
+    try {
+      let res = await axios({
+        url: obj.url + obj.params,
+        method: 'post'
+      })
       res = res.data
       return responseRes(res)
     } catch (err) {

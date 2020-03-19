@@ -185,7 +185,15 @@ export default {
     detail(record) {
       this.$router.push({
       path: '/component/detail',
-        query: { id: record.userCode }
+        query: { id: record.userCode,
+        userName:record.userName,
+        gender:record.gender,
+        workNo:record.workNo,
+        birthday:record.birthday,
+        classChargeMark:record.classChargeMark,
+        riskTime:record.riskTime,
+        profilePhoto:record.profilePhoto
+        }
       })
     }
   }
