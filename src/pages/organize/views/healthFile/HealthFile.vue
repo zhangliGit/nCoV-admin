@@ -48,11 +48,11 @@
                 <h3>体温异常史</h3>
               </div>
               <table-list
-                :page-list="pageList"
+                :page-list="pageList1"
                 :columns="heatColumns"
                 :table-list="heatList">
               </table-list>
-              <page-num :marTop="5" :marBot="5" v-model="pageList" :total="heatTotal" @change-page="showTemperatureList"></page-num>
+              <page-num :marTop="5" :marBot="5" v-model="pageList1" :total="heatTotal" @change-page="showTemperatureList"></page-num>
             </div>
           </div>
           <div class="mid qui-fx-ver">
@@ -61,11 +61,11 @@
                 <h3>疫情人员接触史</h3>
               </div>
               <table-list
-                :page-list="pageList"
+                :page-list="pageList2"
                 :columns="touchColumns"
                 :table-list="touchList">
               </table-list>
-              <page-num :marTop="5" :marBot="5" v-model="pageList" :total="touchTotal" @change-page="showTouchList"></page-num>
+              <page-num :marTop="5" :marBot="5" v-model="pageList2" :total="touchTotal" @change-page="showTouchList"></page-num>
             </div>
           </div>
         </a-row>
@@ -88,6 +88,7 @@
               </a-tooltip>
             </template>
           </a-table>
+          <!-- <page-num :marTop="5" :marBot="5" v-model="pageList3" :total="fillTotal" @change-page="showStatisticsList"></page-num> -->
         </div>
       </a-col>
     </a-row>
@@ -109,18 +110,28 @@ const heatColumns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '20%'
   },
   {
     title: '人员类型',
-    dataIndex: 'type',
-    width: '20%'
+    dataIndex: 'userType',
+    width: '20%',
+    customRender: (text) => {
+      if (text === '1') {
+        return '教职工'
+      } else if (text === '2') {
+        return '学生'
+      }
+    }
   },
   {
     title: '填报日期',
-    dataIndex: 'startDate',
-    width: '20%'
+    dataIndex: 'reportTime',
+    width: '20%',
+    customRender: (text) => {
+      return new Date(text).toLocaleDateString()
+    }
   },
   {
     title: '联系电话',
@@ -136,18 +147,28 @@ const touchColumns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '20%'
   },
   {
     title: '人员类型',
-    dataIndex: 'type',
-    width: '20%'
+    dataIndex: 'userType',
+    width: '20%',
+    customRender: (text) => {
+      if (text === '1') {
+        return '教职工'
+      } else if (text === '2') {
+        return '学生'
+      }
+    }
   },
   {
     title: '填报日期',
-    dataIndex: 'startDate',
-    width: '20%'
+    dataIndex: 'date',
+    width: '20%',
+    customRender: (text) => {
+      return new Date(text).toLocaleDateString()
+    }
   },
   {
     title: '联系电话',
@@ -196,7 +217,15 @@ export default {
       midHeight: '300px',
       rightHeight: '600px',
       tabHeight: '400px',
-      pageList: {
+      pageList1: {
+        page: 1,
+        size: 20
+      },
+      pageList2: {
+        page: 1,
+        size: 20
+      },
+      pageList3: {
         page: 1,
         size: 20
       },
@@ -228,24 +257,45 @@ export default {
     ...mapActions('home', [
       'getTemperature', 'getBaseData', 'getTouch', 'getStatistics'
     ]),
+    // 获取学校用户数量
     async showBaseData() {
-      const res = await this.getBaseData()
-      this.schoolData = res.data
+      const req = {
+        userId: '3'
+      }
+      const res = await this.getBaseData(req)
+      this.schoolData.schoolNum = res.result.schoolCount
+      this.schoolData.studentNum = res.result.studentCount
+      this.schoolData.teacherNum = res.result.teacherCount
     },
+    // 体温异常史
     async showTemperatureList() {
-      const res = await this.getTemperature()
-      this.heatList = res.data
-      this.heatTotal = res.total
+      const req = {
+        userId: '3',
+        ...this.pageList1
+      }
+      const res = await this.getTemperature(req)
+      this.heatList = res.result.list
+      this.heatTotal = res.result.totalCount
     },
+    // 疫情人员接触史
     async showTouchList() {
-      const res = await this.getTouch()
-      this.touchList = res.data
-      this.touchTotal = res.total
+      const req = {
+        userId: '3',
+        ...this.pageList2
+      }
+      const res = await this.getTouch(req)
+      this.touchList = res.result.list
+      this.touchTotal = res.result.totalCount
     },
+    // 填报统计
     async showStatisticsList() {
-      const res = await this.getStatistics()
-      this.fillList = res.data
-      this.fillTotal = res.total
+      const req = {
+        userId: '3',
+        date: new Date().getTime()
+      }
+      const res = await this.getStatistics(req)
+      this.fillList = res.result.list
+      this.fillTotal = res.result.totalCount
     },
     schoolDetail(record) {
       console.log(record)

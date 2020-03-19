@@ -47,7 +47,7 @@ function responseRes(res) {
   // 清除加载
   setTimeout(loading, 0)
   return new Promise((resolve, reject) => {
-    if (res.code === '1' || res.success === true) {
+    if (res.code === 200 || res.code === '1' || res.success === true) {
       resolve(res)
     } else if (res.code === 401) {
       Modal.warning({
@@ -125,6 +125,18 @@ const $ajax = {
     if (tag) showToast()
     try {
       let res = await axios.delete(obj.url, {})
+      res = res.data
+      return responseRes(res)
+    } catch (err) {
+      return responseRes(err.response.data)
+    }
+  },
+  async delete(obj, tag = true) {
+    if (tag) showToast()
+    try {
+      let res = await axios.delete(obj.url, {
+        params: obj.params || ''
+      })
       res = res.data
       return responseRes(res)
     } catch (err) {

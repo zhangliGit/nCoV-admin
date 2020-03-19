@@ -77,13 +77,19 @@
             <h3>疫情日报</h3>
           </div>
           <div class="momth">
-            <a-month-picker :allowClear="false" :defaultValue="chooseMonth" @change="panelChange" />
+            <a-date-picker :allowClear="false" :defaultValue="chooseMonth" @change="panelChange" />
           </div>
         </div>
         <table-list :page-list="pageList" :columns="columns" :table-list="userList">
+          <template v-slot:stucollects="stucollect">
+            <span>{{ stucollect.record.realStudentCount }}/{{ stucollect.record.totalStudentCount}}</span>
+          </template>
+          <template v-slot:teacollects="teacollect">
+            <span>{{ teacollect.record.realTeacherCount }}/{{ teacollect.record.totalTeacherCount}}</span>
+          </template>
           <template v-slot:actions="action">
             <a-tooltip placement="topLeft" title="详情">
-              <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="schoolDetail(action.record)"></a-button>
+              <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="schoolDetail(action.record.schoolCode)"></a-button>
             </a-tooltip>
           </template>
         </table-list>
@@ -95,7 +101,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import TableList from '@c/TableList'
+import TableList from '../components/TableList'
 import PageNum from '@c/PageNum'
 import Highcharts from 'highcharts/highstock'
 import xsImg from '@a/img/organize/xs.png'
@@ -110,22 +116,28 @@ const columns = [
   },
   {
     title: '实上报/应上报（学生）',
-    dataIndex: 'studentNum',
-    width: '16%'
+    dataIndex: 'realStudentCount',
+    width: '16%',
+    scopedSlots: {
+      customRender: 'stucollect'
+    }
   },
   {
     title: '体温异常学生',
-    dataIndex: 'anomalyStudent',
+    dataIndex: 'excStudentCount',
     width: '16%'
   },
   {
     title: '实上报/应上报（教职工）',
-    dataIndex: 'teacherNum',
-    width: '16%'
+    dataIndex: 'realTeacherCount',
+    width: '16%',
+    scopedSlots: {
+      customRender: 'teacollect'
+    }
   },
   {
     title: '体温异常教职工',
-    dataIndex: 'anomalyTeacher',
+    dataIndex: 'excTeacherCount',
     width: '16%'
   },
   {
@@ -150,6 +162,9 @@ export default {
       xxImg,
       jzgImg,
       xDate: [],
+      teaDate: [],
+      stuDate: [],
+      reportDate: [],
       chooseMonth: moment(new Date()),
       midHeight: '300px',
       charHeight: '270px',
@@ -172,34 +187,88 @@ export default {
     this.charHeight = document.body.clientHeight * 0.35 - 30 + 'px'
     this.autoHeight = document.body.clientHeight * 0.65 - 275 + 'px'
     this.showBaseData()
+    this.showList()
+    this.temperatureChart()
+    this.reportChart()
+    for (var i = 0; i < 14; i++) {
+      this.xDate.unshift(moment(new Date(new Date().setDate(new Date().getDate() - i))).format('YYYY-MM-DD'))
+      this.teaDate.unshift(0)
+      this.stuDate.unshift(0)
+    }
+    for (var j = 0; j < 7; j++) {
+      this.reportDate.unshift(0)
+    }
+    console.log(this.xDate)
   },
   mounted() {
-    for (var i = 0; i < 14; i++) {
-      this.xDate.unshift(moment(new Date(new Date().setDate(new Date().getDate() - i))).format('MM-DD'))
-    }
-    this.showBI('container', this.xDate)
-    this.showLine('container1', this.xDate.slice(-7))
-    this.showList()
   },
   methods: {
-    ...mapActions('home', ['getBaseData', 'getDailyList']),
+    ...mapActions('home', ['getBaseData', 'getDailyList', 'getTemperatureChart', 'getReportChart']),
+    // 获取学校用户数量
     async showBaseData() {
-      const res = await this.getBaseData()
-      this.schoolData = res.data
+      const req = {
+        userId: '3'
+      }
+      const res = await this.getBaseData(req)
+      this.schoolData.schoolNum = res.result.schoolCount
+      this.schoolData.studentNum = res.result.studentCount
+      this.schoolData.teacherNum = res.result.teacherCount
     },
-    async showList() {
-      const res = await this.getDailyList()
-      this.userList = res.data
-      this.total = res.total
+    // 疫情日报
+    async showList(date = new Date()) {
+      const req = {
+        userId: '3',
+        date: date.getTime()
+      }
+      const res = await this.getDailyList(req)
+      this.userList = res.result
     },
+    // 切换日期
     panelChange(value) {
-      console.log(value.format('YYYY-MM'))
+      console.log(value.format('YYYY-MM-DD'))
+      this.showList(new Date(value.format('YYYY/MM/DD')))
     },
-    schoolDetail(record) {
-      console.log(record)
-      this.$router.push({ path: '/overview', query: { id: record.id } })
+    // 体温异常态势
+    async temperatureChart() {
+      const req = {
+        userId: '3'
+      }
+      const res = await this.getTemperatureChart(req)
+      let i
+      res.result.forEach(ele => {
+        this.xDate.filter((item, index) => {
+          if (item === ele.date) {
+            i = index
+          }
+        })
+        this.teaDate[i] = ele.teacherCount
+        this.stuDate[i] = ele.studentCount
+      })
+      console.log(this.teaDate)
+      this.showBI('container', this.xDate, this.stuDate, this.teaDate)
     },
-    showBI(id, xDate) {
+    // 疫情上报态势
+    async reportChart() {
+      const req = {
+        userId: '3'
+      }
+      const res = await this.getReportChart(req)
+      let i
+      res.result.forEach(ele => {
+        this.xDate.slice(-7).filter((item, index) => {
+          if (item === ele.date) {
+            i = index
+          }
+        })
+        this.reportDate[i] = ele.userCount
+      })
+      console.log(this.reportDate)
+      this.showLine('container1', this.xDate.slice(-7), this.reportDate)
+    },
+    schoolDetail(schoolCode) {
+      this.$router.push({ path: '/overview', query: { schoolCode } })
+    },
+    showBI(id, xDate, stuDate, teaDate) {
       Highcharts.chart(id, {
         chart: {
           type: 'column'
@@ -230,7 +299,7 @@ export default {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat:
             '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} 人</b></td></tr>',
+            '<td style="padding:0"><b>{point.y} 人</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -244,17 +313,17 @@ export default {
           {
             name: '学生',
             color: '#2163da',
-            data: [49, 71, 69, 32, 56, 24, 12, 34, 54, 78, 21, 43, 57, 81]
+            data: stuDate
           },
           {
             name: '教职工',
             color: '#ffb944',
-            data: [3, 4, 8, 2, 1, 1, 4, 2, 2, 3, 2, 1, 4, 3]
+            data: teaDate
           }
         ]
       })
     },
-    showLine(id, xDate) {
+    showLine(id, xDate, yDate) {
       Highcharts.chart(id, {
         chart: {
           type: 'area'
@@ -300,7 +369,7 @@ export default {
             marker: {
               symbol: 'square'
             },
-            data: [50, 43, 56, 63, 35, 25, 41]
+            data: yDate
           }
         ]
       })
