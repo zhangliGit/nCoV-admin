@@ -2,6 +2,7 @@
  * @description 注册全局组件
  */
 import {
+  Drawer,
   Popconfirm,
   Tooltip,
   Pagination,
@@ -31,6 +32,7 @@ import {
   Calendar
 } from 'ant-design-vue'
 const ComList = [
+  Drawer,
   Popconfirm,
   Tooltip,
   Pagination,

@@ -10,7 +10,7 @@
     <div class="page-right qui-fx-ver">
       <div class="top-btn-group" style="padding: 8px 0 15px 0;">
         <a-button icon="plus" class="add-btn" @click="addClass()">添加班级</a-button>
-        <a-button icon="export" class="export-btn">导出</a-button>
+        <!-- <a-button icon="export" class="export-btn">导出</a-button> -->
       </div>
       <table-list
         :page-list="pageList"
@@ -30,43 +30,43 @@
           </a-popconfirm>
         </template>
       </table-list>
-      <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+      <!-- <page-num v-model="pageList" :total="total" @change-page="showList"></page-num> -->
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
 import chooseUser from '@c/ChooseUser'
-import GradeTree from '@c/GradeTree'
+import GradeTree from '../component/GradeTree'
 const columns = [
   {
     title: '序号',
-    width: '14%',
+    width: '20%',
     scopedSlots: {
       customRender: 'index'
     }
   },
   {
     title: '年级',
-    dataIndex: 'grade',
-    width: '14%'
+    dataIndex: 'grade_name',
+    width: '20%'
   },
   {
     title: '班级',
-    dataIndex: 'class',
-    width: '14%'
+    dataIndex: 'class_name',
+    width: '20%'
   },
   {
     title: '班主任',
-    dataIndex: 'name',
-    width: '14%'
+    dataIndex: 'user_name',
+    width: '20%'
   },
-  {
+  /*   {
     title: '班级人数',
     dataIndex: 'num',
     width: '14%'
@@ -75,10 +75,10 @@ const columns = [
     title: '已加入学生',
     dataIndex: 'num2',
     width: '14%'
-  },
+  }, */
   {
     title: '操作',
-    width: '14%',
+    width: '20%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -86,22 +86,9 @@ const columns = [
 ]
 const formData = [
   {
-    value: 'className',
+    value: 'gradeName',
     initValue: [],
-    list: [
-      {
-        key: 1,
-        val: '高一'
-      },
-      {
-        key: 2,
-        val: '高二'
-      },
-      {
-        key: 3,
-        val: '高三'
-      }
-    ],
+    list: [],
     type: 'select',
     label: '年级',
     placeholder: '请输入年级名称'
@@ -136,23 +123,49 @@ export default {
         size: 20
       },
       total: 0,
-      userList: []
+      gradeList: [],
+      userList: [],
+      gradeCode: ''
     }
   },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
+  created() {
+    this.getGradeInfo()
+  },
   mounted () {
-    this.showList()
+    console.log(this.userInfo)
   },
   methods: {
     ...mapActions('home', [
-      'getClassList'
+      'getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList'
     ]),
+    // 获取年级列表
+    async getGradeInfo() {
+      const req = {
+        schoolCode: this.userInfo.orgCode
+      }
+      const res = await this.getGradeList(req)
+      res.result.forEach(ele => {
+        this.formData[0].list.push({
+          key: ele.gradeCode,
+          val: ele.gradeName
+        })
+      })
+    },
     select(item) {
       console.log(item)
+      this.gradeCode = item.gradeId
+      this.showList()
     },
-    async showList() {
-      const res = await this.getClassList()
-      this.userList = res.data
-      this.total = res.total
+    async showList(gradeCode = this.gradeCode) {
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        gradeCode
+      }
+      const res = await this.getClassInfoList(req)
+      this.userList = res.result
     },
     addClass() {
       this.formStatus = true
@@ -160,13 +173,40 @@ export default {
     addTeacher() {
       this.userTag = true
     },
-    del(record) {
+    // 删除班级
+    async del(record) {
       console.log(record)
+      const req = {
+        id: record.id,
+        schoolCode: record.school_code,
+        classCode: record.class_code
+      }
+      await this.deleteClass(req)
+      this.$message.success('删除成功')
+      setTimeout(() => {
+        this.showList()
+      }, 2000)
     },
-    submitForm (values) {
+    // 添加班级
+    async submitForm (values) {
       console.log(values)
+      const gradeName = this.formData[0].list.filter(ele => {
+        if (ele.key === values.gradeName) {
+          return ele
+        }
+      })[0].val
+      console.log(gradeName)
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        gradeCode: values.gradeName,
+        classNum: values.classNum,
+        gradeName
+      }
+      await this.bathAddClass(req)
+      this.$message.success('操作成功')
       setTimeout(() => {
         this.$refs.form.reset()
+        this.showList()
       }, 2000)
     },
     chooseUser (item) {

@@ -44,13 +44,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
 import UploadMulti from '@c/UploadMulti'
-import GradeTree from '@c/GradeTree'
+import GradeTree from '../component/GradeTree'
 const columns = [
   {
     title: '序号',
@@ -268,23 +268,37 @@ export default {
         h: 120, // 高度
         w: 120 // 宽度
       },
-      fileList: []
+      fileList: [],
+      gradeCode: '',
+      classCode: ''
     }
+  },
+  computed: {
+    ...mapState('home', ['userInfo'])
   },
   mounted () {
     this.showList()
   },
   methods: {
     ...mapActions('home', [
-      'getStudentList'
+      'getStudentList', 'getUserList'
     ]),
     select(item) {
-      console.log(item)
+      this.gradeCode = item.gradeId
+      if (item.gradeId !== item.key) {
+        this.classCode = item.key
+      }
+      this.showList()
     },
-    async showList() {
-      const res = await this.getStudentList()
-      this.userList = res.data
-      this.total = res.total
+    async showList(gradeCode = this.gradeCode, classCode = this.classCode) {
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        gradeCode,
+        classCode,
+        userType: 2
+      }
+      const res = await this.getUserList(req)
+      this.userList = res.result.list
     },
     add(type, record = {}) {
       this.formStatus = true
