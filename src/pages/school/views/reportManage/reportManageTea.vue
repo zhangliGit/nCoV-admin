@@ -175,7 +175,7 @@ export default {
     async showList() {
       const res = await this.getreportList(this.pageList)
       this.userList = res.result.list
-      this.total = res.total
+      this.total = res.result.totalCount
     },
     searchForm(values) {
       this.pageList = Object.assign(values, this.pageList)

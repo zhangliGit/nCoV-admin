@@ -34,7 +34,6 @@
         <a-col class="mar-b10" :span="12">视力 : </a-col>
         <a-col class="mar-b10" :span="12">重大病史 : </a-col>
         <a-col class="mar-b10" :span="12">家族病史 : </a-col>
-      
       </a-row>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
@@ -101,12 +100,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '10%'
+    width: '5%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '8%',
+    width: '7%',
     customRender: text => {
       if (text === 1) {
         return '男'
@@ -118,66 +117,85 @@ const columns = [
     }
   },
   {
-    title: '工号',
-    dataIndex: 'workNo',
+    title: '人员类型',
+    dataIndex: 'userType',
+    width: '8%',
+     customRender: text => {
+      if (text === 1) {
+        return '教职工'
+      } else{
+        return '学生'
+      }
+    }
+  }, 
+   {
+    title: '温度',
+    dataIndex: 'temperature',
+    width: '5%'
+  },
+   {
+    title: '上报区间',
+    dataIndex: 'timeInterval',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '上午'
+      } else{
+        return '下午'
+      }
+    }
+  },
+   {
+    title: '发热状态',
+    dataIndex: 'feverMark',
+    width: '10%',
+    customRender: text => {
+      if (text === 1) {
+        return '发热'
+      } else{
+        return '未发热'
+      }
+    }
+  },
+   {
+    title: '附带症状',
+    dataIndex: 'symptoms',
     width: '10%'
   },
   {
-    title: '手机号',
-    dataIndex: 'phone',
-    width: '10%'
-  }, 
-    {
-    title: '生日',
-    dataIndex: 'birthday',
-    width: '10%'
+    title: '是否接触疫情人员 ',
+    dataIndex: 'mark01',
+    width: '8%',
+    customRender: text => {
+      if (text === 1) {
+        return '是'
+      } else {
+        return '否'
+      }
+    }
   },
-   {
-    title: '职位',
+    {
+    title: '健康状态',
     dataIndex: 'classChargeMark',
     width: '10%',
     customRender: text => {
       if (text === 1) {
-        return '班主任'
+        return '正常'
       } else{
-        return '教职工'
+        return '异常'
       }
     }
   },
-  {
-    title: '风险类型 ',
-    dataIndex: 'healthyState',
-    width: '10%',
-    customRender: text => {
-      if (text === 1) {
-        return '疑似'
-      } else if (text === 2) {
-        return '确诊'
-      } else {
-        return '健康'
-      }
-    }
-  },
-  {
-    title: '风险时间',
-    dataIndex: 'riskTime',
+   {
+    title: '上报人',
+    dataIndex: 'reportPersonName',
     width: '10%'
   },
-    {
-    title: '人脸图像',
-    dataIndex: 'profilePhoto',
-    width: '10%',
-    scopedSlots: {
-      customRender: 'profilePhoto'
-    }
+   {
+    title: '上报时间',
+    dataIndex: 'reportTime',
+    width: '12%'
   },
-  {
-    title: '操作',
-    width: '7%',
-    scopedSlots: {
-      customRender: 'action'
-    }
-  }
 ]
 export default {
   name: 'PersonalDetail',
@@ -190,7 +208,7 @@ export default {
   data() {
     return {
       formData,
-      title: '更新健康档案',
+      title: '更新体检数据',
       formStatus: false,
       pageList: {
         page: 1,
@@ -206,10 +224,10 @@ export default {
     }
   },
 
-  mounted() {
+  activated() {
     this.initUnReportChart()
     this.showList();
-    this.gettem();
+    this.getTemperature();
     this.getReportList();
   },
   created() {
@@ -251,17 +269,18 @@ export default {
       this.detailData = res.result
     },
     //获取个人体温数据
-        async gettem() {
+        async getTemperature() {
       const userCode = this.$route.query.id
-      const req = 'userCode=' + userCode + '&schoolCode=CANPOINT'+'&startTime=2020-03-09 12:12：12'+'&endTime=2020-03-19 12:12:12'
-      const res = await this.getTemperatureData(req)
-      this.unReportOption = res.result
+      const par = 'userCode=' + userCode + '&schoolCode=CANPOINT'+'&startTime=2020-03-09 12:12：12'+'&endTime=2020-03-19 12:12:12'
+      const res = await this.getTemperatureData(par)
+      // this.unReportOption = res.result
     },
     //获取上报信息记录
      async getReportList() {
        const res = await this.getReportInfoList(this.pageList)
       this.detailList = res.result.list
-      this.total = res.total
+      this.total = res.result.totalCount
+      console.log(this.total )
     },
     initUnReportChart() {
       this.unReportOption = {
