@@ -1,6 +1,6 @@
 <template>
   <div class="grade-tree">
-    <a-tree :showLine="true" @select="select" :loadData="onLoadData" :treeData="treeData"></a-tree>
+    <a-tree @select="select" :loadData="onLoadData" :treeData="treeData"></a-tree>
   </div>
 </template>
 
@@ -50,7 +50,6 @@ export default {
         classCode: this.classCode,
         name: tree.selectedNodes[0].data.props.title
       }
-      console.log(selectObj)
       this.$emit('select', selectObj)
     },
     async initMenu() {
@@ -73,7 +72,8 @@ export default {
       this.onLoadData({
         dataRef: {
           pCode: res.result[0].gradeCode,
-          key: res.result[0].gradeCode
+          key: res.result[0].gradeCode,
+          isLeaf: true
         }
       })
       this.$emit('select', selectObj)
@@ -94,7 +94,7 @@ export default {
               return {
                 title: item.className,
                 key: item.classCode,
-                isLeaf: false
+                isLeaf: true
               }
             })
             this.treeData = [...this.treeData]

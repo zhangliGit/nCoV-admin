@@ -33,9 +33,7 @@ export default {
     this.initMenu()
   },
   methods: {
-    ...mapActions('home', [
-      'getGradeList', 'getClassList'
-    ]),
+    ...mapActions('home', ['getGradeList', 'getClassList']),
     onExpand() {},
     // 点击节点
     select(obj, tree) {
@@ -104,7 +102,7 @@ export default {
               title: item.className,
               key: item.classCode,
               gradeId: item.gradeCode,
-              isLeaf: false
+              isLeaf: true
             }
           })
           this.treeData = [...this.treeData]
