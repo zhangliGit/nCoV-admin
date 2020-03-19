@@ -1,7 +1,7 @@
 /**
  * @des atnd图标按需引入，需要用的的图标在此处导出
  */
-// 导入folder-openbar-chartcalendar
+export { default as CaretDownOutline } from '@ant-design/icons/lib/outline/CaretDownOutline'
 export { default as CalendarOutline } from '@ant-design/icons/lib/outline/CalendarOutline'
 export { default as BarsOutline } from '@ant-design/icons/lib/outline/BarsOutline'
 export { default as SettingOutline } from '@ant-design/icons/lib/outline/SettingOutline'

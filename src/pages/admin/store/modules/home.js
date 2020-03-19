@@ -43,9 +43,9 @@ const getState = (state, val) => {
 const home = {
   namespaced: true,
   state: {
+    systemName: '管理平台',
     userInfo: getState('userInfo', {
-      systemName: '管理平台',
-      userName: '超级管理员'
+      orgName: '超级管理员'
     })
   },
   actions: {
