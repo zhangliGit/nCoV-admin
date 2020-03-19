@@ -10,7 +10,6 @@ function resultBack(res) {
     resolve(res)
   })
 }
-
 /**
  * @description 当前模块接口列表
  * @param {url} 功能接口
@@ -21,9 +20,9 @@ const actions = Object.create(null)
 for (const key in apiList) {
   const url = apiList[key].split('#')[0]
   const type = apiList[key].split('#')[1]
-  actions[key] = async function(params = {}) {
+  const isLoad = apiList[key].split('#')[2] === undefined
+  actions[key] = async function({ commit, state }, params = {}) {
     // 是否显示加载提示
-    const isLoad = apiList[key].split('#')[2] === undefined
     const reqType = type === 'getUrl' ? 'get' : type
     const isGetUrl = type === 'getUrl'
     const res = await $ajax[reqType](
@@ -44,9 +43,9 @@ const getState = (state, val) => {
 const home = {
   namespaced: true,
   state: {
-    systemName: '管理平台',
     userInfo: getState('userInfo', {
-      orgName: '超级管理员'
+      systemName: '管理平台',
+      userName: '超级管理员'
     })
   },
   actions: {
@@ -54,11 +53,10 @@ const home = {
   },
   mutations: {
     /**
-     * @des 数据请求成功后，设置全局vuex属性
-     * @param {key} 请求的url路径
-     * @param {res} 请求返回的结果
+     * @description 设置state值
+     * @param { key } state属性
+     * @param { data } 存在的数据
      */
-    // return resultBack(res)
     updateState(state, { key, data, isLocal = true }) {
       if (isLocal) {
         const localData = JSON.parse(localStorage.getItem(projectName) || '{}')
@@ -70,4 +68,4 @@ const home = {
   }
 }
 
-export { store, setStore, actions }
+export default home

@@ -34,7 +34,7 @@
           :mar-bot="0"
           size="small"
           :total="total"
-          @change-page="showList"
+          @change-page="schoolGet"
         ></page-num>
       </div>
       <div class="user-box qui-fx-ver">
@@ -56,9 +56,10 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import PageNum from '@c/PageNum'
 import TableList from '@c/TableList'
-import $ajax from '@u/ajax-serve'
+// import $ajax from '@u/ajax-serve'
 const columns = [
   {
     title: '序号',
@@ -69,18 +70,13 @@ const columns = [
   },
   {
     title: '名称',
-    dataIndex: 'name',
-    width: '25%'
+    dataIndex: 'organizationName',
+    width: '40%'
   },
   {
     title: '编码',
-    dataIndex: 'code',
-    width: '25%'
-  },
-  {
-    title: '手机号',
-    dataIndex: 'phone',
-    width: '30%'
+    dataIndex: 'organizationCode',
+    width: '40%'
   }
 ]
 export default {
@@ -109,21 +105,15 @@ export default {
       }
     }
   },
-  async mounted() {
-    const userData = await $ajax.get({
-      // url: 'http://yapi.demo.qunar.com/mock/81652/getTable'
-      url: 'http://yapi.demo.qunar.com/mock/85606/school/list'
-    })
-    this.total = userData.total
-    this.userList = userData.data
-  },
   data() {
     return {
       confirmLoading: false,
       chooseList: [],
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        pcode: '',
+        organizationType: '2'
       },
       total: 0,
       columns,
@@ -132,6 +122,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions('home', ['getUnbindSchool']),
+    async schoolGet() {
+      this.pageList.pcode = this.$route.query.pcode
+      const userData = await this.getUnbindSchool(this.pageList)
+      this.total = userData.result.totalCount
+      this.userList = userData.result.list.map((item) => {
+        item.id = item.organizationCode
+        item.userName = item.organizationName
+        return item
+      })
+      console.log('this.userList', this.userList)
+    },
     reset() {
       this.confirmLoading = false
       this.$emit('input', false)
@@ -144,6 +146,7 @@ export default {
       this.chooseList.splice(this.chooseList.indexOf(id), 1)
     },
     selectAll(item, type) {
+      console.log('selectAll', item)
       if (type) {
         this.totalList = this.totalList.concat(item)
       } else {
@@ -157,6 +160,7 @@ export default {
     },
     // 监听选中或取消
     clickRow(item, type) {
+      console.log('===', item)
       if (type) {
         this.totalList.push(item)
       } else {

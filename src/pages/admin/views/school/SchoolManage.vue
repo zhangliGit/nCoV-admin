@@ -174,7 +174,9 @@ export default {
     del(record) {
       this.delOrg(record.id).then(() => {
         this.$message.success('操作成功')
-        this.showList()
+        this.$tools.goNext(() => {
+          this.showList()
+        })
       })
       console.log(record)
     },
@@ -183,6 +185,7 @@ export default {
       // this.formStatus = true
       if (type) {
         this.$refs.addSchool.recordId = record.id
+        this.$refs.addSchool.managerId = record.managerId
         record.checkedList = record.educCode.split(',')
         this.$refs.addSchool.appForm = record
         this.title = '编辑学校'

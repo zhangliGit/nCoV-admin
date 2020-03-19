@@ -141,7 +141,8 @@ export default {
       primary: 'k12_01',
       middle: 'k12_02',
       high: 'k12_03',
-      recordId: ''
+      recordId: '',
+      managerId: ''
     }
   },
   methods: {
@@ -152,6 +153,7 @@ export default {
         if (!err) {
           this.confirmLoading = true
           values.organizationType = '2'
+          values.managerId = this.managerId
           values.educCode = values.checkedList.join(',')
           console.log(values)
           if (this.title === '编辑学校') {
@@ -160,18 +162,18 @@ export default {
               this.$message.success('操作成功')
               this.confirmLoading = false
               this.visible = false
-              setTimeout(() => {
+              this.$tools.goNext(() => {
                 this.$emit('update')
-              }, 1000)
+              })
             })
           } else {
             this.addOrg(values).then(() => {
               this.$message.success('操作成功')
               this.confirmLoading = false
               this.visible = false
-              setTimeout(() => {
+              this.$tools.goNext(() => {
                 this.$emit('update')
-              }, 1000)
+              })
             })
           }
         }

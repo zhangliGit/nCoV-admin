@@ -175,7 +175,7 @@ export default {
     async showList() {
       const res = await this.getreportList(this.pageList)
       this.userList = res.result.list
-      this.total = res.total
+      this.total = res.result.totalCount
     },
     searchForm(values) {
       this.pageList = Object.assign(values, this.pageList)
@@ -185,7 +185,15 @@ export default {
     detail(record) {
       this.$router.push({
       path: '/component/detail',
-        query: { id: record.userCode }
+        query: { id: record.userCode,
+        userName:record.userName,
+        gender:record.gender,
+        workNo:record.workNo,
+        birthday:record.birthday,
+        classChargeMark:record.classChargeMark,
+        riskTime:record.riskTime,
+        profilePhoto:record.profilePhoto
+        }
       })
     }
   }
