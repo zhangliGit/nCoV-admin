@@ -24,11 +24,11 @@
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">体验数据</a-menu-item>
     </a-menu>
+       <div style="text-align:right;">
+      <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button>
+      </div>
     <div class="process qui-fx-jsb qui-fx-ac">
       <a-row class="padd-l10">
-        <a-col class="mar-b10" :span="24">
-          <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button>
-        </a-col>
         <a-col class="mar-b10" :span="12">身高 :</a-col>
         <a-col class="mar-b10" :span="12">体重 :</a-col>
         <a-col class="mar-b10" :span="12">视力 :</a-col>
@@ -240,7 +240,7 @@ export default {
   methods: {
     ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo', 'getTemperatureData', 'getReportInfoList']),
     //更新体检数据
-    updateReport(record) {
+    updateReport() {
       this.formStatus = true
       this.recordId = record.id
       this.formData = this.$tools.fillForm(formData, record)
