@@ -14,7 +14,7 @@ const schoolApi = {
   getUserList: '/school/userinfo/getUserInfoList#post', // 学生教职工管理列表
   addStudent: '/mobile/patriarchinfo/stu/mobile/save#post', // 新增学生
   addTeacher: '/user/staff/save#post', // 新增教职工
-  getRiskList: '/riskList#get', // 风险人员名单
+  getRiskList: '/school/userinfo/getRiskUserList#post', // 风险人员名单
   getreportList: '/school/userinfo/getUserInfoList#post', // 上报记录
   getLatestMedicalInfo: '/school/medicalinfo/getLatestMedicalInfo#postQuery', // 获取体检最新一条记录
   updateInfo: '/school/medicalinfo/update#post', // 修改体检数据
