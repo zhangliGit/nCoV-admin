@@ -27,7 +27,7 @@
           @selectAll="selectAll"
           :table-list="userList"
         ></table-list>
-        <!-- <page-num
+        <page-num
           :jumper="false"
           v-model="pageList"
           :mar-top="20"
@@ -35,7 +35,7 @@
           size="small"
           :total="total"
           @change-page="showList"
-        ></page-num> -->
+        ></page-num>
       </div>
       <div class="user-box qui-fx-ver">
         <div class="title qui-fx-jsb">
@@ -62,7 +62,7 @@ import { mapState, mapActions } from 'vuex'
 const columns = [
   {
     title: '序号',
-    width: '20%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -74,18 +74,27 @@ const columns = [
   },
   {
     title: '性别',
-    dataIndex: 'sex',
-    width: '20%'
+    dataIndex: 'gender',
+    width: '10%',
+    customRender: (text) => {
+      if (text === '1') {
+        return '男'
+      } else if (text === '2') {
+        return '女'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
-    title: '电话',
+    title: '手机号',
     dataIndex: 'phone',
-    width: '20%'
+    width: '25%'
   },
   {
     title: '工号',
-    dataIndex: 'no',
-    width: '20%'
+    dataIndex: 'workNo',
+    width: '25%'
   }
 ]
 export default {
@@ -121,7 +130,8 @@ export default {
       chooseList: [],
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        userType: '1'
       },
       total: 0,
       columns,
@@ -130,12 +140,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions('home', ['getInfoDoctor']),
+    ...mapActions('home', ['getreportList']),
     async showList() {
       console.log('++', this.userInfo)
-      const userData = await this.getInfoDoctor(`schoolCode=${this.userInfo.orgCode}`)
-      // this.total = userData.total
-      this.userList = userData.result
+      const userData = await this.getreportList(this.pageList)
+      this.total = userData.result.totalCount
+      this.userList = userData.result.list
       console.log('===', this.userList)
     },
     reset() {
@@ -184,7 +194,7 @@ export default {
 
 <style lang="less" scoped>
 .choose-user {
-  height: 600px;
+  height: 500px;
   .org-box {
     width: 200px;
   }
