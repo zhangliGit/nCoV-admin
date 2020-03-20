@@ -1,7 +1,7 @@
 <template>
   <div class="upload-file">
     <a-upload
-      name="fileList"
+      name="file"
       listType="picture-card"
       class="avatar-uploader"
       :showUploadList="false"

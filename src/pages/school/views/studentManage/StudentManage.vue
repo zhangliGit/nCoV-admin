@@ -4,7 +4,7 @@
       <grade-tree @select="select"></grade-tree>
     </div>
     <div class="page-right qui-fx-ver">
-      <search-form @search-form="searchForm" :search-label="searchLabel">
+      <search-form isReset @search-form="searchForm" :search-label="searchLabel">
         <div slot="left" class="top-btn-group">
           <a-button icon="plus" class="add-btn" @click="add(0)">添加学生</a-button>
           <!--<a-button icon="export" class="export-btn">导入学生</a-button>
@@ -21,6 +21,9 @@
         :page-list="pageList"
         :columns="columns"
         :table-list="userList">
+        <template v-slot:actions="action">
+          <span>{{action.record.gradeName}}{{action.record.className}}</span>
+        </template>
         <template v-slot:actions="action">
           <a-tooltip placement="topLeft" title="编辑" @click="add(1,action.record)">
             <a-button size="small" class="edit-action-btn" icon="form"></a-button>
@@ -48,7 +51,7 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import SubmitForm from '@c/SubmitForm'
+import SubmitForm from '../component/SubmitForm'
 import UploadMulti from '@c/UploadMulti'
 import GradeTree from '../component/GradeTree'
 const columns = [
@@ -61,7 +64,7 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '9%'
   },
   {
@@ -80,12 +83,15 @@ const columns = [
   },
   {
     title: '班级',
-    dataIndex: 'grade',
-    width: '9%'
+    dataIndex: 'className',
+    width: '9%',
+    scopedSlots: {
+      customRender: 'className'
+    }
   },
   {
     title: '学号',
-    dataIndex: 'num',
+    dataIndex: 'workNo',
     width: '9%'
   },
   {
@@ -127,58 +133,32 @@ const searchLabel = [
     placeholder: '请输入姓名'
   },
   {
-    value: 'tel',
+    value: 'workNo',
     type: 'input',
-    label: '手机号',
-    placeholder: '请输入手机号'
+    label: '学号',
+    placeholder: '请输入学号'
   }
 ]
 const formData = [
   {
-    value: 'name',
+    value: 'stuName',
     initValue: '',
     type: 'input',
     label: '姓名',
     placeholder: '请输入姓名'
   },
   {
-    value: 'grade',
+    value: 'gradeCode',
     initValue: [],
-    list: [
-      {
-        key: 1,
-        val: '高一'
-      },
-      {
-        key: 2,
-        val: '高二'
-      },
-      {
-        key: 3,
-        val: '高三'
-      }
-    ],
+    list: [],
     type: 'select',
     label: '年级',
     placeholder: '请选择年级'
   },
   {
-    value: 'class',
+    value: 'clazzCode',
     initValue: [],
-    list: [
-      {
-        key: 1,
-        val: '1班'
-      },
-      {
-        key: 2,
-        val: '2班'
-      },
-      {
-        key: 3,
-        val: '3班'
-      }
-    ],
+    list: [],
     type: 'select',
     label: '班级',
     placeholder: '请选择班级'
@@ -202,7 +182,7 @@ const formData = [
     placeholder: '请选择性别'
   },
   {
-    value: 'num',
+    value: 'userNo',
     initValue: '',
     type: 'input',
     required: false,
@@ -223,7 +203,7 @@ const formData = [
     placeholder: '请选择生日'
   },
   {
-    value: 'parents',
+    value: 'parName',
     initValue: '',
     type: 'input',
     label: '家长姓名',
@@ -231,7 +211,7 @@ const formData = [
     placeholder: '请输入家长姓名'
   },
   {
-    value: 'parentsTel',
+    value: 'parphone',
     initValue: '',
     type: 'input',
     label: '家长手机号',
@@ -263,7 +243,7 @@ export default {
       total: 0,
       userList: [],
       fileInfo: {
-        url: '/upload/base/file/freeUpload', // 接口地址
+        url: '', // 接口地址
         tip: '上传图片',
         h: 120, // 高度
         w: 120 // 宽度
@@ -276,29 +256,69 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
+  created() {
+    this.fileInfo.url = `/admin/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
+    this.formData[1].selectGrade = this.selectGrade
+  },
   mounted () {
+    this.getGradeInfo()
     this.showList()
   },
   methods: {
     ...mapActions('home', [
-      'getStudentList', 'getUserList'
+      'getClassList', 'getGradeList', 'getUserList', 'addStudent'
     ]),
+    // 获取年级列表
+    async getGradeInfo() {
+      const req = {
+        schoolCode: this.userInfo.orgCode
+      }
+      const res = await this.getGradeList(req)
+      res.result.forEach(ele => {
+        this.formData[1].list.push({
+          key: ele.gradeCode,
+          val: ele.gradeName
+        })
+      })
+    },
+    // 选择年级班级
+    async selectGrade(val) {
+      console.log(val)
+      this.formData[2].list = []
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        gradeCode: val
+      }
+      const res = await this.getClassList(req)
+      res.result.forEach(ele => {
+        this.formData[2].list.push({
+          key: ele.classCode,
+          val: ele.className
+        })
+      })
+    },
+    // 切换班级
     select(item) {
+      console.log(item)
       this.gradeCode = item.gradeId
-      if (item.gradeId !== item.key) {
+      if (item.gradeId === item.key) {
+        this.classCode = ''
+      } else {
         this.classCode = item.key
       }
       this.showList()
     },
-    async showList(gradeCode = this.gradeCode, classCode = this.classCode) {
+    async showList(gradeCode = this.gradeCode, classCode = this.classCode, searchObj = {}) {
       const req = {
         schoolCode: this.userInfo.orgCode,
         gradeCode,
         classCode,
-        userType: 2
+        userType: 2,
+        ...searchObj
       }
       const res = await this.getUserList(req)
       this.userList = res.result.list
+      this.total = res.result.totalCount
     },
     add(type, record = {}) {
       this.formStatus = true
@@ -316,10 +336,31 @@ export default {
     },
     searchForm (values) {
       console.log(values)
+      const searchObj = {
+        userName: values.name,
+        workNo: values.workNo
+      }
+      this.showList(this.gradeCode, this.classCode, searchObj)
     },
-    submitForm (values) {
+    async submitForm (values) {
       console.log(values)
+      const req = {
+        ...values,
+        schoolCode: this.userInfo.orgCode,
+        profilePhoto: this.fileList.length > 0 ? this.fileList[0] : ''
+      }
+      req.gradeName = this.formData[1].list.filter(ele => {
+        return ele.key === values.gradeCode
+      })[0].val
+      req.clazzName = this.formData[2].list.filter(ele => {
+        return ele.key === values.clazzCode
+      })[0].val
+      console.log(req)
+      await this.addStudent(req)
+      this.$message.success('添加成功')
       setTimeout(() => {
+        this.fileList = []
+        this.showList()
         this.$refs.form.reset()
       }, 2000)
     },
