@@ -38,7 +38,8 @@ const formData = [
     label: '风险类型',
     max: 50,
     placeholder: '请输入风险类型'
-  }, {
+  },
+  {
     value: 'remarks',
     initValue: '',
     type: 'input',
@@ -70,13 +71,20 @@ const columns = [
     title: '创建时间',
     dataIndex: 'createTime',
     width: '20%',
-    customRender: (text) => {
-      return new Date(text).getFullYear() + '-' +
-            ((new Date(text).getMonth() + 1) > 9 ? new Date(text).getMonth() + 1 : '0' +
-            (new Date(text).getMonth() + 1)) + '-' + (new Date(text).getDate() > 9 ? new Date(text).getDate() : '0' +
-            new Date(text).getDate()) + ' ' + (new Date(text).getHours() > 9 ? new Date(text).getHours() : '0' +
-            new Date(text).getHours()) + ':' + (new Date(text).getMinutes() > 9 ? new Date(text).getMinutes() : '0' +
-            new Date(text).getMinutes()) + ':' + (new Date(text).getSeconds() > 9 ? new Date(text).getSeconds() : '0' + new Date(text).getSeconds())
+    customRender: text => {
+      return (
+        new Date(text).getFullYear() +
+        '-' +
+        (new Date(text).getMonth() + 1 > 9 ? new Date(text).getMonth() + 1 : '0' + (new Date(text).getMonth() + 1)) +
+        '-' +
+        (new Date(text).getDate() > 9 ? new Date(text).getDate() : '0' + new Date(text).getDate()) +
+        ' ' +
+        (new Date(text).getHours() > 9 ? new Date(text).getHours() : '0' + new Date(text).getHours()) +
+        ':' +
+        (new Date(text).getMinutes() > 9 ? new Date(text).getMinutes() : '0' + new Date(text).getMinutes()) +
+        ':' +
+        (new Date(text).getSeconds() > 9 ? new Date(text).getSeconds() : '0' + new Date(text).getSeconds())
+      )
     }
   },
   {
@@ -125,7 +133,7 @@ export default {
         this.formData = this.$tools.fillForm(formData, {})
       }
     },
-    async submitForm (values) {
+    async submitForm(values) {
       console.log(values)
       try {
         let res

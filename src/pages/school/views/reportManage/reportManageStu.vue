@@ -1,6 +1,6 @@
 <template>
   <div class="page-layout qui-fx">
-    <!-- <grade-tree @select="select"></grade-tree> -->
+    <grade-tree @select="select"></grade-tree>
     <div class="qui-fx-f1 qui-fx-ver">
       <search-form @search-form="searchForm" :search-label="searchLabel">
         <div slot="left" class="top-btn-group">
@@ -25,10 +25,10 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import SearchForm from '@c/SearchForm'
-import GradeTree from '@c/GradeTree'
+import GradeTree from '../component/GradeTree'
 import PageNum from '@c/PageNum'
 const searchLabel = [
   {
@@ -98,8 +98,8 @@ const columns = [
     title: '班级',
     dataIndex: 'className',
     width: '10%'
-  }, 
-    {
+  },
+  {
     title: '生日',
     dataIndex: 'birthday',
     width: '10%'
@@ -123,7 +123,7 @@ const columns = [
     dataIndex: 'riskTime',
     width: '10%'
   },
-    {
+  {
     title: '人脸图像',
     dataIndex: 'profilePhoto',
     width: '15%',
@@ -145,50 +145,65 @@ export default {
     GradeTree,
     TableList,
     SearchForm,
-    PageNum,
+    PageNum
   },
   data() {
     return {
       searchLabel,
       columns,
       total: 100,
-     pageList: {
+      pageList: {
         page: 1,
         size: 20,
-        userType: '2'
+        userType: '2',
+        schoolCode: '',
+        gradeCode: '',
+        classCode: ''
       },
       userList: []
     }
+  },
+  computed: {
+    ...mapState('home', ['userInfo'])
   },
   mounted() {
     this.showList()
   },
   methods: {
     ...mapActions('home', ['getreportList']),
+    select(item) {
+      this.gradeCode = item.gradeId
+      if (item.gradeId !== item.key) {
+        this.classCode = item.key
+      }
+      this.showList()
+    },
     async showList() {
+      this.pageList.schoolCode = this.userInfo.orgCode
+      this.pageList.gradeCode = this.gradeCode
+      this.pageList.classCode = this.classCode
       const res = await this.getreportList(this.pageList)
       this.userList = res.result.list
       this.total = res.result.totalCount
     },
     searchForm(values) {
-    this.pageList = Object.assign(values, this.pageList)
-      this.showList()   
-   },
+      this.pageList = Object.assign(values, this.pageList)
+      this.showList()
+    },
     detail(record) {
       this.$router.push({
-      path: '/component/detail',
-        query: { id: record.userCode ,
-         userName:record.userName,
-        gender:record.gender,
-        workNo:record.workNo,
-        birthday:record.birthday,
-        classChargeMark:record.classChargeMark,
-        riskTime:record.riskTime,
-        profilePhoto:record.profilePhoto}
+        path: '/component/detail',
+        query: {
+          id: record.userCode,
+          userName: record.userName,
+          gender: record.gender,
+          workNo: record.workNo,
+          birthday: record.birthday,
+          classChargeMark: record.classChargeMark,
+          riskTime: record.riskTime,
+          profilePhoto: record.profilePhoto
+        }
       })
-    },
-    select(item) {
-      console.log(item)
     }
   }
 }

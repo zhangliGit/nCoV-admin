@@ -5,17 +5,17 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import $ajax from '@u/ajax-serve'
 export default {
-  name: 'GradeTree',
+  name: 'GradeClass',
   props: {
     gradeUrl: {
       type: String,
-      default: ''
+      default: 'http://192.168.2.247:3000/mock/40/getGrade'
     },
     classUrl: {
       type: String,
-      default: ''
+      default: 'http://192.168.2.247:3000/mock/40/getClass'
     }
   },
   data() {
@@ -26,61 +26,54 @@ export default {
       gradeList: []
     }
   },
-  computed: {
-    ...mapState('home', ['userInfo'])
-  },
+  computed: {},
   mounted() {
     this.initMenu()
   },
   methods: {
-    ...mapActions('home', ['getGradeList', 'getClassList']),
     onExpand() {},
     // 点击节点
     select(obj, tree) {
       const gradeIds = []
       this.gradeList.forEach(el => {
-        return gradeIds.push(el.gradeId)
+        return gradeIds.push(el.gradeCode)
       })
       if (gradeIds.indexOf(obj[0]) === -1) {
-        this.classId = obj[0]
+        this.classCode = obj[0]
       } else {
-        this.gradeId = obj[0]
-        this.classId = ''
+        this.gradeCode = obj[0]
+        this.classCode = ''
       }
       if (tree.selectedNodes.length === 0) return
       const selectObj = {
-        gradeId: tree.selectedNodes[0].data.props.gradeId,
-        key: this.classId,
-        code: tree.selectedNodes[0].data.props.pCode,
-        title: tree.selectedNodes[0].data.props.title,
-        year: tree.selectedNodes[0].data.props.year
+        gradeCode: this.gradeCode,
+        classCode: this.classCode,
+        name: tree.selectedNodes[0].data.props.title
       }
       this.$emit('select', selectObj)
     },
     async initMenu() {
-      const req = {
-        schoolCode: this.userInfo.orgCode
-      }
-      const res = await this.getGradeList(req)
+      const res = await $ajax.get({ url: '/admin/operate/gradeinfo/getGradelist?schoolCode=QPZX' })
       const selectObj = {
         gradeId: res.result[0].gradeCode,
-        key: res.result[0].gradeCode,
-        code: res.result[0].gradeCode,
-        title: res.result[0].gradeName
+        key: '',
+        code: '',
+        title: res.result[0].gradeName,
+        year: ''
       }
       this.gradeList = res.result
       this.treeData = res.result.map(item => {
         return {
           title: item.gradeName,
           key: item.gradeCode,
-          pCode: item.gradeCode,
-          gradeId: item.gradeCode
+          pCode: item.gradeCode
         }
       })
       this.onLoadData({
         dataRef: {
           pCode: res.result[0].gradeCode,
-          key: res.result[0].gradeCode
+          key: res.result[0].gradeCode,
+          isLeaf: true
         }
       })
       this.$emit('select', selectObj)
@@ -91,23 +84,22 @@ export default {
           resolve()
           return
         }
-        this.gradeId = treeNode.dataRef.key
-        const req = {
-          schoolCode: this.userInfo.orgCode,
-          gradeCode: this.gradeId
-        }
-        this.getClassList(req).then(res => {
-          treeNode.dataRef.children = res.result.map(item => {
-            return {
-              title: item.className,
-              key: item.classCode,
-              gradeId: item.gradeCode,
-              isLeaf: true
-            }
+        this.gradeCode = treeNode.dataRef.key
+        $ajax
+          .post({
+            url: '/admin/school/classInfo/getClassInfoByGradeCode?schoolCode=QPZX&gradeCode=' + this.gradeCode
           })
-          this.treeData = [...this.treeData]
-          resolve()
-        })
+          .then(res => {
+            treeNode.dataRef.children = res.result.map(item => {
+              return {
+                title: item.className,
+                key: item.classCode,
+                isLeaf: true
+              }
+            })
+            this.treeData = [...this.treeData]
+            resolve()
+          })
       })
     }
   }

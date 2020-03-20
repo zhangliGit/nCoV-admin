@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
@@ -62,20 +62,20 @@ const columns = [
     title: '手机号',
     dataIndex: 'phone',
     width: '10%'
-  }, 
-    {
+  },
+  {
     title: '生日',
     dataIndex: 'birthday',
     width: '10%'
   },
-   {
+  {
     title: '职位',
     dataIndex: 'classChargeMark',
     width: '10%',
     customRender: text => {
       if (text === 1) {
         return '班主任'
-      } else{
+      } else {
         return '教职工'
       }
     }
@@ -99,7 +99,7 @@ const columns = [
     dataIndex: 'riskTime',
     width: '10%'
   },
-    {
+  {
     title: '人脸图像',
     dataIndex: 'profilePhoto',
     width: '10%',
@@ -158,14 +158,18 @@ export default {
     return {
       columns,
       searchLabel,
-     pageList: {
+      pageList: {
         page: 1,
         size: 20,
-        userType: '1'
+        userType: '1',
+        schoolCode: '',
       },
       total: 0,
       userList: []
     }
+  },
+      computed: {
+    ...mapState('home', ['userInfo'])
   },
   mounted() {
     this.showList()
@@ -173,26 +177,28 @@ export default {
   methods: {
     ...mapActions('home', ['getreportList']),
     async showList() {
+       this.pageList.schoolCode = this.userInfo.orgCode
       const res = await this.getreportList(this.pageList)
       this.userList = res.result.list
       this.total = res.result.totalCount
     },
     searchForm(values) {
       this.pageList = Object.assign(values, this.pageList)
-          this.showList()
+      this.showList()
       console.log(values)
     },
     detail(record) {
       this.$router.push({
-      path: '/component/detail',
-        query: { id: record.userCode,
-        userName:record.userName,
-        gender:record.gender,
-        workNo:record.workNo,
-        birthday:record.birthday,
-        classChargeMark:record.classChargeMark,
-        riskTime:record.riskTime,
-        profilePhoto:record.profilePhoto
+        path: '/component/detail',
+        query: {
+          id: record.userCode,
+          userName: record.userName,
+          gender: record.gender,
+          workNo: record.workNo,
+          birthday: record.birthday,
+          classChargeMark: record.classChargeMark,
+          riskTime: record.riskTime,
+          profilePhoto: record.profilePhoto
         }
       })
     }

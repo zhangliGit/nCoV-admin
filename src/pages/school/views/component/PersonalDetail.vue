@@ -26,14 +26,14 @@
     </a-menu>
     <div class="process qui-fx-jsb qui-fx-ac">
       <a-row class="padd-l10">
-          <a-col class="mar-b10" :span="24">
+        <a-col class="mar-b10" :span="24">
           <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button>
         </a-col>
-        <a-col class="mar-b10" :span="12">身高 : </a-col>
+        <a-col class="mar-b10" :span="12">身高 :</a-col>
         <a-col class="mar-b10" :span="12">体重 :</a-col>
-        <a-col class="mar-b10" :span="12">视力 : </a-col>
-        <a-col class="mar-b10" :span="12">重大病史 : </a-col>
-        <a-col class="mar-b10" :span="12">家族病史 : </a-col>
+        <a-col class="mar-b10" :span="12">视力 :</a-col>
+        <a-col class="mar-b10" :span="12">重大病史 :</a-col>
+        <a-col class="mar-b10" :span="12">家族病史 :</a-col>
       </a-row>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
@@ -55,7 +55,7 @@
 <script>
 import Highcharts from 'highcharts/highstock'
 import ChartComponent from '../component/ChartComponent'
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SubmitForm from '@c/SubmitForm'
@@ -120,44 +120,44 @@ const columns = [
     title: '人员类型',
     dataIndex: 'userType',
     width: '8%',
-     customRender: text => {
+    customRender: text => {
       if (text === 1) {
         return '教职工'
-      } else{
+      } else {
         return '学生'
       }
     }
-  }, 
-   {
+  },
+  {
     title: '温度',
     dataIndex: 'temperature',
     width: '5%'
   },
-   {
+  {
     title: '上报区间',
     dataIndex: 'timeInterval',
     width: '10%',
     customRender: text => {
       if (text === 1) {
         return '上午'
-      } else{
+      } else {
         return '下午'
       }
     }
   },
-   {
+  {
     title: '发热状态',
     dataIndex: 'feverMark',
     width: '10%',
     customRender: text => {
       if (text === 1) {
         return '发热'
-      } else{
+      } else {
         return '未发热'
       }
     }
   },
-   {
+  {
     title: '附带症状',
     dataIndex: 'symptoms',
     width: '10%'
@@ -174,28 +174,28 @@ const columns = [
       }
     }
   },
-    {
+  {
     title: '健康状态',
     dataIndex: 'classChargeMark',
     width: '10%',
     customRender: text => {
       if (text === 1) {
         return '正常'
-      } else{
+      } else {
         return '异常'
       }
     }
   },
-   {
+  {
     title: '上报人',
     dataIndex: 'reportPersonName',
     width: '10%'
   },
-   {
+  {
     title: '上报时间',
     dataIndex: 'reportTime',
     width: '12%'
-  },
+  }
 ]
 export default {
   name: 'PersonalDetail',
@@ -220,15 +220,19 @@ export default {
       columns,
       detailList: [],
       detailData: '',
-      detailInfo: ''
+      detailInfo: '',
+      reportTime: [],
+      temperature: []
     }
   },
-
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   activated() {
+    this.getTemperature()
     this.initUnReportChart()
-    this.showList();
-    this.getTemperature();
-    this.getReportList();
+    this.showList()
+    this.getReportList()
   },
   created() {
     this.chartHeight = document.body.clientHeight * 0.35 + 'px'
@@ -264,23 +268,36 @@ export default {
     async showList() {
       this.detailInfo = this.$route.query
       const userCode = this.$route.query.id
-      const req = 'userCode=' + userCode + '&schoolCode=CANPOINT'
+      const schoolCode = this.userInfo.orgCode
+      const req = 'userCode=' + userCode + '&schoolCode=' + schoolCode
       const res = await this.getLatestMedicalInfo(req)
       this.detailData = res.result
     },
     //获取个人体温数据
-        async getTemperature() {
+    async getTemperature() {
       const userCode = this.$route.query.id
-      const par = 'userCode=' + userCode + '&schoolCode=CANPOINT'+'&startTime=2020-03-09 12:12：12'+'&endTime=2020-03-19 12:12:12'
+      this.schoolCode = this.userInfo.orgCode
+      const par =
+        'userCode=' +
+        userCode +
+        '&schoolCode=CANPOINT' +
+        '&startTime=2020-03-09 12:12：12' +
+        '&endTime=2020-03-19 12:12:12'
       const res = await this.getTemperatureData(par)
-      // this.unReportOption = res.result
+      this.reportTime = []
+      this.temperature = []
+      res.result.forEach(item => {
+        this.reportTime.push(item.reportTime)
+        this.temperature.push(item.temperature)
+      })
+      // this.initUnReportChart();
     },
     //获取上报信息记录
-     async getReportList() {
-       const res = await this.getReportInfoList(this.pageList)
+    async getReportList() {
+      const res = await this.getReportInfoList(this.pageList)
       this.detailList = res.result.list
       this.total = res.result.totalCount
-      console.log(this.total )
+      console.log(this.total)
     },
     initUnReportChart() {
       this.unReportOption = {
@@ -296,7 +313,8 @@ export default {
           align: 'right'
         },
         xAxis: {
-          categories: ['2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '2.7', '2.8', '2.9']
+          type: 'datetime',
+          categories: this.reportTime
         },
         credits: {
           enabled: false
@@ -304,15 +322,10 @@ export default {
         yAxis: {
           title: {
             text: ''
-          },
-          labels: {
-            formatter: function() {
-              return this.value
-            }
           }
         },
         tooltip: {
-          pointFormat: '{series.name} <b>{point.y:,.0f}</b>℃'
+          pointFormat: '{series.name} <b>{point.y}</b>℃'
         },
         plotOptions: {
           area: {
@@ -333,7 +346,7 @@ export default {
           {
             name: '体温',
             color: 'rgb(105, 167, 254)',
-            data: [0, 36, 37, 38, 39, 38, 37, 36, 0]
+            data: this.temperature
           }
         ]
       }

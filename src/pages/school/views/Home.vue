@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import Highcharts from 'highcharts/highstock'
 import ChartComponent from './component/ChartComponent'
 import reportImg from '@a/img/report.gif'
@@ -49,31 +50,7 @@ export default {
   data() {
     return {
       reportImg,
-      baseList: [{
-        id: 1,
-        icon: reportImg,
-        num: 200,
-        tip: '已上报人数',
-        color: '#e6fbea'
-      }, {
-        id: 2,
-        icon: unreportImg,
-        num: 11,
-        tip: '未上报人数',
-        color: '#e0f3ff'
-      }, {
-        id: 3,
-        icon: unhealthyImg,
-        num: 23,
-        tip: '健康异常人数',
-        color: '#f2efff'
-      }, {
-        id: 4,
-        icon: heatImg,
-        num: 17,
-        tip: '发热人数',
-        color: '#ffdedf'
-      }],
+      baseList: [],
       heatId: 'heatId',
       unReportId: 'unReportId',
       userPieId: 'userPieId',
@@ -89,16 +66,60 @@ export default {
       chartHeight: ''
     }
   },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   created() {
     this.chartHeight = (document.body.clientHeight * 0.35) + 'px'
   },
   mounted() {
+    this.showList()
     this.initHeatChart()
     this.initUnReportChart()
     this.initUserPieChart()
     this.initUnHealthyChart()
   },
   methods: {
+    ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser']),
+    getDateTime (date) {
+      if (date === '' || date === null) {
+        return '--'
+      }
+      const d = new Date(date)
+      return d.getFullYear() + '-' + ((d.getMonth() + 1) > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) + '-' + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) + ' ' +
+            (d.getHours() > 9 ? d.getHours() : '0' + d.getHours()) + ':' + (d.getMinutes() > 9 ? d.getMinutes() : '0' +
+              d.getMinutes()) +
+            ':' + (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
+    },
+    async showList() {
+      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
+      const res = await this.getDailyData(req)
+      this.baseList = [{
+        id: 1,
+        icon: reportImg,
+        num: res.result.reportNum,
+        tip: '已上报人数',
+        color: '#e6fbea'
+      }, {
+        id: 2,
+        icon: unreportImg,
+        num: res.result.noReportNum,
+        tip: '未上报人数',
+        color: '#e0f3ff'
+      }, {
+        id: 3,
+        icon: unhealthyImg,
+        num: res.result.healthNum,
+        tip: '健康异常人数',
+        color: '#f2efff'
+      }, {
+        id: 4,
+        icon: heatImg,
+        num: res.result.feverNum,
+        tip: '发热人数',
+        color: '#ffdedf'
+      }]
+    },
     initUnHealthyChart() {
       this.unHealthyOption = {
         chart: {
@@ -157,7 +178,18 @@ export default {
       }
       this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
     },
-    initHeatChart() {
+    async initHeatChart() {
+      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(new Date((new Date()).getTime() - 15 * 24 * 60 * 60 * 1000))}&endTime=${this.getDateTime(new Date())}`
+      const res = await this.getFeverAndHealth(req)
+      const feverData = res.result.feverNum.map(item => {
+        return item.num
+      })
+      const unnormalData = res.result.healthNum.map(item => {
+        return item.num
+      })
+      const feverDate = res.result.feverNum.map(item => {
+        return item.reportTime
+      })
       this.heatOption = {
         chart: {
           type: 'area'
@@ -174,7 +206,8 @@ export default {
           align: 'right'
         },
         xAxis: {
-          allowDecimals: false
+          allowDecimals: false,
+          categories: feverDate
         },
         yAxis: {
           title: {
@@ -191,7 +224,7 @@ export default {
         },
         plotOptions: {
           area: {
-            pointStart: 2,
+            pointStart: 0,
             marker: {
               enabled: false,
               symbol: 'circle',
@@ -207,16 +240,25 @@ export default {
         series: [{
           name: '发热次数',
           color: '#ff0000',
-          data: [0, 4, 9, 11, 7, 9, 15, 8, 3, 0]
+          data: feverData
         }, {
           name: '异常次数',
           color: '#ffac00',
-          data: [1, 6, 10, 11, 9, 12, 14, 9, 5, 1]
+          data: unnormalData
         }]
       }
       this.heatChart = new Highcharts.Chart(this.heatId, this.heatOption)
     },
-    initUnReportChart() {
+    async initUnReportChart() {
+      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(new Date((new Date()).getTime() - 15 * 24 * 60 * 60 * 1000))}&endTime=${this.getDateTime(new Date())}`
+      const res = await this.getNoReport(req)
+      console.log('+++++getNoReport', res)
+      const data = res.result.map(item => {
+        return item.num
+      })
+      const date = res.result.map(item => {
+        return item.reportTime
+      })
       this.unReportOption = {
         chart: {
           type: 'area'
@@ -233,7 +275,8 @@ export default {
           align: 'right'
         },
         xAxis: {
-          allowDecimals: false
+          allowDecimals: false,
+          categories: date
         },
         yAxis: {
           title: {
@@ -250,7 +293,7 @@ export default {
         },
         plotOptions: {
           area: {
-            pointStart: 2,
+            pointStart: 0,
             marker: {
               enabled: false,
               symbol: 'circle',
@@ -266,12 +309,15 @@ export default {
         series: [{
           name: '数量',
           color: '#0089ff',
-          data: [30, 21, 16, 8, 5, 3, 1, 0, 0, 0]
+          data: data
         }]
       }
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
     },
-    initUserPieChart() {
+    async initUserPieChart() {
+      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
+      const res = await this.getSymptomsUser(req)
+      console.log('+++++getSymptomsUser', res)
       this.userPieOption = {
         chart: {
           spacing: [40, 0, 40, 0]
@@ -331,9 +377,6 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.home{
-
-}
   .daily-card {
     padding: 10px 30px;
     width: 23.5%;
