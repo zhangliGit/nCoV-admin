@@ -34,34 +34,36 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '12%'
-  }, {
-    title: '性别',
-    dataIndex: 'gender',
-    width: '10%',
-    customRender: (text) => {
-      if (text === 1) {
-        return '男'
-      } else if (text === 2) {
-        return '女'
-      } else {
-        return '未知'
-      }
-    }
-  }, {
+  },
+  // {
+  //   title: '性别',
+  //   dataIndex: 'gender',
+  //   width: '10%',
+  //   customRender: (text) => {
+  //     if (text === 1) {
+  //       return '男'
+  //     } else if (text === 2) {
+  //       return '女'
+  //     } else {
+  //       return '未知'
+  //     }
+  //   }
+  // },
+  {
     title: '温度',
-    dataIndex: 'temp',
+    dataIndex: 'temperature',
     width: '12%'
   },
   {
     title: '测温部位',
-    dataIndex: 'part',
+    dataIndex: 'bodyParts',
     width: '12%'
   },
   {
     title: '测温地点',
-    dataIndex: 'area',
+    dataIndex: 'site',
     width: '12%'
   },
   {
@@ -69,11 +71,11 @@ const columns = [
     dataIndex: 'class',
     width: '12%'
   },
-  {
-    title: '联系方式',
-    dataIndex: 'phone',
-    width: '12%'
-  },
+  // {
+  //   title: '联系方式',
+  //   dataIndex: 'phone',
+  //   width: '12%'
+  // },
   {
     title: '照片',
     dataIndex: 'photoPic',
@@ -93,7 +95,10 @@ export default {
     return {
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        reportState: '2', // 上报1，未上报2
+        feverMark: '', // 1发烧2不发烧
+        mark02: ''// 1异常
       },
       total: 0,
       columns,
@@ -107,17 +112,18 @@ export default {
   },
   mounted() {
     this.showList()
-    this.dailyGet()
+    // this.dailyGet()
   },
   methods: {
-    ...mapActions('home', ['getUnReport', 'getDaily']),
+    ...mapActions('home', ['getUnReport', 'getDaily', 'getReport']),
     onPanelChange(value, mode) {
       console.log(value, mode)
     },
     async showList() {
-      const res = await this.getUnReport(this.pageList)
-      this.userList = res.data
-      this.total = res.total
+      const res = await this.getReport(this.pageList)
+      console.log('===', res)
+      this.userList = res.result.list
+      this.total = res.result.totalCount
     },
     async dailyGet() {
       const res = await this.getDaily(this.pageList)
@@ -129,6 +135,23 @@ export default {
     tabChange(key) {
       this.tabActive = key
       console.log(this.tabActive)
+      if (this.tabActive === '1') {
+        this.pageList.reportState = '2'
+        this.pageList.feverMark = ''
+        this.pageList.mark02 = ''
+      } else if (this.tabActive === '2') {
+        this.pageList.reportState = '1'
+        this.pageList.feverMark = ''
+        this.pageList.mark02 = ''
+      } else if (this.tabActive === '3') {
+        this.pageList.reportState = ''
+        this.pageList.feverMark = '1'
+        this.pageList.mark02 = ''
+      } else if (this.tabActive === '4') {
+        this.pageList.reportState = ''
+        this.pageList.feverMark = ''
+        this.pageList.mark02 = '1'
+      }
       this.showList()
     }
   }

@@ -58,7 +58,7 @@
               'teacher',
               {initialValue: appForm.teacher, rules: [{ required: true, message: '请选择校医人员' }]}
             ]"
-            @click="userTag=true"
+            @click="chooseDoctor"
           />
         </a-form-item>
       </div>
@@ -142,17 +142,17 @@
         </a-row>
       </div>
     </a-form>
-    <choose-teacher ref="chooseUser" v-model="userTag" @submit="chooseUser" title="选择校医"></choose-teacher>
+    <choose-doctor ref="chooseUser" v-model="userTag" @submit="chooseUser" title="选择校医"></choose-doctor>
   </div>
 </template>
 
 <script>
-import ChooseTeacher from '../component/ChooseTeacher'
+import ChooseDoctor from './ChooseDoctor'
 import moment from 'moment'
 export default {
   name: 'SetUp',
   components: {
-    ChooseTeacher
+    ChooseDoctor
   },
   data() {
     return {
@@ -188,6 +188,10 @@ export default {
   },
   methods: {
     moment,
+    chooseDoctor() {
+      this.userTag = true
+      this.$refs.chooseUser.showList()
+    },
     handleSubmit(e) {
       e.preventDefault()
       this.form.validateFields((err, values) => {
