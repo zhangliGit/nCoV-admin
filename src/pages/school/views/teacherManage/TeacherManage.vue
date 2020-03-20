@@ -1,6 +1,6 @@
 <template>
   <div class="page-layout qui-fx-ver">
-    <search-form @search-form="searchForm" :search-label="searchLabel">
+    <search-form isReset @search-form="searchForm" :search-label="searchLabel">
       <div slot="left" class="top-btn-group">
         <a-button icon="plus" class="add-btn" @click="add(0)">添加教职工</a-button>
         <a-button icon="plus" class="add-btn">邀请教职工</a-button>
@@ -17,7 +17,7 @@
       :form-data="formData"
     >
       <div slot="upload">
-        <upload-multi :length="1" v-model="fileList" :fileInfo="fileInfo"></upload-multi>
+        <upload-one :file-info="fileInfo" v-model="picUrl"></upload-one>
       </div>
     </submit-form>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
@@ -46,12 +46,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
-import UploadMulti from '@c/UploadMulti'
+import UploadOne from '@c/UploadOne'
 const columns = [
   {
     title: '序号',
@@ -62,7 +62,7 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '10%'
   },
   {
@@ -81,31 +81,29 @@ const columns = [
   },
   {
     title: '职位',
-    dataIndex: 'position',
+    dataIndex: 'classChargeMark ',
     width: '10%',
     customRender: text => {
       if (text === 1) {
         return '班主任'
       } else if (text === 2) {
         return '教职工'
-      } else {
-        return '未知'
       }
     }
   },
   {
     title: '工号',
-    dataIndex: 'num',
+    dataIndex: 'workNo',
     width: '10%'
   },
   {
     title: '手机号',
-    dataIndex: 'tel',
+    dataIndex: 'phone',
     width: '10%'
   },
   {
     title: '人脸照片',
-    dataIndex: 'photoPic',
+    dataIndex: 'profilePhoto',
     width: '10%',
     scopedSlots: {
       customRender: 'photoPic'
@@ -132,7 +130,7 @@ const searchLabel = [
     placeholder: '请输入姓名'
   },
   {
-    value: 'tel',
+    value: 'phone',
     type: 'input',
     label: '手机号',
     placeholder: '请输入手机号'
@@ -140,29 +138,29 @@ const searchLabel = [
 ]
 const formData = [
   {
-    value: 'name',
+    value: 'userName',
     initValue: '',
     type: 'input',
     label: '姓名',
     placeholder: '请输入姓名'
   },
   {
-    value: 'tel',
+    value: 'phone',
     initValue: '',
     type: 'input',
     label: '手机号',
     placeholder: '手机号'
   },
   {
-    value: 'position',
+    value: 'classChargeMark',
     initValue: 1,
     list: [
       {
-        key: 1,
+        key: '1',
         val: '班主任'
       },
       {
-        key: 2,
+        key: '2',
         val: '教职工'
       }
     ],
@@ -189,7 +187,7 @@ const formData = [
     placeholder: '请选择性别'
   },
   {
-    value: 'num',
+    value: 'userNo',
     initValue: '',
     type: 'input',
     required: false,
@@ -216,7 +214,7 @@ export default {
     TableList,
     SearchForm,
     SubmitForm,
-    UploadMulti,
+    UploadOne,
     PageNum
   },
   data() {
@@ -233,35 +231,44 @@ export default {
       total: 0,
       userList: [],
       fileInfo: {
-        url: '/upload/base/file/freeUpload', // 接口地址
+        url: '', // 接口地址
         tip: '上传图片',
         h: 120, // 高度
         w: 120 // 宽度
       },
-      fileList: []
+      picUrl: ''
     }
   },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   mounted() {
+    this.fileInfo.url = `/admin/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getTeacherList']),
-    async showList() {
-      const res = await this.getTeacherList()
-      this.userList = res.data
-      this.total = res.total
+    ...mapActions('home', ['getUserList', 'addTeacher']),
+    async showList(searchObj = {}) {
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        userType: 1,
+        ...searchObj
+      }
+      const res = await this.getUserList(req)
+      this.userList = res.result.list
+      this.total = res.result.totalCount
     },
     add(type, record = {}) {
       this.formStatus = true
       if (type) {
         // 编辑
-        this.fileList = []
+        this.picUrl = ''
         this.formData = this.$tools.fillForm(formData, record)
         this.fileList.push({ uid: record.id, url: record.photoPic })
       } else {
         // 添加
         this.formData = formData
-        this.fileList = []
+        this.picUrl = ''
       }
     },
     del(record) {
@@ -269,10 +276,25 @@ export default {
     },
     searchForm(values) {
       console.log(values)
+      const searchObj = {
+        userName: values.name,
+        phone: values.tel
+      }
+      this.showList(searchObj)
     },
-    submitForm(values) {
+    async submitForm(values) {
       console.log(values)
+      const req = {
+        ...values,
+        schoolCode: this.userInfo.orgCode,
+        profilePhoto: this.picUrl
+      }
+      console.log(req)
+      await this.addTeacher(req)
+      this.$message.success('添加成功')
       setTimeout(() => {
+        this.picUrl = ''
+        this.showList()
         this.$refs.form.reset()
       }, 2000)
     },

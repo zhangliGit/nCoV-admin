@@ -11,9 +11,10 @@ const schoolApi = {
   getClassInfoList: '/school/classInfo/getClassDetailInfo#postForm', // 班级信息列表
   deleteClass: '/school/classInfo/deleteById#delete', // 删除班级
   bathAddClass: '/school/classInfo/bathAddClass#postForm', // 新增班级
-  getUserList: '/school/userinfo/getRiskUserList#post', // 学生教职工管理列表
-  getTeacherList: '/school/userinfo/getRiskUserList#post', // 教职工管理列表
-  getRiskList: '/riskList#get', // 风险人员名单
+  getUserList: '/school/userinfo/getUserInfoList#post', // 学生教职工管理列表
+  addStudent: '/mobile/patriarchinfo/stu/mobile/save#post', // 新增学生
+  addTeacher: '/user/staff/save#post', // 新增教职工
+  getRiskList: '/school/userinfo/getRiskUserList#post', // 风险人员名单
   getreportList: '/school/userinfo/getUserInfoList#post', // 上报记录
   getLatestMedicalInfo: '/school/medicalinfo/getLatestMedicalInfo#postQuery', // 获取体检最新一条记录
   updateInfo: '/school/medicalinfo/update#post', // 修改体检数据

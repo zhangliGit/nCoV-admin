@@ -3,31 +3,39 @@
     <div>
       <div class="daily-card qui-fx qui-fx-ac" v-for="item in baseList" :key="item.id">
         <div class="img-box" :style="`background:${item.color}`">
-          <img :src="item.icon" alt="">
+          <img :src="item.icon" alt />
         </div>
         <div class="qui-fx-f1" style="text-align:center;">
-          <div class="num">{{item.num}}</div>
-          <div class="tip">{{item.tip}}</div>
+          <div class="num">{{ item.num }}</div>
+          <div class="tip">{{ item.tip }}</div>
         </div>
       </div>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <chart-component :style="{height:chartHeight}" :id="heatId" :option="heatOption"></chart-component>
+          <chart-component :style="{ height: chartHeight }" :id="heatId" :option="heatOption"></chart-component>
         </a-col>
         <a-col :span="6">
-          <chart-component :style="{height:chartHeight}" :id="userPieId" :option="userPieOption"></chart-component>
+          <chart-component :style="{ height: chartHeight }" :id="userPieId" :option="userPieOption"></chart-component>
         </a-col>
       </a-row>
     </div>
-    <div style="margin-top:10px;" >
+    <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <chart-component :style="{height:chartHeight}" :id="unReportId" :option="unReportOption"></chart-component>
+          <chart-component
+            :style="{ height: chartHeight }"
+            :id="unReportId"
+            :option="unReportOption"
+          ></chart-component>
         </a-col>
         <a-col :span="6">
-          <chart-component :style="{height:chartHeight}" :id="unHealthyId" :option="unHealthyOption"></chart-component>
+          <chart-component
+            :style="{ height: chartHeight }"
+            :id="unHealthyId"
+            :option="unHealthyOption"
+          ></chart-component>
         </a-col>
       </a-row>
     </div>
@@ -72,7 +80,7 @@ export default {
     ...mapState('home', ['userInfo'])
   },
   created() {
-    this.chartHeight = (document.body.clientHeight * 0.35) + 'px'
+    this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
   mounted() {
     this.showList()
@@ -87,10 +95,19 @@ export default {
         return '--'
       }
       const d = new Date(date)
-      return d.getFullYear() + '-' + ((d.getMonth() + 1) > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) + '-' + (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) + ' ' +
-            (d.getHours() > 9 ? d.getHours() : '0' + d.getHours()) + ':' + (d.getMinutes() > 9 ? d.getMinutes() : '0' +
-              d.getMinutes()) +
-            ':' + (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
+      return (
+        d.getFullYear() +
+        '-' +
+        (d.getMonth() + 1 > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) +
+        '-' +
+        (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) +
+        ' ' +
+        (d.getHours() > 9 ? d.getHours() : '0' + d.getHours()) +
+        ':' +
+        (d.getMinutes() > 9 ? d.getMinutes() : '0' + d.getMinutes()) +
+        ':' +
+        (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
+      )
     },
     async showList() {
       const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
@@ -166,7 +183,6 @@ export default {
             dataLabels: {
               enabled: true,
               format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-
             },
             showInLegend: true
           }
@@ -201,7 +217,9 @@ export default {
       this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
     },
     async initHeatChart() {
-      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(new Date((new Date()).getTime() - 15 * 24 * 60 * 60 * 1000))}&endTime=${this.getDateTime(new Date())}`
+      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
+        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
+      )}&endTime=${this.getDateTime(new Date())}`
       const res = await this.getFeverAndHealth(req)
       const feverData = res.result.feverNum.map(item => {
         return item.num
@@ -236,7 +254,7 @@ export default {
             text: ''
           },
           labels: {
-            formatter: function () {
+            formatter: function() {
               return this.value
             }
           }
@@ -259,20 +277,25 @@ export default {
             }
           }
         },
-        series: [{
-          name: '发热次数',
-          color: '#ff0000',
-          data: feverData
-        }, {
-          name: '异常次数',
-          color: '#ffac00',
-          data: unnormalData
-        }]
+        series: [
+          {
+            name: '发热次数',
+            color: '#ff0000',
+            data: feverData
+          },
+          {
+            name: '异常次数',
+            color: '#ffac00',
+            data: unnormalData
+          }
+        ]
       }
       this.heatChart = new Highcharts.Chart(this.heatId, this.heatOption)
     },
     async initUnReportChart() {
-      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(new Date((new Date()).getTime() - 15 * 24 * 60 * 60 * 1000))}&endTime=${this.getDateTime(new Date())}`
+      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
+        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
+      )}&endTime=${this.getDateTime(new Date())}`
       const res = await this.getNoReport(req)
       console.log('+++++getNoReport', res)
       const data = res.result.map(item => {
@@ -305,7 +328,7 @@ export default {
             text: ''
           },
           labels: {
-            formatter: function () {
+            formatter: function() {
               return this.value
             }
           }
@@ -328,11 +351,13 @@ export default {
             }
           }
         },
-        series: [{
-          name: '数量',
-          color: '#0089ff',
-          data: data
-        }]
+        series: [
+          {
+            name: '数量',
+            color: '#0089ff',
+            data: data
+          }
+        ]
       }
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
     },
@@ -381,30 +406,30 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  .daily-card {
-    padding: 10px 30px;
-    width: 23.5%;
-    float: left;
-    margin-left: 2%;
-    height: 80px;
-    border-radius: 5px;
-    background-color: #fff;
-    &:first-of-type{
-      margin: 0;
-    }
-    .img-box{
-      width: 50px;
-      height: 50px;
-      line-height: 50px;
-      text-align: center;
-      border-radius: 50%;
-    }
-    .num {
-      font-size: 24px;
-      font-weight: bold;
-    }
-    .tip{
-      font-size: 16px;
-    }
+.daily-card {
+  padding: 10px 30px;
+  width: 23.5%;
+  float: left;
+  margin-left: 2%;
+  height: 80px;
+  border-radius: 5px;
+  background-color: #fff;
+  &:first-of-type {
+    margin: 0;
   }
+  .img-box {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 50%;
+  }
+  .num {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .tip {
+    font-size: 16px;
+  }
+}
 </style>
