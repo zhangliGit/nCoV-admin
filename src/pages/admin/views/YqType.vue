@@ -13,7 +13,12 @@
     <table-list :columns="columns" :table-list="yqList">
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="编辑">
-          <a-button size="small" class="edit-action-btn" icon="form" @click="modify(1, action.record)"></a-button>
+          <a-button
+            size="small"
+            class="edit-action-btn"
+            icon="form"
+            @click="modify(1, action.record)"
+          ></a-button>
         </a-tooltip>
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
           <template slot="title">您确定删除吗?</template>
@@ -119,6 +124,7 @@ export default {
   methods: {
     ...mapActions('home', ['getRiskList', 'addRisk', 'updateRisk', 'delRisk']),
     async showList() {
+      let check = ''
       const res = await this.getRiskList()
       this.yqList = res.result
     },
