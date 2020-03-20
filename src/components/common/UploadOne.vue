@@ -1,7 +1,7 @@
 <template>
   <div class="upload-file">
     <a-upload
-      name="fileList"
+      name="file"
       listType="picture-card"
       class="avatar-uploader"
       :showUploadList="false"
@@ -83,7 +83,7 @@ export default {
         }
         getBase64(info.file.originFileObj, imageUrl => {
           this.imageUrl = imageUrl
-          const url = info.file.response.data[0].url
+          const url = info.file.response
           this.$emit('input', url)
           this.uploadTag = false
         })
