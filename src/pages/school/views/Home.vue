@@ -63,7 +63,9 @@ export default {
       unReportChart: null,
       userPieChart: null,
       unHealthyChart: null,
-      chartHeight: ''
+      chartHeight: '',
+      dailyData: {},
+      symptomList: []
     }
   },
   computed: {
@@ -74,13 +76,12 @@ export default {
   },
   mounted() {
     this.showList()
+    this.symptomGet()
     this.initHeatChart()
     this.initUnReportChart()
-    this.initUserPieChart()
-    this.initUnHealthyChart()
   },
   methods: {
-    ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser']),
+    ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
     getDateTime (date) {
       if (date === '' || date === null) {
         return '--'
@@ -94,6 +95,8 @@ export default {
     async showList() {
       const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
       const res = await this.getDailyData(req)
+      this.dailyData = res.result
+      this.initUserPieChart()
       this.baseList = [{
         id: 1,
         icon: reportImg,
@@ -120,7 +123,25 @@ export default {
         color: '#ffdedf'
       }]
     },
-    initUnHealthyChart() {
+    async symptomGet() {
+      const res = await this.getSymptomList()
+      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
+      const result = await this.getSymptomsUser(req)
+      const res1 = res.result
+      this.symptomList = result.result
+      for (var i = 0; i < this.symptomList.length; i++) {
+        for (var j = 0; j < res1.length; j++) {
+          if (this.symptomList[i].MARK === res1[j].symptomsCode) {
+            this.symptomList[i].name = res1[j].symptomsName
+            this.symptomList[i].y = this.symptomList[i].count1
+            break
+          }
+        }
+      }
+      console.log('this.symptomList', this.symptomList)
+      this.initUnHealthyChart()
+    },
+    async initUnHealthyChart() {
       this.unHealthyOption = {
         chart: {
           plotBackgroundColor: null,
@@ -153,27 +174,28 @@ export default {
         series: [{
           name: 'Brands',
           colorByPoint: true,
-          data: [{
-            name: '发热',
-            y: 61.41,
-            sliced: true,
-            selected: true
-          }, {
-            name: '咳嗽',
-            y: 11.84
-          }, {
-            name: '腹泻',
-            y: 10.85
-          }, {
-            name: '咽痛',
-            y: 4.67
-          }, {
-            name: '乏力',
-            y: 4.18
-          }, {
-            name: '鼻塞流涕',
-            y: 7.05
-          }]
+          data: this.symptomList
+          // [{
+          //   name: '发热',
+          //   y: 61.41,
+          //   sliced: true,
+          //   selected: true
+          // }, {
+          //   name: '咳嗽',
+          //   y: 11.84
+          // }, {
+          //   name: '腹泻',
+          //   y: 10.85
+          // }, {
+          //   name: '咽痛',
+          //   y: 4.67
+          // }, {
+          //   name: '乏力',
+          //   y: 4.18
+          // }, {
+          //   name: '鼻塞流涕',
+          //   y: 7.05
+          // }]
         }]
       }
       this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
@@ -315,9 +337,6 @@ export default {
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
     },
     async initUserPieChart() {
-      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
-      const res = await this.getSymptomsUser(req)
-      console.log('+++++getSymptomsUser', res)
       this.userPieOption = {
         chart: {
           spacing: [40, 0, 40, 0]
@@ -343,21 +362,6 @@ export default {
               style: {
                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
               }
-            },
-            point: {
-              events: {
-                mouseOver: function(e) { // 鼠标滑过时动态更新标题
-                // 标题更新函数，API 地址：https://api.hcharts.cn/highcharts#Chart.setTitle
-                // chart.setTitle({
-                // 	text: e.target.name+ '\t'+ e.target.y + ' %'
-                // });
-                }
-              // click: function(e) { // 同样的可以在点击事件里处理
-              //     chart.setTitle({
-              //         text: e.point.name+ '\t'+ e.point.y + ' %'
-              //     });
-              // }
-              }
             }
           }
         },
@@ -366,8 +370,8 @@ export default {
           innerSize: '80%',
           name: '市场份额',
           data: [
-            ['发热', 20],
-            ['未发热', 70]
+            ['发热', this.dailyData.healthNum],
+            ['未发热', this.dailyData.noFeverNum]
           ]
         }]
       }

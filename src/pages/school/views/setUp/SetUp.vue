@@ -1,49 +1,23 @@
 <template>
   <div class="set-up page-layout qui-fx-ver">
     <a-form :form="form" @submit="handleSubmit" :style="{maxHeight:maxHeight}">
-      <div style="height:230px;">
+      <div style="height:170px;">
         <div class="title-box" style="margin-bottom:10px;">
           <span class="title-icon"></span>
           <span class="title-text">温度设置</span>
         </div>
-        <a-row :gutter="24">
+        <a-row :gutter="24" v-for="(item,index) in tempList" :key="item.id">
           <a-col :span="11">
-            <a-form-item label="腋下、颈部发热温度值" :label-col="{ span: 10 }" :wrapper-col="{ span: 14 }">
+            <a-form-item :label="item.bodyPartsName" :label-col="{ span: 10 }" :wrapper-col="{ span: 14 }">
               <a-input
                 v-decorator="[
-                  'armpit',
-                  { initialValue: appForm.armpit, rules: [{ required: true, message: '请填写腋下、颈部发热温度值' }]}
+                  `temp${item.id}`,
+                  { initialValue: item.temperature, rules: [{ required: true, message: '请填写发热温度值' }]}
                 ]"
               />
             </a-form-item>
           </a-col>
-          <a-col :span="13">（腋下、颈部等测温采用该值，同时未知的测温位置测温默认采用该值）</a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="11">
-            <a-form-item label="口腔发热温度值" :label-col="{ span: 10 }" :wrapper-col="{ span: 14 }">
-              <a-input
-                v-decorator="[
-                  'mouth',
-                  {initialValue: appForm.mouth, rules: [{ required: true, message: '请填写口腔发热温度值' }]}
-                ]"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span="13">（口腔测温采用该值）</a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="11">
-            <a-form-item label="额头、面部发热温度值" :label-col="{ span: 10 }" :wrapper-col="{ span: 14 }">
-              <a-input
-                v-decorator="[
-                  'head',
-                  {initialValue: appForm.head, rules: [{ required: true, message: '请填写额头、面部发热温度值' }]}
-                ]"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span="13">（额头测温枪、人脸测温面板机测温等采用该值）</a-col>
+          <!--<a-col :span="13">（腋下、颈部等测温采用该值，同时未知的测温位置测温默认采用该值）</a-col>-->
         </a-row>
       </div>
       <div style="height:100px">
@@ -53,7 +27,7 @@
         </div>
         <a-form-item label="校医人员" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-input
-            readonly
+            readOnly
             v-decorator="[
               'teacher',
               {initialValue: appForm.teacher, rules: [{ required: true, message: '请选择校医人员' }]}
@@ -86,8 +60,8 @@
           ></a-checkbox-group>
         </a-form-item>
       </div>
-      <div style="height:230px;">
-        <div class="title-box" style="margin-bottom:10px;">
+      <div style="height:30px;">
+        <!--  <div class="title-box" style="margin-bottom:10px;">
           <span class="title-icon"></span>
           <span class="title-text">上报提醒</span>
         </div>
@@ -133,7 +107,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="13">（截止时间为发送时间2小时后）</a-col>
-        </a-row>
+        </a-row>-->
         <a-row>
           <a-col :span="24" :style="{ textAlign: 'center',marginBottom:'10px'}">
             <a-button type="primary" html-type="submit">保存</a-button>
@@ -142,13 +116,14 @@
         </a-row>
       </div>
     </a-form>
-    <choose-doctor ref="chooseUser" v-model="userTag" @submit="chooseUser" title="选择校医"></choose-doctor>
+    <choose-doctor ref="chooseUser" v-model="userTag" @submit="choose" title="选择校医"></choose-doctor>
   </div>
 </template>
 
 <script>
 import ChooseDoctor from './ChooseDoctor'
 import moment from 'moment'
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'SetUp',
   components: {
@@ -183,11 +158,43 @@ export default {
         head: '',
         teacher: '',
         switch: ''
-      }
+      },
+      tempList: {},
+      userList: []
     }
+  },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
+  mounted() {
+    this.tmpListGet()
+    this.informGet()
+    this.informUserGet()
+    this.doctorList()
   },
   methods: {
     moment,
+    ...mapActions('home', ['gettmpList', 'getInform', 'getInformUser', 'addDoctor', 'getInfoDoctor']),
+    async tmpListGet() {
+      const res = await this.gettmpList(`schoolCode=${this.userInfo.orgCode}`)
+      console.log('tmpList', res)
+      this.tempList = res.result
+      console.log('this.tempList', this.tempList)
+    },
+    async informGet() {
+      const res = await this.getInform(`schoolCode=${this.userInfo.orgCode}`)
+      console.log('informGet', res)
+    },
+    async informUserGet() {
+      const res = await this.getInformUser(`schoolCode=${this.userInfo.orgCode}`)
+      console.log('informUserGet', res)
+    },
+    async doctorList() {
+      const userData = await this.getInfoDoctor('schoolCode=CANPOINT')
+      // const userData = await this.getInfoDoctor(`schoolCode=${this.userInfo.orgCode}`)
+      this.userList = userData.result
+      this.appForm.teacher = this.userList.map(el => el.userName).join(',')
+    },
     chooseDoctor() {
       this.userTag = true
       this.$refs.chooseUser.showList()
@@ -200,18 +207,23 @@ export default {
         }
       })
     },
-    add() {
-      this.timeList.push(1)
-    },
-    del(index) {
-      this.timeList.splice(index, 1)
-    },
-    chooseUser(item) {
-      console.log(item)
-      setTimeout(() => {
+    async choose(item) {
+      console.log('chooseUser', item)
+      await this.addDoctor(item)
+      this.userTag = false
+      this.$refs.confirmLoading = false
+      this.$message.success('操作成功')
+      this.$tools.goNext(() => {
         this.$refs.chooseUser.reset()
-      }, 2000)
+      })
+      this.appForm.teacher = item.map(el => el.name).join(',')
     }
+    // add() {
+    //   this.timeList.push(1)
+    // },
+    // del(index) {
+    //   this.timeList.splice(index, 1)
+    // },
   }
 }
 </script>

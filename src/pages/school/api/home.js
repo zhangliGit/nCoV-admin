@@ -15,7 +15,16 @@ const homeApi = {
   getDailyData: '/index/page/getEpidemicData#postQuery', // 获取首页疫情日报数据
   getFeverAndHealth: '/index/page/getFeverAndHealthData#postQuery', // 获取首页发热和健康数
   getNoReport: '/index/page/getNoReportUserData#postQuery', // 获取首页未上报人数统计
-  getSymptomsUser: '/index/page/getSymptomsUserData#postQuery' // 获取首页个症状人数统计
+  getSymptomsUser: '/index/page/getSymptomsUserData#postQuery', // 获取首页个症状人数统计
+  getSymptomList: '/operate/symptomsinfo/list#get', // 获取症状信息列表
+  getInformUser: '/school/informpersoninfo/list#postQuery', // 获取学校通知人员的设置
+  updateInformUser: '/school/informpersoninfo/update#post', // update学校通知人员的设置
+  getInform: '/school/informpersoninfo/list#postQuery', // 获取学校设置的通知方式
+  updateInform: '/school/informpersoninfo/update#post', // update设置学校的通知方式
+  gettmpList: '/school/bodypartstemperatureinfo/getSchoolDoctorList#postQuery', // 获取体温设置列表
+  saveTmpList: '/school/bodypartstemperatureinfo/save#post', // save体温设置
+  updateTmpList: '/school/bodypartstemperatureinfo/update#post', // update体温设置
+  addDoctor: '/school/schooldoctorinfo/batchAdd#post' // 批量设置校医
 }
 for (const val in homeApi) {
   homeApi[val] = `/admin${homeApi[val]}`
