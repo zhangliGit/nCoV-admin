@@ -119,6 +119,8 @@ export default {
   methods: {
     ...mapActions('home', ['getUnReport', 'getDaily', 'getReport']),
     select(value) {
+      this.pageList.page = 1
+      this.pageList.size = 20
       this.pageList.reportTime = moment(value).format('YYYY-MM-DD')
       this.showList()
     },
@@ -155,6 +157,8 @@ export default {
         this.pageList.feverMark = ''
         this.pageList.mark02 = '1'
       }
+      this.pageList.page = 1
+      this.pageList.size = 20
       this.showList()
     }
   }

@@ -181,14 +181,14 @@ export default {
           click: () => {
             if (this.isRadio) {
               this.selectedRowKeys = [record.id]
-              this.$emit('clickRow', { id: record.id, name: record.userName }, true)
+              this.$emit('clickRow', { id: record.id, name: record.userName, ...record }, true)
             } else if (this.isCheck) {
               const index = this.selectedRowKeys.indexOf(record.id)
               if (index > -1) {
                 this.selectedRowKeys.splice(index, 1)
-                this.$emit('clickRow', { id: record.id, name: record.userName }, false)
+                this.$emit('clickRow', { id: record.id, name: record.userName, ...record }, false)
               } else {
-                this.$emit('clickRow', { id: record.id, name: record.userName }, true)
+                this.$emit('clickRow', { id: record.id, name: record.userName, ...record }, true)
                 this.selectedRowKeys.push(record.id)
               }
             }
