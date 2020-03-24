@@ -6,7 +6,7 @@
       :title="title"
       v-model="formStatus"
       :form-data="formData"
-    ></submit-form> -->
+    ></submit-form>-->
     <div class="top-btn-group">
       <a-button icon="plus" class="add-btn" @click="modify(0)">新增学校</a-button>
     </div>
@@ -96,19 +96,23 @@ const columns = [
     scopedSlots: {
       customRender: 'index'
     }
-  }, {
+  },
+  {
     title: '学校名称',
     dataIndex: 'organizationName',
     width: '20%'
-  }, {
+  },
+  {
     title: '学校编码',
     dataIndex: 'organizationCode',
     width: '15%'
-  }, {
+  },
+  {
     title: '账号',
     dataIndex: 'manageName',
     width: '10%'
-  }, {
+  },
+  {
     title: '密码',
     dataIndex: 'password',
     width: '10%'
@@ -122,7 +126,8 @@ const columns = [
     title: '手机号码',
     dataIndex: 'phone',
     width: '20%'
-  }, {
+  },
+  {
     title: '操作',
     width: '20%',
     scopedSlots: {
@@ -145,7 +150,7 @@ export default {
         size: 20,
         organizationType: '2'
       },
-      total: 100,
+      total: 0,
       columns,
       schoolList: [],
       title: '新增学校'

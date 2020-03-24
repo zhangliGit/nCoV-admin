@@ -64,7 +64,8 @@ const formData = [
     label: '账号',
     max: 50,
     placeholder: '请输入账号'
-  }, {
+  },
+  {
     value: 'password',
     initValue: '',
     type: 'input',
@@ -96,19 +97,23 @@ const columns = [
     scopedSlots: {
       customRender: 'index'
     }
-  }, {
+  },
+  {
     title: '机构名称',
     dataIndex: 'organizationName',
     width: '14%'
-  }, {
+  },
+  {
     title: '机构编码',
     dataIndex: 'organizationCode',
     width: '12%'
-  }, {
+  },
+  {
     title: '账号',
     dataIndex: 'manageName',
     width: '14%'
-  }, {
+  },
+  {
     title: '密码',
     dataIndex: 'password',
     width: '14%'
@@ -122,14 +127,16 @@ const columns = [
     title: '手机号码',
     dataIndex: 'phone',
     width: '14%'
-  }, {
+  },
+  {
     title: '关联学校数',
     // dataIndex: 'num',
     width: '10%',
     scopedSlots: {
       customRender: 'num'
     }
-  }, {
+  },
+  {
     title: '操作',
     width: '14%',
     scopedSlots: {
@@ -151,7 +158,7 @@ export default {
         size: 20,
         organizationType: '1'
       },
-      total: 100,
+      total: 0,
       columns,
       orgList: [],
       title: '新增机构',
@@ -199,7 +206,7 @@ export default {
         this.title = '新增机构'
       }
     },
-    async submitForm (values) {
+    async submitForm(values) {
       values.organizationType = '1'
       // console.log(values)
       try {
