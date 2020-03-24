@@ -76,7 +76,7 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'username',
+    dataIndex: 'userName',
     width: '10%'
   },
   {
@@ -95,12 +95,12 @@ const columns = [
   },
   {
     title: '学号',
-    dataIndex: 'work_no',
+    dataIndex: 'workNo',
     width: '10%'
   },
   {
     title: '班级',
-    dataIndex: 'classname',
+    dataIndex: 'className',
     width: '10%'
   },
   {
@@ -124,7 +124,7 @@ const columns = [
   },
   {
     title: '风险时间',
-    dataIndex: 'risktime',
+    dataIndex: 'riskTime',
     width: '10%'
   },
   {
