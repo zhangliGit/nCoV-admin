@@ -9,12 +9,10 @@ let admin = ''
 
 if (ConfigEnv === 'test') {
   admin = '/admin'
-  // hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
-} else if (ConfigEnv === 'prod') { // 线上接口
-  // hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
+} else if (ConfigEnv === 'prod') {
+  // 线上接口
   admin = '/admin'
 } else {
-  // hostEnv = 'http://yapi.demo.qunar.com/mock/85606'
   admin = '/admin'
 }
 
