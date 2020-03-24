@@ -124,7 +124,7 @@ const searchLabel = [
   },
   {
     list: [
-       {
+      {
         key: '',
         val: '全部'
       },
@@ -152,7 +152,7 @@ const searchLabel = [
   }
 ]
 export default {
-  name: 'reportManageTea',
+  name: 'ReportManageTea',
   components: {
     TableList,
     SearchForm,
@@ -169,7 +169,7 @@ export default {
         schoolCode: ''
       },
       total: 0,
-      userList: [],
+      userList: []
     }
   },
   computed: {
@@ -191,10 +191,13 @@ export default {
       this.showList()
       console.log(values)
     },
-     reportList() {
+    reportList() {
       const schoolCode = this.userInfo.orgCode
-      window.location.href ='http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +schoolCode+'&userType=1&excelUrl=1'   
-      },
+      window.location.href =
+        'http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +
+        schoolCode +
+        '&userType=1&excelUrl=1'
+    },
     detail(record) {
       this.$router.push({
         path: '/component/detail',
@@ -209,7 +212,7 @@ export default {
           profilePhoto: record.profilePhoto
         }
       })
-    },
+    }
   }
 }
 </script>

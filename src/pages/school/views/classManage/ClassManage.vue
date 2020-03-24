@@ -138,10 +138,9 @@ export default {
   },
   created() {
     this.getGradeInfo()
+    this.showList('')
   },
-  mounted() {
-    console.log(this.userInfo)
-  },
+  async mounted() {},
   methods: {
     ...mapActions('home', ['getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList']),
     // 获取年级列表

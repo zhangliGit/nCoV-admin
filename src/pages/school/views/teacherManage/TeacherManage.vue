@@ -3,10 +3,10 @@
     <search-form isReset @search-form="searchForm" :search-label="searchLabel">
       <div slot="left" class="top-btn-group">
         <a-button icon="plus" class="add-btn" @click="add(0)">添加教职工</a-button>
-        <a-button icon="plus" class="add-btn">邀请教职工</a-button>
+        <!-- <a-button icon="plus" class="add-btn">邀请教职工</a-button>
         <a-button icon="export" class="export-btn">导入教职工</a-button>
         <a-button icon="export" class="export-all-btn">导入人脸</a-button>
-        <a-button icon="export" class="del-btn">导出</a-button>
+        <a-button icon="export" class="del-btn">导出</a-button> -->
       </div>
     </search-form>
     <submit-form
@@ -31,14 +31,14 @@
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
         </a-popconfirm>
-        <a-tooltip placement="topLeft" title="查看健康档案">
+        <!-- <a-tooltip placement="topLeft" title="查看健康档案">
           <a-button
             size="small"
             class="detail-action-btn"
             icon="ellipsis"
             @click="goDetail(action.record)"
           ></a-button>
-        </a-tooltip>
+        </a-tooltip> -->
       </template>
     </table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
@@ -70,9 +70,9 @@ const columns = [
     dataIndex: 'gender',
     width: '10%',
     customRender: text => {
-      if (text === 1) {
+      if (text === '1') {
         return '男'
-      } else if (text === 2) {
+      } else if (text === '2') {
         return '女'
       } else {
         return '未知'
@@ -81,12 +81,12 @@ const columns = [
   },
   {
     title: '职位',
-    dataIndex: 'classChargeMark ',
+    dataIndex: 'classChargeMark',
     width: '10%',
     customRender: text => {
-      if (text === 1) {
+      if (text === '1') {
         return '班主任'
-      } else if (text === 2) {
+      } else if (text === '2') {
         return '教职工'
       }
     }
@@ -174,11 +174,11 @@ const formData = [
     required: false,
     list: [
       {
-        key: 1,
+        key: '1',
         val: '男'
       },
       {
-        key: 2,
+        key: '2',
         val: '女'
       }
     ],
@@ -187,7 +187,7 @@ const formData = [
     placeholder: '请选择性别'
   },
   {
-    value: 'userNo',
+    value: 'workNo',
     initValue: '',
     type: 'input',
     required: false,
@@ -222,13 +222,15 @@ export default {
       columns,
       searchLabel,
       formData,
-      title: '添加学教职工',
+      title: '添加教职工',
       formStatus: false,
       pageList: {
         page: 1,
         size: 20
       },
       total: 0,
+      type: 0,
+      record: null,
       userList: [],
       fileInfo: {
         url: '', // 接口地址
@@ -247,11 +249,12 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getUserList', 'addTeacher']),
+    ...mapActions('home', ['getUserList', 'addTeacher', 'deleUser', 'editUser']),
     async showList(searchObj = {}) {
       const req = {
         schoolCode: this.userInfo.orgCode,
         userType: 1,
+        ...this.pageList,
         ...searchObj
       }
       const res = await this.getUserList(req)
@@ -262,41 +265,71 @@ export default {
       this.formStatus = true
       if (type) {
         // 编辑
-        this.picUrl = ''
+        this.type = 1
+        this.record = record
+        this.picUrl = record['profilePhoto']
         this.formData = this.$tools.fillForm(formData, record)
-        this.fileList.push({ uid: record.id, url: record.photoPic })
       } else {
         // 添加
+        this.type = 0
         this.formData = formData
         this.picUrl = ''
       }
     },
-    del(record) {
-      console.log(record)
+    async del(record) {
+      console.log(record.id)
+      const req = {
+        id: record.id
+      }
+      console.log(req)
+      await this.deleUser(req)
+      this.$message.success('删除成功')
+      setTimeout(() => {
+        this.showList()
+      }, 2000)
     },
     searchForm(values) {
       console.log(values)
       const searchObj = {
         userName: values.name,
-        phone: values.tel
+        phone: values.phone
       }
       this.showList(searchObj)
     },
     async submitForm(values) {
       console.log(values)
-      const req = {
-        ...values,
-        schoolCode: this.userInfo.orgCode,
-        profilePhoto: this.picUrl
+      if (this.type) {
+        const req = {
+          ...values,
+          schoolCode: this.userInfo.orgCode,
+          profilePhoto: this.picUrl,
+          id: this.record.id
+        }
+        console.log(req)
+        req.userNo = values.workNo
+        await this.editUser(req)
+        this.$message.success('编辑成功')
+        setTimeout(() => {
+          this.picUrl = ''
+          this.showList()
+          this.$refs.form.reset()
+        }, 2000)
+      } else {
+        const req = {
+          ...values,
+          schoolCode: this.userInfo.orgCode,
+          profilePhoto: this.picUrl
+        }
+        console.log(req)
+        req.userNo = values.workNo
+        await this.addTeacher(req)
+        this.$message.success('添加成功')
+        setTimeout(() => {
+          this.picUrl = ''
+          this.showList()
+          this.$refs.form.reset()
+        }, 2000)
       }
-      console.log(req)
-      await this.addTeacher(req)
-      this.$message.success('添加成功')
-      setTimeout(() => {
-        this.picUrl = ''
-        this.showList()
-        this.$refs.form.reset()
-      }, 2000)
     },
     goDetail(record) {
       const obj = {

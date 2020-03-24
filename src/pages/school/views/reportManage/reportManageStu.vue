@@ -155,7 +155,7 @@ export default {
     return {
       searchLabel,
       columns,
-      total: 100,
+      total: 0,
       pageList: {
         page: 1,
         size: 20,
@@ -194,10 +194,13 @@ export default {
       this.pageList = Object.assign(values, this.pageList)
       this.showList()
     },
-       reportList() {
+    reportList() {
       const schoolCode = this.userInfo.orgCode
-      window.location.href ='http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +schoolCode+'&userType=2&excelUrl=1'   
-      },
+      window.location.href =
+        'http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +
+        schoolCode +
+        '&userType=2&excelUrl=1'
+    },
     detail(record) {
       this.$router.push({
         path: '/component/detail',

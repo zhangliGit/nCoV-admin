@@ -13,11 +13,14 @@ const schoolApi = {
   bathAddClass: '/school/classInfo/bathAddClass#postForm', // 新增班级
   getUserList: '/school/userinfo/getUserInfoList#post', // 学生教职工管理列表
   addStudent: '/mobile/patriarchinfo/stu/mobile/save#post', // 新增学生
+  editUser: '/school/userinfo/updateStudentInfo#post', // 编辑人员信息
+  deleUser: '/school/userinfo/deleteUserById#delete', // 删除人员信息
   addTeacher: '/user/staff/save#post', // 新增教职工
   getRiskList: '/school/userinfo/getRiskUserList#post', // 风险人员名单
+  addRisk: '/school/riskpersoninfo/batchSaveRiskPerson#post', // 新增风险人员
   getreportList: '/school/userinfo/getUserInfoList#post', // 上报记录
   getLatestMedicalInfo: '/school/medicalinfo/getLatestMedicalInfo#postQuery', // 获取体检最新一条记录
-  updateInfo: '/school/medicalinfo/update#post', // 修改体检数据
+  updateInfo: '/school/medicalinfo/save#post', // 修改体检数据
   getTemperatureData: '/school/reportinfo/getTemperatureData#postQuery', // 获取个人体温数据
   getReportInfoList: '/school/reportinfo/getReportInfoList#post' // 获取上报信息记录
 }

@@ -24,7 +24,9 @@ const homeApi = {
   updateTmpList: '/school/bodypartstemperatureinfo/update#post', // update体温设置
   addDoctor: '/school/schooldoctorinfo/batchAdd#post', // 批量设置校医
   getInformWay: '/school/informwayinfo/list#postQuery', // 获取学校设置的通知方式
-  updateInformWay: '/school/informwayinfo/update#post' // 设置学校的通知方式
+  updateInformWay: '/school/informwayinfo/update#post', // 设置学校的通知方式
+  unBindDoc: '/school/schooldoctorinfo/deleteById#delete' // 通过id删除校医设置信息
+
 }
 for (const val in homeApi) {
   homeApi[val] = `${hostEnv.wangxuanzhang}${homeApi[val]}`

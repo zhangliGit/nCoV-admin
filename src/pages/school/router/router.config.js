@@ -5,7 +5,7 @@ import teacherManage from './teacherManage'
 import studentManage from './studentManage'
 import riskList from './riskList'
 import reportManage from './reportManage'
-import healthManage from './healthManage'
+// import healthManage from './healthManage'
 const Home = resolve => require(['../views/Home.vue'], resolve)
 const DailyReport = resolve => require(['../views/dailyReport/DailyReport.vue'], resolve)
 const SetUp = resolve => require(['../views/setUp/SetUp.vue'], resolve)
@@ -28,16 +28,16 @@ export const asyncRouterMap = [
           icon: 'bar-chart'
         }
       },
-       {
-      path: '/component/detail',
-      name: 'PersonalDetail',
-      component: PersonalDetail,
-      meta: {
-        title: '档案详情',
-        isHide: true
+      {
+        path: '/component/detail',
+        name: 'PersonalDetail',
+        component: PersonalDetail,
+        meta: {
+          title: '档案详情',
+          isHide: true
+        },
+        hidden: true
       },
-      hidden: true
-    },
       {
         path: '/dailyReport',
         name: 'dailyReport',
@@ -52,7 +52,7 @@ export const asyncRouterMap = [
       studentManage,
       riskList,
       reportManage,
-      healthManage,
+      // healthManage,
       {
         path: '/setUp',
         name: 'setUp',

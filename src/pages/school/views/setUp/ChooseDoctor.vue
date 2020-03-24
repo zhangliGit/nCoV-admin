@@ -19,7 +19,7 @@
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
           is-check
-          :scroll-h="100"
+          :scroll-h="0"
           :page-list="pageList"
           v-model="chooseList"
           :columns="columns"
@@ -76,7 +76,7 @@ const columns = [
     title: '性别',
     dataIndex: 'gender',
     width: '10%',
-    customRender: (text) => {
+    customRender: text => {
       if (text === '1') {
         return '男'
       } else if (text === '2') {
