@@ -20,9 +20,8 @@ const schoolApi = {
   updateInfo: '/school/medicalinfo/update#post', // 修改体检数据
   getTemperatureData: '/school/reportinfo/getTemperatureData#postQuery', // 获取个人体温数据
   getReportInfoList: '/school/reportinfo/getReportInfoList#post' // 获取上报信息记录
-
 }
 for (const val in schoolApi) {
-  schoolApi[val] = `${hostEnv.admin}${schoolApi[val]}`
+  schoolApi[val] = `${hostEnv.wangxuanzhang}${schoolApi[val]}`
 }
 export default schoolApi

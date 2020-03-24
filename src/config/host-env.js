@@ -4,19 +4,20 @@
  */
 
 const ConfigEnv = process.env.VUE_APP_URL
-const hostEnv = ''
-let admin = ''
+let wangxuanzhang = ''
+let zhux = ''
+let zhangkun = ''
+let lvzhuo = ''
 
 if (ConfigEnv === 'test') {
-  admin = '/admin'
+  wangxuanzhang = '/wangxuanzhang'
 } else if (ConfigEnv === 'prod') {
   // 线上接口
-  admin = '/admin'
+  wangxuanzhang = 'wangxuanzhang'
 } else {
-  admin = '/admin'
+  wangxuanzhang = '/admin'
 }
 
 export default {
-  admin,
-  hostEnv
+  wangxuanzhang
 }

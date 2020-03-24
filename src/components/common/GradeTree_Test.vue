@@ -5,21 +5,17 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import $ajax from '@u/ajax-serve'
 export default {
   name: 'GradeTree',
   props: {
-    isGrade: {
-      type: Boolean,
-      default: false
-    },
     gradeUrl: {
       type: String,
-      default: ''
+      default: 'http://192.168.2.247:3000/mock/40/getGrade'
     },
     classUrl: {
       type: String,
-      default: ''
+      default: 'http://192.168.2.247:3000/mock/40/getClass'
     }
   },
   data() {
@@ -30,14 +26,11 @@ export default {
       gradeList: []
     }
   },
-  computed: {
-    ...mapState('home', ['userInfo'])
-  },
+  computed: {},
   mounted() {
     this.initMenu()
   },
   methods: {
-    ...mapActions('home', ['getGradeList', 'getClassList']),
     onExpand() {},
     // 点击节点
     select(obj, tree) {
@@ -53,7 +46,7 @@ export default {
       }
       if (tree.selectedNodes.length === 0) return
       const selectObj = {
-        gradeId: tree.selectedNodes[0].data.props.gradeId,
+        gradeId: this.gradeId,
         key: this.classId,
         code: tree.selectedNodes[0].data.props.pCode,
         title: tree.selectedNodes[0].data.props.title,
@@ -62,57 +55,55 @@ export default {
       this.$emit('select', selectObj)
     },
     async initMenu() {
-      const req = {
-        schoolCode: this.userInfo.orgCode
-      }
-      const res = await this.getGradeList(req)
+      const res = await $ajax.get({ url: 'http://yapi.demo.qunar.com/mock/5691/getGrade' })
       const selectObj = {
-        gradeId: res.result[0].gradeCode,
-        key: res.result[0].gradeCode,
-        code: res.result[0].gradeCode,
-        title: res.result[0].gradeName
+        gradeId: res.data[0].gradeId,
+        key: '',
+        code: '',
+        title: res.data[0].gradeName,
+        year: ''
       }
-      this.gradeList = res.result
-      this.treeData = res.result.map(item => {
+      this.gradeList = res.data
+      this.treeData = res.data.map(item => {
         return {
           title: item.gradeName,
-          key: item.gradeCode,
-          pCode: item.gradeCode,
-          gradeId: item.gradeCode
+          key: item.gradeId,
+          pCode: item.gradeCode
         }
       })
       this.onLoadData({
         dataRef: {
-          pCode: res.result[0].gradeCode,
-          key: res.result[0].gradeCode
+          pCode: res.data[0].gradeCode,
+          key: res.data[0].gradeId
         }
       })
       this.$emit('select', selectObj)
     },
     async onLoadData(treeNode) {
-      if (this.isGrade) return
       return new Promise(resolve => {
         if (treeNode.dataRef.children) {
           resolve()
           return
         }
         this.gradeId = treeNode.dataRef.key
-        const req = {
-          schoolCode: this.userInfo.orgCode,
-          gradeCode: this.gradeId
-        }
-        this.getClassList(req).then(res => {
-          treeNode.dataRef.children = res.result.map(item => {
-            return {
-              title: item.className,
-              key: item.classCode,
-              gradeId: item.gradeCode,
-              isLeaf: true
+        $ajax
+          .get({
+            url: 'http://yapi.demo.qunar.com/mock/5691/getClass',
+            params: {
+              gradeId: this.gradeId
             }
           })
-          this.treeData = [...this.treeData]
-          resolve()
-        })
+          .then(res => {
+            treeNode.dataRef.children = res.data.map(item => {
+              return {
+                title: item.className,
+                key: item.id,
+                isLeaf: item.isLeaf
+              }
+            })
+            this.treeData = [...this.treeData]
+            resolve()
+          })
       })
     }
   }

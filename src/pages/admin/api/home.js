@@ -23,6 +23,6 @@ const homeApi = {
   getUnbindSchool: '/operate/organizationinfo/getSchoolInfoPage#post' // 未绑定的学校
 }
 for (const val in homeApi) {
-  homeApi[val] = `${hostEnv.admin}${homeApi[val]}`
+  homeApi[val] = `${hostEnv.wangxuanzhang}${homeApi[val]}`
 }
 export default homeApi

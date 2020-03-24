@@ -1,29 +1,34 @@
 <template>
   <div class="page-layout qui-fx">
-    <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
-    </submit-form>
-    <choose-user ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
-    </choose-user>
+    <submit-form
+      ref="form"
+      @submit-form="submitForm"
+      :title="title"
+      v-model="formStatus"
+      :form-data="formData"
+    ></submit-form>
+    <choose-user
+      ref="chooseUser"
+      v-if="userTag"
+      v-model="userTag"
+      @submit="chooseUser"
+      title="选择教职工"
+    ></choose-user>
     <div class="page-left qui-fx-ver">
-      <grade-tree @select="select"></grade-tree>
+      <grade-tree :is-grade="true" @select="select"></grade-tree>
     </div>
     <div class="page-right qui-fx-ver">
       <div class="top-btn-group" style="padding: 8px 0 15px 0;">
         <a-button icon="plus" class="add-btn" @click="addClass()">添加班级</a-button>
         <!-- <a-button icon="export" class="export-btn">导出</a-button> -->
       </div>
-      <table-list
-        :page-list="pageList"
-        :columns="columns"
-        :table-list="userList">
+      <table-list :page-list="pageList" :columns="columns" :table-list="userList">
         <template v-slot:actions="action">
           <a-tooltip placement="topLeft" title="绑定班主任">
             <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher()"></a-button>
           </a-tooltip>
           <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-            <template slot="title">
-              您确定删除吗?
-            </template>
+            <template slot="title">您确定删除吗?</template>
             <a-tooltip placement="topLeft" title="删除">
               <a-button size="small" class="del-action-btn" icon="delete"></a-button>
             </a-tooltip>
@@ -42,7 +47,7 @@ import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
 import chooseUser from '@c/ChooseUser'
-import GradeTree from '../component/GradeTree'
+import GradeTree from '@c/GradeTree'
 const columns = [
   {
     title: '序号',
@@ -111,7 +116,7 @@ export default {
     PageNum,
     GradeTree
   },
-  data () {
+  data() {
     return {
       columns,
       formData,
@@ -134,13 +139,11 @@ export default {
   created() {
     this.getGradeInfo()
   },
-  mounted () {
+  mounted() {
     console.log(this.userInfo)
   },
   methods: {
-    ...mapActions('home', [
-      'getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList'
-    ]),
+    ...mapActions('home', ['getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList']),
     // 获取年级列表
     async getGradeInfo() {
       const req = {
@@ -188,7 +191,7 @@ export default {
       }, 2000)
     },
     // 添加班级
-    async submitForm (values) {
+    async submitForm(values) {
       console.log(values)
       const gradeName = this.formData[0].list.filter(ele => {
         if (ele.key === values.gradeName) {
@@ -209,7 +212,7 @@ export default {
         this.showList()
       }, 2000)
     },
-    chooseUser (item) {
+    chooseUser(item) {
       console.log(item)
       setTimeout(() => {
         this.$refs.chooseUser.reset()
@@ -219,14 +222,14 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  .top{
-    margin-bottom: 10px;
-  }
-  .page-left {
-    background: #fff;
-    margin-right: 10px;
-  }
-  .page-right {
-    width: 100%;
-  }
+.top {
+  margin-bottom: 10px;
+}
+.page-left {
+  background: #fff;
+  margin-right: 10px;
+}
+.page-right {
+  width: 100%;
+}
 </style>
