@@ -278,6 +278,8 @@ export default {
       this.$message.success('操作成功')
       this.$tools.goNext(() => {
         this.$refs.chooseUser.reset()
+        this.$refs.chooseUser.totalList = []
+        this.$refs.chooseUser.chooseList = []
       })
       this.doctorList()
     },

@@ -112,7 +112,6 @@ export default {
       this.total = res.result.totalCount
     },
     del(record) {
-      console.log(record)
       this.unBindSchool({ schoolCode: record.organizationCode }).then(() => {
         this.$message.success('操作成功')
         this.$tools.goNext(() => {
@@ -125,7 +124,6 @@ export default {
       this.$refs.chooseSchool.schoolGet()
     },
     chooseSchool (item) {
-      console.log('+++', item)
       this.params.schoolCodeList = item.map((item) => {
         return item.id
       })
@@ -133,6 +131,7 @@ export default {
         this.$message.success('操作成功')
         this.$tools.goNext(() => {
           this.$refs.chooseSchool.reset()
+          this.$refs.chooseSchool.totalList = []
           this.showList()
         })
       })
