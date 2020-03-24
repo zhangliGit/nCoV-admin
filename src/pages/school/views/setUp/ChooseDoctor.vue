@@ -142,11 +142,10 @@ export default {
   methods: {
     ...mapActions('home', ['getreportList']),
     async showList() {
-      console.log('++', this.userInfo)
+      this.pageList.schoolCode = this.userInfo.orgCode
       const userData = await this.getreportList(this.pageList)
       this.total = userData.result.totalCount
       this.userList = userData.result.list
-      console.log('===', this.userList)
     },
     reset() {
       this.confirmLoading = false
