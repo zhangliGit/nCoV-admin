@@ -8,10 +8,10 @@
   >
     <span class="page-total">一共{{ total }}条</span>
     <a-pagination
-      :pageSize.sync="pageList.size"
+      :pageSize.sync="value.size"
       :total="total"
       :size="size"
-      :current="pageList.page"
+      :current="value.page"
       showSizeChanger
       :showQuickJumper="jumper"
       @change="changePage"
