@@ -18,11 +18,15 @@
       <template slot="photoPic" slot-scope="text">
         <a-popover placement="left" v-if="isZoom">
           <template slot="content">
-            <img :src="text" style="max-width: 200px; max-height: 220px; display: block;" alt />
+            <img
+              :src="text"
+              style="max-width: 200px; margin: 0 auto; max-height: 220px; display: block;"
+              alt
+            />
           </template>
           <img
             :src="text"
-            :style="{width: `${width}px`, height: `${height}px`, display: 'block'}"
+            :style="{width: `${width}px`, margin: '0 auto', height: `${height}px`, display: 'block'}"
             alt
           />
         </a-popover>
@@ -36,11 +40,15 @@
       <template slot="snapPic" slot-scope="text">
         <a-popover placement="left" v-if="isZoom">
           <template slot="content">
-            <img :src="text" style="max-width: 200px; max-height: 220px; display: block;" alt />
+            <img
+              :src="text"
+              style="margin: 0 auto; max-width: 200px; max-height: 220px; display: block;"
+              alt
+            />
           </template>
           <img
             :src="text"
-            :style="{width: `${width}px`, height: `${height}px`, display: 'block'}"
+            :style="{width: `${width}px`, margin: '0 auto', height: `${height}px`, display: 'block'}"
             alt
           />
         </a-popover>
@@ -54,8 +62,11 @@
       <template slot="action" slot-scope="text, record">
         <slot name="actions" :record="record"></slot>
       </template>
-      <template slot="num" slot-scope="text" >
-        <div class="table-total-num" @click="numDetail(text)">{{ text.number === null ? 0 : text.number}}</div>
+      <template slot="num" slot-scope="text">
+        <div
+          class="table-total-num"
+          @click="numDetail(text)"
+        >{{ text.number === null ? 0 : text.number}}</div>
       </template>
     </a-table>
   </div>
@@ -213,15 +224,15 @@ export default {
 
 <style lang="less" scoped>
 .table-total-num {
-    display: inline-block;
-    background-color: #e6f7ff;
-    border: 1px solid #91d5ff;
-    padding: 0 10px;
-    line-height: 20px;
-    font-size: 12px;
-    height: 22px;
-    border-radius: 4px;
-    color: #1890ff;
-    cursor: pointer;
+  display: inline-block;
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  padding: 0 10px;
+  line-height: 20px;
+  font-size: 12px;
+  height: 22px;
+  border-radius: 4px;
+  color: #1890ff;
+  cursor: pointer;
 }
 </style>
