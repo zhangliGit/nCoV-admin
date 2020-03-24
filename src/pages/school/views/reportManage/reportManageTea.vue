@@ -2,7 +2,7 @@
   <div class="page-layout qui-fx-ver">
     <search-form @search-form="searchForm" :search-label="searchLabel">
       <div slot="left" class="top-btn-group">
-        <a-button icon="export" class="export-btn">导出</a-button>
+        <a-button icon="export" class="export-btn" @click="reportList()">导出</a-button>
       </div>
     </search-form>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
@@ -37,7 +37,7 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '10%'
+    width: '7%'
   },
   {
     title: '性别',
@@ -104,12 +104,12 @@ const columns = [
     dataIndex: 'profilePhoto',
     width: '10%',
     scopedSlots: {
-      customRender: 'profilePhoto'
+      customRender: 'photoPic'
     }
   },
   {
     title: '操作',
-    width: '7%',
+    width: '10%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -124,6 +124,10 @@ const searchLabel = [
   },
   {
     list: [
+       {
+        key: '',
+        val: '全部'
+      },
       {
         key: 1,
         val: '疑似'
@@ -162,13 +166,13 @@ export default {
         page: 1,
         size: 20,
         userType: '1',
-        schoolCode: '',
+        schoolCode: ''
       },
       total: 0,
-      userList: []
+      userList: [],
     }
   },
-      computed: {
+  computed: {
     ...mapState('home', ['userInfo'])
   },
   mounted() {
@@ -177,7 +181,7 @@ export default {
   methods: {
     ...mapActions('home', ['getreportList']),
     async showList() {
-       this.pageList.schoolCode = this.userInfo.orgCode
+      this.pageList.schoolCode = this.userInfo.orgCode
       const res = await this.getreportList(this.pageList)
       this.userList = res.result.list
       this.total = res.result.totalCount
@@ -187,6 +191,10 @@ export default {
       this.showList()
       console.log(values)
     },
+     reportList() {
+      const schoolCode = this.userInfo.orgCode
+      window.location.href ='http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +schoolCode+'&userType=1&excelUrl=1'   
+      },
     detail(record) {
       this.$router.push({
         path: '/component/detail',
@@ -201,7 +209,7 @@ export default {
           profilePhoto: record.profilePhoto
         }
       })
-    }
+    },
   }
 }
 </script>
