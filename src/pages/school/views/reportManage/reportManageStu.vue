@@ -4,7 +4,7 @@
     <div class="qui-fx-f1 qui-fx-ver">
       <search-form @search-form="searchForm" :search-label="searchLabel">
         <div slot="left" class="top-btn-group">
-          <a-button icon="export" class="export-btn">导出</a-button>
+          <a-button icon="export" class="export-btn" @click="reportList()">导出</a-button>
         </div>
       </search-form>
       <table-list :page-list="pageList" :columns="columns" :table-list="userList">
@@ -45,19 +45,23 @@ const searchLabel = [
       },
       {
         key: 1,
-        val: '发热'
+        val: '疑似'
       },
       {
         key: 2,
-        val: '未发热'
+        val: '确诊'
+      },
+      {
+        key: 3,
+        val: '健康'
       }
     ],
-    value: 'status',
+    value: 'healthyState',
     type: 'select',
-    label: '发热状态'
+    label: '风险类型'
   },
   {
-    value: 'rangeTime',
+    value: 'riskTime',
     type: 'rangeTime',
     label: '上报时间'
   }
@@ -65,7 +69,7 @@ const searchLabel = [
 const columns = [
   {
     title: '序号',
-    width: '5%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -128,7 +132,7 @@ const columns = [
     dataIndex: 'profilePhoto',
     width: '15%',
     scopedSlots: {
-      customRender: 'profilePhoto'
+      customRender: 'photoPic'
     }
   },
   {
@@ -190,6 +194,10 @@ export default {
       this.pageList = Object.assign(values, this.pageList)
       this.showList()
     },
+       reportList() {
+      const schoolCode = this.userInfo.orgCode
+      window.location.href ='http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +schoolCode+'&userType=2&excelUrl=1'   
+      },
     detail(record) {
       this.$router.push({
         path: '/component/detail',

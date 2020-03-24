@@ -5,10 +5,10 @@
     </div>
     <div class="qui-fx-f1 qui-fx-ver">
       <a-tabs defaultActiveKey="1" @change="tabChange" style="height:50px;" type="card">
-        <a-tab-pane :tab="`未上报${noNum}人`" key="1"></a-tab-pane>
-        <a-tab-pane :tab="`已上报${allNum}人`" key="2"></a-tab-pane>
-        <a-tab-pane :tab="`异常人数${abnormalNum}人`" key="3"></a-tab-pane>
-        <a-tab-pane :tab="`发热人数${feverNum}人`" key="4"></a-tab-pane>
+        <a-tab-pane tab="未上报" key="1"></a-tab-pane>
+        <a-tab-pane tab="已上报" key="2"></a-tab-pane>
+        <a-tab-pane tab="异常人数" key="3"></a-tab-pane>
+        <a-tab-pane tab="发热人数" key="4"></a-tab-pane>
       </a-tabs>
       <table-list
         :page-list="pageList"
@@ -105,10 +105,6 @@ export default {
       total: 0,
       columns,
       userList: [],
-      noNum: 1,
-      allNum: 1,
-      abnormalNum: 1,
-      feverNum: 1,
       tabActive: '1'
     }
   },
@@ -119,6 +115,8 @@ export default {
   methods: {
     ...mapActions('home', ['getUnReport', 'getDaily', 'getReport']),
     select(value) {
+      this.pageList.page = 1
+      this.pageList.size = 20
       this.pageList.reportTime = moment(value).format('YYYY-MM-DD')
       this.showList()
     },
@@ -155,6 +153,8 @@ export default {
         this.pageList.feverMark = ''
         this.pageList.mark02 = '1'
       }
+      this.pageList.page = 1
+      this.pageList.size = 20
       this.showList()
     }
   }

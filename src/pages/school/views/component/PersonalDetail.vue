@@ -24,16 +24,16 @@
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">体验数据</a-menu-item>
     </a-menu>
+       <div style="text-align:right;">
+      <!-- <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button> -->
+      </div>
     <div class="process qui-fx-jsb qui-fx-ac">
       <a-row class="padd-l10">
-        <a-col class="mar-b10" :span="24">
-          <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button>
-        </a-col>
-        <a-col class="mar-b10" :span="12">身高 :</a-col>
-        <a-col class="mar-b10" :span="12">体重 :</a-col>
-        <a-col class="mar-b10" :span="12">视力 :</a-col>
-        <a-col class="mar-b10" :span="12">重大病史 :</a-col>
-        <a-col class="mar-b10" :span="12">家族病史 :</a-col>
+        <a-col class="mar-b10" :span="12">身高  : </a-col>
+        <a-col class="mar-b10" :span="12">体重  : </a-col>
+        <a-col class="mar-b10" :span="12">备注说明  : </a-col>
+        <a-col class="mar-b10" :span="12">重大病史  : </a-col>
+        <a-col class="mar-b10" :span="12">家族病史  : </a-col>
       </a-row>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
@@ -219,7 +219,13 @@ export default {
       total: 0,
       columns,
       detailList: [],
-      detailData: '',
+      detailData: {
+        userHeigh:'',
+        userWeight:'',
+        remarks:'',
+        majorDiseaseMark:'',
+        geneticMark:''
+      },
       detailInfo: '',
       reportTime: [],
       temperature: []
@@ -240,7 +246,7 @@ export default {
   methods: {
     ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo', 'getTemperatureData', 'getReportInfoList']),
     //更新体检数据
-    updateReport(record) {
+    updateReport() {
       this.formStatus = true
       this.recordId = record.id
       this.formData = this.$tools.fillForm(formData, record)
@@ -271,7 +277,7 @@ export default {
       const schoolCode = this.userInfo.orgCode
       const req = 'userCode=' + userCode + '&schoolCode=' + schoolCode
       const res = await this.getLatestMedicalInfo(req)
-      this.detailData = res.result
+      this.detailData= res.result
     },
     //获取个人体温数据
     async getTemperature() {

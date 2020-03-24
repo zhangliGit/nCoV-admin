@@ -133,9 +133,9 @@ export default {
   },
   created() {
     this.getGradeInfo()
+    this.showList('')
   },
-  mounted () {
-    console.log(this.userInfo)
+  async mounted () {
   },
   methods: {
     ...mapActions('home', [

@@ -13,14 +13,6 @@
       title="选择风险人员"
     ></choose-person>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
-      <template v-slot:actions="action">
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-          <template slot="title">您确定删除吗?</template>
-          <a-tooltip placement="topLeft" title="删除">
-            <a-button size="small" class="del-action-btn" icon="delete"></a-button>
-          </a-tooltip>
-        </a-popconfirm>
-      </template>
     </table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
   </div>
@@ -50,9 +42,9 @@ const columns = [
     dataIndex: 'gender',
     width: '11%',
     customRender: text => {
-      if (text === 1) {
+      if (text === '1') {
         return '男'
-      } else if (text === 2) {
+      } else if (text === '2') {
         return '女'
       } else {
         return '未知'
@@ -64,9 +56,9 @@ const columns = [
     dataIndex: 'userType',
     width: '11%',
     customRender: text => {
-      if (text === 1) {
+      if (text === '1') {
         return '教职工'
-      } else if (text === 2) {
+      } else if (text === '2') {
         return '学生'
       } else {
         return '未知'
@@ -74,7 +66,19 @@ const columns = [
     }
   },
   {
-    title: '部门/班级',
+    title: '年级',
+    dataIndex: 'gradeName',
+    width: '11%',
+    customRender: text => {
+      if (text) {
+        return text
+      } else {
+        return '无'
+      }
+    }
+  },
+  {
+    title: '班级',
     dataIndex: 'className',
     width: '11%',
     customRender: text => {
@@ -95,9 +99,9 @@ const columns = [
     dataIndex: 'healthyState',
     width: '11%',
     customRender: text => {
-      if (text === 1) {
+      if (text === '1') {
         return '疑似'
-      } else if (text === 2) {
+      } else if (text === '2') {
         return '确诊'
       } else {
         return '健康'
@@ -108,13 +112,6 @@ const columns = [
     title: '加入时间',
     dataIndex: 'riskTime',
     width: '11%'
-  },
-  {
-    title: '操作',
-    width: '11%',
-    scopedSlots: {
-      customRender: 'action'
-    }
   }
 ]
 const searchLabel = [
@@ -127,15 +124,15 @@ const searchLabel = [
   {
     list: [
       {
-        key: 1,
+        key: '1',
         val: '疑似'
       },
       {
-        key: 2,
+        key: '2',
         val: '确诊'
       },
       {
-        key: 3,
+        key: '3',
         val: '健康'
       }
     ],
@@ -175,12 +172,13 @@ export default {
     ...mapActions('home', ['getRiskList', 'addRisk']),
     async showList(searchObj = {}) {
       const req = {
+        ...this.pageList,
         schoolCode: this.userInfo.orgCode,
         ...searchObj
       }
       const res = await this.getRiskList(req)
-      this.userList = res.data
-      this.total = res.total
+      this.userList = res.result.list
+      this.total = res.result.total
     },
     add() {
       this.userTag = true
@@ -198,15 +196,22 @@ export default {
     },
     async chooseUser(item, riskType) {
       console.log(item, riskType)
+      const userCodes = []
+      item.forEach(ele => {
+        userCodes.push(ele.userCode)
+      })
+      console.log(userCodes)
       const req = {
         schoolCode: this.userInfo.orgCode,
-        healthyState: riskType,
-        item
+        riskType,
+        userCodes
       }
       const res = await this.addRisk(req)
       console.log(res.result)
+      this.$message.success('添加成功')
       setTimeout(() => {
         this.$refs.chooseUser.reset()
+        this.showList()
       }, 2000)
     }
   }

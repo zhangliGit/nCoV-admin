@@ -292,7 +292,7 @@ export default {
       console.log(values)
       const searchObj = {
         userName: values.name,
-        phone: values.tel
+        phone: values.phone
       }
       this.showList(searchObj)
     },

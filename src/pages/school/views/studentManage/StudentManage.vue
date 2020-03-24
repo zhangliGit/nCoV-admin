@@ -57,7 +57,7 @@ import GradeTree from '../component/GradeTree'
 const columns = [
   {
     title: '序号',
-    width: '10%',
+    width: '9%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -65,12 +65,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '10%'
+    width: '9%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '10%',
+    width: '9%',
     customRender: (text) => {
       if (text === '1') {
         return '男'
@@ -84,7 +84,7 @@ const columns = [
   {
     title: '年级',
     dataIndex: 'gradeName',
-    width: '10%',
+    width: '9%',
     scopedSlots: {
       customRender: 'className'
     }
@@ -92,7 +92,7 @@ const columns = [
   {
     title: '班级',
     dataIndex: 'className',
-    width: '10%',
+    width: '9%',
     scopedSlots: {
       customRender: 'className'
     }
@@ -100,12 +100,12 @@ const columns = [
   {
     title: '学号',
     dataIndex: 'workNo',
-    width: '10%'
+    width: '9%'
   },
   {
     title: '人脸照片',
     dataIndex: 'profilePhoto',
-    width: '10%',
+    width: '9%',
     scopedSlots: {
       customRender: 'photoPic'
     }
@@ -113,17 +113,17 @@ const columns = [
   {
     title: '出生日期',
     dataIndex: 'birthday',
-    width: '10%'
+    width: '9%'
   },
   {
-    title: '关联家长',
+    title: '家长',
     dataIndex: 'patriarchName',
-    width: '10%'
+    width: '9%'
   },
   {
-    title: '家长电话',
+    title: '电话',
     dataIndex: 'patriarchPhone',
-    width: '10%'
+    width: '9%'
   },
   {
     title: '操作',
@@ -372,7 +372,8 @@ export default {
           ...values,
           schoolCode: this.userInfo.orgCode,
           profilePhoto: this.picUrl,
-          id: this.record.id
+          id: this.record.id,
+          patriarchCode: this.record.patriarchCode
         }
         const gradeCodeList = this.formData[1].list.filter(ele => {
           return ele.key === values.gradeCode
