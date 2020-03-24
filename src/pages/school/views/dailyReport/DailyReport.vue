@@ -1,7 +1,7 @@
 <template>
   <div class="page-layout qui-fx">
     <div class="calendar">
-      <a-calendar :fullscreen="false" @panelChange="onPanelChange" />
+      <a-calendar :fullscreen="false" @select="select" />
     </div>
     <div class="qui-fx-f1 qui-fx-ver">
       <a-tabs defaultActiveKey="1" @change="tabChange" style="height:50px;" type="card">
@@ -15,7 +15,7 @@
         :columns="columns"
         :table-list="userList">
       </table-list>
-      <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+      <page-num ref="pageNum" v-model="pageList" :total="total" @change-page="showList"></page-num>
     </div>
   </div>
 </template>
@@ -24,10 +24,11 @@
 import { mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
+import moment from 'moment'
 const columns = [
   {
     title: '序号',
-    width: '8%',
+    width: '15%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -35,7 +36,7 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '12%'
+    width: '30%'
   },
   // {
   //   title: '性别',
@@ -54,36 +55,36 @@ const columns = [
   {
     title: '温度',
     dataIndex: 'temperature',
-    width: '12%'
+    width: '25%'
   },
-  {
-    title: '测温部位',
-    dataIndex: 'bodyParts',
-    width: '12%'
-  },
+  // {
+  //   title: '测温部位',
+  //   dataIndex: 'bodyParts',
+  //   width: '20%'
+  // },
   {
     title: '测温地点',
     dataIndex: 'site',
-    width: '12%'
-  },
-  {
-    title: '所属班级',
-    dataIndex: 'class',
-    width: '12%'
-  },
+    width: '30%'
+  }
+  // {
+  //   title: '所属班级',
+  //   dataIndex: 'class',
+  //   width: '12%'
+  // },
   // {
   //   title: '联系方式',
   //   dataIndex: 'phone',
   //   width: '12%'
   // },
-  {
-    title: '照片',
-    dataIndex: 'photoPic',
-    width: '12%',
-    scopedSlots: {
-      customRender: 'photoPic'
-    }
-  }
+  // {
+  //   title: '照片',
+  //   dataIndex: 'photoPic',
+  //   width: '12%',
+  //   scopedSlots: {
+  //     customRender: 'photoPic'
+  //   }
+  // }
 ]
 export default {
   name: 'DailyReport',
@@ -98,7 +99,8 @@ export default {
         size: 20,
         reportState: '2', // 上报1，未上报2
         feverMark: '', // 1发烧2不发烧
-        mark02: ''// 1异常
+        mark02: '', // 1异常
+        reportTime: moment(new Date())
       },
       total: 0,
       columns,
@@ -116,8 +118,9 @@ export default {
   },
   methods: {
     ...mapActions('home', ['getUnReport', 'getDaily', 'getReport']),
-    onPanelChange(value, mode) {
-      console.log(value, mode)
+    select(value) {
+      this.pageList.reportTime = moment(value).format('YYYY-MM-DD')
+      this.showList()
     },
     async showList() {
       const res = await this.getReport(this.pageList)
