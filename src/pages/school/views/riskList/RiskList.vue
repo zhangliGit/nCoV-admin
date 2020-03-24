@@ -1,6 +1,6 @@
 <template>
   <div class="page-layout qui-fx-ver">
-    <search-form @search-form="searchForm" :search-label="searchLabel">
+    <search-form isReset @search-form="searchForm" :search-label="searchLabel">
       <div slot="left" class="top-btn-group">
         <a-button icon="plus" class="add-btn" @click="add()">添加</a-button>
       </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
@@ -42,7 +42,7 @@ const columns = [
   },
   {
     title: '姓名',
-    dataIndex: 'name',
+    dataIndex: 'userName',
     width: '11%'
   },
   {
@@ -61,27 +61,52 @@ const columns = [
   },
   {
     title: '身份',
-    dataIndex: 'identity',
-    width: '11%'
+    dataIndex: 'userType',
+    width: '11%',
+    customRender: text => {
+      if (text === 1) {
+        return '教职工'
+      } else if (text === 2) {
+        return '学生'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '部门/班级',
-    dataIndex: 'grade',
-    width: '11%'
+    dataIndex: 'className',
+    width: '11%',
+    customRender: text => {
+      if (text) {
+        return text
+      } else {
+        return '无'
+      }
+    }
   },
   {
     title: '工号/学号',
-    dataIndex: 'num',
+    dataIndex: 'workNo',
     width: '11%'
   },
   {
     title: '风险类型',
-    dataIndex: 'riskType',
-    width: '11%'
+    dataIndex: 'healthyState',
+    width: '11%',
+    customRender: text => {
+      if (text === 1) {
+        return '疑似'
+      } else if (text === 2) {
+        return '确诊'
+      } else {
+        return '健康'
+      }
+    }
   },
   {
     title: '加入时间',
-    dataIndex: 'startTime',
+    dataIndex: 'riskTime',
     width: '11%'
   },
   {
@@ -94,7 +119,7 @@ const columns = [
 ]
 const searchLabel = [
   {
-    value: 'name',
+    value: 'userName',
     type: 'input',
     label: '姓名',
     placeholder: '请输入姓名'
@@ -103,18 +128,18 @@ const searchLabel = [
     list: [
       {
         key: 1,
-        val: '确诊'
-      },
-      {
-        key: 2,
         val: '疑似'
       },
       {
+        key: 2,
+        val: '确诊'
+      },
+      {
         key: 3,
-        val: '隔离'
+        val: '健康'
       }
     ],
-    value: 'type',
+    value: 'healthyState',
     type: 'select',
     label: '风险类型'
   }
@@ -140,13 +165,20 @@ export default {
       userList: []
     }
   },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   mounted() {
     this.showList()
   },
   methods: {
     ...mapActions('home', ['getRiskList']),
-    async showList() {
-      const res = await this.getRiskList()
+    async showList(searchObj = {}) {
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        ...searchObj
+      }
+      const res = await this.getRiskList(req)
       this.userList = res.data
       this.total = res.total
     },
@@ -158,6 +190,11 @@ export default {
     },
     searchForm(values) {
       console.log(values)
+      const searchObj = {
+        userName: values.userName,
+        healthyState: values.healthyState
+      }
+      this.showList(searchObj)
     },
     chooseUser(item) {
       console.log(item)

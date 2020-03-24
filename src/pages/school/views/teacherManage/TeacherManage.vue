@@ -17,7 +17,7 @@
       :form-data="formData"
     >
       <div slot="upload">
-        <upload-multi :length="1" v-model="fileList" :fileInfo="fileInfo"></upload-multi>
+        <upload-one :file-info="fileInfo" v-model="picUrl"></upload-one>
       </div>
     </submit-form>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
@@ -51,7 +51,7 @@ import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
-import UploadMulti from '@c/UploadMulti'
+import UploadOne from '@c/UploadOne'
 const columns = [
   {
     title: '序号',
@@ -214,7 +214,7 @@ export default {
     TableList,
     SearchForm,
     SubmitForm,
-    UploadMulti,
+    UploadOne,
     PageNum
   },
   data() {
@@ -236,7 +236,7 @@ export default {
         h: 120, // 高度
         w: 120 // 宽度
       },
-      fileList: []
+      picUrl: ''
     }
   },
   computed: {
@@ -262,13 +262,13 @@ export default {
       this.formStatus = true
       if (type) {
         // 编辑
-        this.fileList = []
+        this.picUrl = ''
         this.formData = this.$tools.fillForm(formData, record)
         this.fileList.push({ uid: record.id, url: record.photoPic })
       } else {
         // 添加
         this.formData = formData
-        this.fileList = []
+        this.picUrl = ''
       }
     },
     del(record) {
@@ -287,13 +287,13 @@ export default {
       const req = {
         ...values,
         schoolCode: this.userInfo.orgCode,
-        profilePhoto: this.fileList.length > 0 ? this.fileList[0] : ''
+        profilePhoto: this.picUrl
       }
       console.log(req)
       await this.addTeacher(req)
       this.$message.success('添加成功')
       setTimeout(() => {
-        this.fileList = []
+        this.picUrl = ''
         this.showList()
         this.$refs.form.reset()
       }, 2000)
