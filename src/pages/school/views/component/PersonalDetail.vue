@@ -76,7 +76,7 @@ const formData = [
     placeholder: '请输入身高'
   },
   {
-    value: 'weight',
+    value: 'userWeight',
     initValue: '',
     type: 'input',
     label: '体重',
@@ -257,8 +257,14 @@ export default {
       total: 0,
       columns,
       detailList: [],
-      detailData: '',
       detailInfo: '',
+      detailData: {
+        userHeight:'',
+        userWeight:'',
+        majorDiseaseMark:'',
+        geneticDiseaseMark:'',
+        createTime:''
+      },
       reportTime: [],
       temperature: []
     }
@@ -305,6 +311,7 @@ export default {
       const schoolCode = this.userInfo.orgCode
       const req = 'userCode=' + userCode + '&schoolCode=' + schoolCode
       const res = await this.getLatestMedicalInfo(req)
+      if(res.result)
       this.detailData = res.result
     },
     //获取个人体温数据
