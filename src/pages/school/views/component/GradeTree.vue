@@ -63,10 +63,10 @@ export default {
       }
       const res = await this.getGradeList(req)
       const selectObj = {
-        gradeId: res.result[0].gradeCode,
-        key: res.result[0].gradeCode,
-        code: res.result[0].gradeCode,
-        title: res.result[0].gradeName
+        gradeId: '',
+        key: '',
+        code: '',
+        title: ''
       }
       this.gradeList = res.result
       this.treeData = res.result.map(item => {

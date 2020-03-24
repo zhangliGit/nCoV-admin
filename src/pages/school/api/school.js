@@ -14,7 +14,7 @@ const schoolApi = {
   getUserList: '/school/userinfo/getUserInfoList#post', // 学生教职工管理列表
   addStudent: '/mobile/patriarchinfo/stu/mobile/save#post', // 新增学生
   editUser: '/school/userinfo/update#post', // 编辑人员信息
-  deleUser: '/school/userinfo/delete#dele', // 删除人员信息
+  deleUser: '/school/userinfo/deleteUserById#delete', // 删除人员信息
   addTeacher: '/user/staff/save#post', // 新增教职工
   getRiskList: '/school/userinfo/getRiskUserList#post', // 风险人员名单
   addRisk: '/school/reportinfo/save#post', // 新增风险人员

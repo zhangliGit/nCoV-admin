@@ -103,6 +103,10 @@ module.exports = {
         }
       },
       '/admin': {
+<<<<<<< HEAD
+=======
+        // target: 'http://ids646.natappfree.cc',
+>>>>>>> 55dae3f45bb053bf5042ee2dfca74f96cc583575
         target: 'http://wxz-test-001.natapp1.cc',
         changeOrigin: true,
         pathRewrite: {

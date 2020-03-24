@@ -9,7 +9,7 @@
           <a-button icon="plus" class="add-btn" @click="add(0)">添加学生</a-button>
           <!--<a-button icon="export" class="export-btn">导入学生</a-button>
           <a-button icon="export" class="export-all-btn">导入人脸</a-button> -->
-          <a-button icon="export" class="del-btn">导出</a-button>
+          <!-- <a-button icon="export" class="del-btn">导出</a-button> -->
         </div>
       </search-form>
       <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
@@ -36,9 +36,9 @@
               <a-button size="small" class="del-action-btn" icon="delete"></a-button>
             </a-tooltip>
           </a-popconfirm>
-          <a-tooltip placement="topLeft" title="查看健康档案">
+          <!--           <a-tooltip placement="topLeft" title="查看健康档案">
             <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
-          </a-tooltip>
+          </a-tooltip> -->
         </template>
       </table-list>
       <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
@@ -57,7 +57,7 @@ import GradeTree from '../component/GradeTree'
 const columns = [
   {
     title: '序号',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -65,12 +65,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '9%',
+    width: '10%',
     customRender: (text) => {
       if (text === '1') {
         return '男'
@@ -82,9 +82,17 @@ const columns = [
     }
   },
   {
+    title: '年级',
+    dataIndex: 'gradeName',
+    width: '10%',
+    scopedSlots: {
+      customRender: 'className'
+    }
+  },
+  {
     title: '班级',
     dataIndex: 'className',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'className'
     }
@@ -92,12 +100,12 @@ const columns = [
   {
     title: '学号',
     dataIndex: 'workNo',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '人脸照片',
     dataIndex: 'profilePhoto',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'photoPic'
     }
@@ -105,21 +113,21 @@ const columns = [
   {
     title: '出生日期',
     dataIndex: 'birthday',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '关联家长',
-    dataIndex: 'parName',
-    width: '9%'
+    dataIndex: 'patriarchName',
+    width: '10%'
   },
   {
     title: '家长电话',
-    dataIndex: 'parphone',
-    width: '9%'
+    dataIndex: 'patriarchPhone',
+    width: '10%'
   },
   {
     title: '操作',
-    width: '20%',
+    width: '10%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -156,7 +164,7 @@ const formData = [
     placeholder: '请选择年级'
   },
   {
-    value: 'clazzCode',
+    value: 'classCode',
     initValue: [],
     list: [],
     type: 'select',
@@ -203,19 +211,17 @@ const formData = [
     placeholder: '请选择生日'
   },
   {
-    value: 'parName',
+    value: 'patriarchName',
     initValue: '',
     type: 'input',
     label: '家长姓名',
-    required: false,
     placeholder: '请输入家长姓名'
   },
   {
-    value: 'parphone',
+    value: 'patriarchPhone',
     initValue: '',
     type: 'input',
     label: '家长手机号',
-    required: false,
     placeholder: '请输入家长手机号'
   }
 ]
@@ -265,14 +271,6 @@ export default {
   },
   async mounted () {
     this.getGradeInfo()
-    const req = {
-      schoolCode: this.userInfo.orgCode,
-      userType: 2,
-      ...this.pageList
-    }
-    const res = await this.getUserList(req)
-    this.userList = res.result.list
-    this.total = res.result.totalCount
   },
   methods: {
     ...mapActions('home', [
@@ -350,7 +348,7 @@ export default {
     async del(record) {
       console.log(record.id)
       const req = {
-        ids: [record.id]
+        id: record.id
       }
       console.log(req)
       await this.deleUser(req)
@@ -376,14 +374,14 @@ export default {
           profilePhoto: this.picUrl,
           id: this.record.id
         }
-        const gradeName = this.formData[1].list.filter(ele => {
+        const gradeCodeList = this.formData[1].list.filter(ele => {
           return ele.key === values.gradeCode
         })[0]
-        req.gradeName = gradeName ? gradeName.val : this.record.gradeName
-        const clazzName = this.formData[2].list.filter(ele => {
-          return ele.key === values.clazzCode
+        req.gradeName = gradeCodeList ? gradeCodeList.val : this.record.gradeName
+        const classCodeList = this.formData[2].list.filter(ele => {
+          return ele.key === values.classCode
         })[0]
-        req.clazzName = clazzName ? clazzName.val : this.record.clazzName
+        req.className = classCodeList ? classCodeList.val : this.record.className
         if (Array.isArray(values.gradeCode)) {
           req.gradeCode = values.gradeCode[0]
         }
@@ -397,7 +395,14 @@ export default {
         }, 2000)
       } else {
         const req = {
-          ...values,
+          birthday: values.birthday,
+          gender: values.gender,
+          stuName: values.userName,
+          clazzCode: values.classCode,
+          gradeCode: values.gradeCode,
+          parName: values.patriarchName,
+          parphone: values.patriarchPhone,
+          userNo: values.workNo,
           schoolCode: this.userInfo.orgCode,
           profilePhoto: this.picUrl
         }
@@ -405,7 +410,7 @@ export default {
           return ele.key === values.gradeCode
         })[0].val
         req.clazzName = this.formData[2].list.filter(ele => {
-          return ele.key === values.clazzCode
+          return ele.key === values.classCode
         })[0].val
         console.log(req)
         await this.addStudent(req)
@@ -420,7 +425,7 @@ export default {
     goDetail (record) {
       console.log(record)
       const obj = {
-        path: '/healthManageTea/detail',
+        path: '/healthManageStu',
         query: { id: record.id }
       }
       this.$router.push(obj)
