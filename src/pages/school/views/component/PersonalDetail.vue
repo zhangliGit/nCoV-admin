@@ -11,30 +11,38 @@
       <a-menu-item key="title">基本信息</a-menu-item>
     </a-menu>
     <div class="process qui-fx-jsb qui-fx-ac">
-      <img :src="detailInfo.profilePhoto" alt />
-      <a-row class="padd-l10">
-        <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName}}</a-col>
-        <a-col class="mar-b10" :span="12">性别 : {{ detailInfo.gender ? '女' : '男'}}</a-col>
-        <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo}}</a-col>
-        <a-col class="mar-b10" :span="12">生日 : {{detailInfo. birthday}}</a-col>
-        <a-col class="mar-b10" :span="12">职位 : {{ detailInfo.classChargeMark}}</a-col>
-        <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime}}</a-col>
-      </a-row>
+      <div class="qui-fx-jsa qui-fx-ac">
+        <img :src="detailInfo.profilePhoto" alt />
+        <div class="qui-fx-ver">
+          <a-row class="padd-l10">
+            <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName}}</a-col>
+            <a-col class="mar-b10" :span="12">性别 : {{ detailInfo.gender ? '女' : '男'}}</a-col>
+            <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo}}</a-col>
+            <a-col class="mar-b10" :span="12">生日 : {{detailInfo. birthday}}</a-col>
+            <a-col class="mar-b10" :span="12">职位 : {{ detailInfo.classChargeMark}}</a-col>
+            <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime}}</a-col>
+          </a-row>
+        </div>
+      </div>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">体验数据</a-menu-item>
+      <a-menu-item key="title">体检数据</a-menu-item>
     </a-menu>
-       <div style="text-align:right;">
-      <!-- <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button> -->
-      </div>
+    <div style="text-align:right;">
+      <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button>
+    </div>
     <div class="process qui-fx-jsb qui-fx-ac">
-      <a-row class="padd-l10">
-        <a-col class="mar-b10" :span="12">身高  : </a-col>
-        <a-col class="mar-b10" :span="12">体重  : </a-col>
-        <a-col class="mar-b10" :span="12">备注说明  : </a-col>
-        <a-col class="mar-b10" :span="12">重大病史  : </a-col>
-        <a-col class="mar-b10" :span="12">家族病史  : </a-col>
-      </a-row>
+      <div class="qui-fx-jsa qui-fx-ac">
+        <div class="qui-fx-ver">
+          <a-row class="padd-l10">
+            <a-col class="mar-b10" :span="12">身高 :{{detailData.userHeight}}</a-col>
+            <a-col class="mar-b10" :span="12">体重 :{{detailData.userWeight}}</a-col>
+            <a-col class="mar-b10" :span="12">是否有重大病史 :{{detailData.majorDiseaseMark? '是' : '否'}}</a-col>
+            <a-col class="mar-b10" :span="12">是否有家族病史 :{{detailData.geneticDiseaseMark? '是' : '否'}}</a-col>
+            <a-col class="mar-b10" :span="12">创建时间 :{{detailData.createTime}}</a-col>
+          </a-row>
+        </div>
+      </div>
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">体温走势</a-menu-item>
@@ -75,18 +83,48 @@ const formData = [
     placeholder: '请输入体重'
   },
   {
-    value: 'majordicalhistory',
+    value: 'createTime',
+    type: 'singleTime',
+    label: '创建时间',
+    required: false,
     initValue: '',
-    type: 'input',
-    label: '重大病史',
-    placeholder: '请输入重大病史'
+    placeholder: '请选择时间'
   },
   {
-    value: 'familydicalhistory',
-    initValue: '',
-    type: 'input',
-    label: '家族病史',
-    placeholder: '请输入家族病史'
+    value: 'majorDiseaseMark',
+    initValue: 1,
+    required: false,
+    list: [
+      {
+        key: 1,
+        val: '是'
+      },
+      {
+        key: 2,
+        val: '否'
+      }
+    ],
+    type: 'radio',
+    label: '重大病史',
+    placeholder: '请选择'
+  },
+  {
+    value: 'geneticDiseaseMark',
+    initValue: 1,
+    required: false,
+    list: [
+      {
+        key: 1,
+        val: '是'
+      },
+      {
+        key: 2,
+        val: '否'
+      }
+    ],
+    type: 'radio',
+    label: '家族遗传病',
+    placeholder: '请选择'
   }
 ]
 const columns = [
@@ -219,13 +257,7 @@ export default {
       total: 0,
       columns,
       detailList: [],
-      detailData: {
-        userHeigh:'',
-        userWeight:'',
-        remarks:'',
-        majorDiseaseMark:'',
-        geneticMark:''
-      },
+      detailData: '',
       detailInfo: '',
       reportTime: [],
       temperature: []
@@ -248,27 +280,23 @@ export default {
     //更新体检数据
     updateReport() {
       this.formStatus = true
-      this.recordId = record.id
-      this.formData = this.$tools.fillForm(formData, record)
+      this.formData = formData
     },
-    submitForm(values) {
-      console.log(values)
-      try {
-        let res
-        values.id = this.recordId
-        // res = await this.updateInfo(values)
-        if (res.message === 'SUCCESS' || res.message === '操作成功') {
-          const msg = '添加成功'
-          this.$message.success(msg)
-          this.formStatus = false
-          setTimeout(() => {
-            this.showList()
-            this.$refs.form.reset()
-          }, 1000)
-        }
-      } catch (err) {
-        this.$refs.form.error()
+    async submitForm(values) {
+      const req = {
+        ...values,
+        schoolCode: this.userInfo.orgCode,
+        userCode: this.$route.query.id,
+        userType: 1,
+        userName: this.$route.query.userName
       }
+      console.log(req)
+      const res = await this.updateInfo(req)
+      this.$message.success('添加成功')
+      setTimeout(() => {
+        this.showList()
+        this.$refs.form.reset()
+      }, 2000)
     },
     //获取体检数据加个人信息
     async showList() {
@@ -277,7 +305,7 @@ export default {
       const schoolCode = this.userInfo.orgCode
       const req = 'userCode=' + userCode + '&schoolCode=' + schoolCode
       const res = await this.getLatestMedicalInfo(req)
-      this.detailData= res.result
+      this.detailData = res.result
     },
     //获取个人体温数据
     async getTemperature() {
