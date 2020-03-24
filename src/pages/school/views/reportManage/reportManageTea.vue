@@ -37,7 +37,7 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '10%'
+    width: '7%'
   },
   {
     title: '性别',
@@ -104,12 +104,12 @@ const columns = [
     dataIndex: 'profilePhoto',
     width: '10%',
     scopedSlots: {
-      customRender: 'profilePhoto'
+      customRender: 'photoPic'
     }
   },
   {
     title: '操作',
-    width: '7%',
+    width: '10%',
     scopedSlots: {
       customRender: 'action'
     }

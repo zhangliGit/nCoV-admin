@@ -69,14 +69,14 @@ const searchLabel = [
 const columns = [
   {
     title: '序号',
-    width: '5%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
   },
   {
     title: '姓名',
-    dataIndex: 'userName',
+    dataIndex: 'username',
     width: '10%'
   },
   {
@@ -95,12 +95,12 @@ const columns = [
   },
   {
     title: '学号',
-    dataIndex: 'workNo',
+    dataIndex: 'work_no',
     width: '10%'
   },
   {
     title: '班级',
-    dataIndex: 'className',
+    dataIndex: 'classname',
     width: '10%'
   },
   {
@@ -124,7 +124,7 @@ const columns = [
   },
   {
     title: '风险时间',
-    dataIndex: 'riskTime',
+    dataIndex: 'risktime',
     width: '10%'
   },
   {
@@ -132,7 +132,7 @@ const columns = [
     dataIndex: 'profilePhoto',
     width: '15%',
     scopedSlots: {
-      customRender: 'profilePhoto'
+      customRender: 'photoPic'
     }
   },
   {
