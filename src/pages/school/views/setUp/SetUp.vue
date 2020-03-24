@@ -27,14 +27,25 @@
           <span class="title-text">校医人员设置</span>
         </div>
         <a-form-item label="校医人员" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-input
+          <a-tag
+            closable
+            v-for="item in appForm.teacher"
+            @close="del(item.id)"
+            :key="item.id"
+          >
+            {{item.userName}}
+          </a-tag>
+          <a-tag @click="chooseDoctor" style="background: #fff; borderStyle: dashed;">
+            <a-icon type="plus" /> 添加
+          </a-tag>
+          <!-- <a-input
             readOnly
             v-decorator="[
               'teacher',
               {initialValue: appForm.teacher, rules: [{ required: true, message: '请选择校医人员' }]}
             ]"
             @click="chooseDoctor"
-          />
+          /> -->
         </a-form-item>
       </div>
       <div>
@@ -205,7 +216,7 @@ export default {
       [
         'gettmpList', 'getInformUser', 'addDoctor',
         'getInfoDoctor', 'getInformWay', 'updateTmpList',
-        'updateInformWay', 'updateInformUser'
+        'updateInformWay', 'updateInformUser', 'unBindDoc'
       ]),
     // 温度设置列表
     async tmpListGet() {
@@ -252,7 +263,8 @@ export default {
     async doctorList() {
       const userData = await this.getInfoDoctor(`schoolCode=${this.userInfo.orgCode}`)
       this.userList = userData.result
-      this.appForm.teacher = this.userList.map(el => el.userName).join(',')
+      this.appForm.teacher = this.userList
+      // this.appForm.teacher = this.userList.map(el => el.userName).join(',')
     },
     // 选择校医
     chooseDoctor() {
@@ -267,7 +279,13 @@ export default {
       this.$tools.goNext(() => {
         this.$refs.chooseUser.reset()
       })
-      this.appForm.teacher = item.map(el => el.name).join(',')
+      this.doctorList()
+    },
+    // 删除校医
+    del(e) {
+      this.unBindDoc({ id: e }).then(() => {
+        this.$message.success('操作成功')
+      })
     },
     tempChange(e) {
       const req = {
