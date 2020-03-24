@@ -131,6 +131,20 @@ const $ajax = {
       return responseRes(err.response.data)
     }
   },
+  async dele(obj, tag = true) {
+    if (tag) showToast()
+    try {
+      let res = await axios({
+        url: obj.url,
+        method: 'delete',
+        data: obj.params
+      })
+      res = res.data
+      return responseRes(res)
+    } catch (err) {
+      return responseRes(err.response.data)
+    }
+  },
   async delete(obj, tag = true) {
     if (tag) showToast()
     try {

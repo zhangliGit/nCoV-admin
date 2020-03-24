@@ -172,7 +172,7 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getRiskList']),
+    ...mapActions('home', ['getRiskList', 'addRisk']),
     async showList(searchObj = {}) {
       const req = {
         schoolCode: this.userInfo.orgCode,
@@ -196,8 +196,15 @@ export default {
       }
       this.showList(searchObj)
     },
-    chooseUser(item) {
-      console.log(item)
+    async chooseUser(item, riskType) {
+      console.log(item, riskType)
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        healthyState: riskType,
+        item
+      }
+      const res = await this.addRisk(req)
+      console.log(res.result)
       setTimeout(() => {
         this.$refs.chooseUser.reset()
       }, 2000)

@@ -18,11 +18,11 @@
         <span style="color: red">*</span>
         <span>风险类型：</span>
         <span>
-          <a-select defaultValue="0" style="width: 120px">
+          <a-select v-model="riskType" defaultValue="0" style="width: 120px">
             <a-select-option value="0">请选择</a-select-option>
-            <a-select-option value="1">确诊</a-select-option>
-            <a-select-option value="2">隔离</a-select-option>
-            <a-select-option value="3">疑似</a-select-option>
+            <a-select-option value="1">疑似</a-select-option>
+            <a-select-option value="2">确诊</a-select-option>
+            <a-select-option value="3">健康</a-select-option>
           </a-select>
         </span>
       </a-col>
@@ -58,12 +58,12 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
-import $ajax from '@u/ajax-serve'
 const columns = [
   {
     title: '序号',
-    width: '20%',
+    width: '16.6%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -71,22 +71,43 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '20%'
+    width: '16.6%'
+  },
+  {
+    title: '身份',
+    dataIndex: 'userType',
+    width: '16.6%',
+    customRender: text => {
+      if (text === 1) {
+        return '教职工'
+      } else if (text === 2) {
+        return '学生'
+      }
+    }
   },
   {
     title: '性别',
-    dataIndex: 'sex',
-    width: '20%'
+    dataIndex: 'gender',
+    width: '16.6%',
+    customRender: text => {
+      if (text === 1) {
+        return '男'
+      } else if (text === 2) {
+        return '女'
+      } else {
+        return '未知'
+      }
+    }
   },
   {
     title: '电话',
     dataIndex: 'phone',
-    width: '20%'
+    width: '16.6%'
   },
   {
-    title: '工号',
-    dataIndex: 'no',
-    width: '20%'
+    title: '工号/学号',
+    dataIndex: 'workNo',
+    width: '16.6%'
   }
 ]
 export default {
@@ -105,6 +126,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('home', ['userInfo']),
     status: {
       get() {
         return this.value
@@ -115,10 +137,7 @@ export default {
     }
   },
   async mounted() {
-    const userData = await $ajax.get({
-      url: 'http://yapi.demo.qunar.com/mock/5691/getTable'
-    })
-    this.userList = userData.data
+    this.showList()
   },
   data() {
     return {
@@ -131,10 +150,20 @@ export default {
       total: 0,
       columns,
       userList: [],
-      totalList: []
+      totalList: [],
+      riskType: '0'
     }
   },
   methods: {
+    ...mapActions('home', ['getRiskList', 'getUserList']),
+    async showList() {
+      const req = {
+        schoolCode: this.userInfo.orgCode
+      }
+      const res = await this.getUserList(req)
+      this.userList = res.result.list
+      this.total = res.result.totalCount
+    },
     reset() {
       this.confirmLoading = false
       this.$emit('input', false)
@@ -157,6 +186,7 @@ export default {
           this.totalList.splice(index, 1)
         })
       }
+      console.log(this.totalList)
     },
     // 监听选中或取消
     clickRow(item, type) {
@@ -168,14 +198,13 @@ export default {
       }
     },
     submitOk() {
-      if (this.totalList.length === 0) {
-        this.$message.warning('请选择人员')
+      if (this.totalList.length === 0 || this.riskType === '0') {
+        this.$message.warning('请选择人员和风险类型')
         return
       }
       this.confirmLoading = true
-      this.$emit('submit', this.totalList)
-    },
-    showList() {}
+      this.$emit('submit', this.totalList, this.riskType)
+    }
   }
 }
 </script>

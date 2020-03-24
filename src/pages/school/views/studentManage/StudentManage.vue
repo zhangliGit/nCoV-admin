@@ -72,9 +72,9 @@ const columns = [
     dataIndex: 'gender',
     width: '9%',
     customRender: (text) => {
-      if (text === 1) {
+      if (text === '1') {
         return '男'
-      } else if (text === 2) {
+      } else if (text === '2') {
         return '女'
       } else {
         return '未知'
@@ -96,7 +96,7 @@ const columns = [
   },
   {
     title: '人脸照片',
-    dataIndex: 'photoPic',
+    dataIndex: 'profilePhoto',
     width: '9%',
     scopedSlots: {
       customRender: 'photoPic'
@@ -109,12 +109,12 @@ const columns = [
   },
   {
     title: '关联家长',
-    dataIndex: 'parents',
+    dataIndex: 'parName',
     width: '9%'
   },
   {
     title: '家长电话',
-    dataIndex: 'parentsTel',
+    dataIndex: 'parphone',
     width: '9%'
   },
   {
@@ -141,7 +141,7 @@ const searchLabel = [
 ]
 const formData = [
   {
-    value: 'stuName',
+    value: 'userName',
     initValue: '',
     type: 'input',
     label: '姓名',
@@ -169,11 +169,11 @@ const formData = [
     required: false,
     list: [
       {
-        key: 1,
+        key: '1',
         val: '男'
       },
       {
-        key: 2,
+        key: '2',
         val: '女'
       }
     ],
@@ -182,7 +182,7 @@ const formData = [
     placeholder: '请选择性别'
   },
   {
-    value: 'userNo',
+    value: 'workNo',
     initValue: '',
     type: 'input',
     required: false,
@@ -241,6 +241,9 @@ export default {
         size: 20
       },
       total: 0,
+      type: 0,
+      id: '',
+      record: null,
       userList: [],
       fileInfo: {
         url: '', // 接口地址
@@ -260,13 +263,20 @@ export default {
     this.fileInfo.url = `/admin/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
     this.formData[1].selectGrade = this.selectGrade
   },
-  mounted () {
+  async mounted () {
     this.getGradeInfo()
-    this.showList()
+    const req = {
+      schoolCode: this.userInfo.orgCode,
+      userType: 2,
+      ...this.pageList
+    }
+    const res = await this.getUserList(req)
+    this.userList = res.result.list
+    this.total = res.result.totalCount
   },
   methods: {
     ...mapActions('home', [
-      'getClassList', 'getGradeList', 'getUserList', 'addStudent'
+      'getClassList', 'getGradeList', 'getUserList', 'addStudent', 'deleUser', 'editUser'
     ]),
     // 获取年级列表
     async getGradeInfo() {
@@ -314,7 +324,8 @@ export default {
         gradeCode,
         classCode,
         userType: 2,
-        ...searchObj
+        ...searchObj,
+        ...this.pageList
       }
       const res = await this.getUserList(req)
       this.userList = res.result.list
@@ -323,16 +334,30 @@ export default {
     add(type, record = {}) {
       this.formStatus = true
       if (type) { // 编辑
-        this.picUrl = ''
+        this.type = 1
+        this.record = record
+        console.log(record)
         this.formData = this.$tools.fillForm(formData, record)
-        this.fileList.push({ uid: record.id, url: record.photoPic })
+        this.formData[2].initValue = record.className
+        this.selectGrade(record.gradeCode)
+        this.picUrl = record['profilePhoto']
       } else { // 添加
+        this.type = 0
         this.formData = formData
         this.picUrl = ''
       }
     },
-    del(record) {
-      console.log(record)
+    async del(record) {
+      console.log(record.id)
+      const req = {
+        ids: [record.id]
+      }
+      console.log(req)
+      await this.deleUser(req)
+      this.$message.success('删除成功')
+      setTimeout(() => {
+        this.showList()
+      }, 2000)
     },
     searchForm (values) {
       console.log(values)
@@ -344,25 +369,53 @@ export default {
     },
     async submitForm (values) {
       console.log(values)
-      const req = {
-        ...values,
-        schoolCode: this.userInfo.orgCode,
-        profilePhoto: this.picUrl
+      if (this.type) {
+        const req = {
+          ...values,
+          schoolCode: this.userInfo.orgCode,
+          profilePhoto: this.picUrl,
+          id: this.record.id
+        }
+        const gradeName = this.formData[1].list.filter(ele => {
+          return ele.key === values.gradeCode
+        })[0]
+        req.gradeName = gradeName ? gradeName.val : this.record.gradeName
+        const clazzName = this.formData[2].list.filter(ele => {
+          return ele.key === values.clazzCode
+        })[0]
+        req.clazzName = clazzName ? clazzName.val : this.record.clazzName
+        if (Array.isArray(values.gradeCode)) {
+          req.gradeCode = values.gradeCode[0]
+        }
+        console.log(req)
+        await this.editUser(req)
+        this.$message.success('编辑成功')
+        setTimeout(() => {
+          this.picUrl = ''
+          this.showList()
+          this.$refs.form.reset()
+        }, 2000)
+      } else {
+        const req = {
+          ...values,
+          schoolCode: this.userInfo.orgCode,
+          profilePhoto: this.picUrl
+        }
+        req.gradeName = this.formData[1].list.filter(ele => {
+          return ele.key === values.gradeCode
+        })[0].val
+        req.clazzName = this.formData[2].list.filter(ele => {
+          return ele.key === values.clazzCode
+        })[0].val
+        console.log(req)
+        await this.addStudent(req)
+        this.$message.success('添加成功')
+        setTimeout(() => {
+          this.picUrl = ''
+          this.showList()
+          this.$refs.form.reset()
+        }, 2000)
       }
-      req.gradeName = this.formData[1].list.filter(ele => {
-        return ele.key === values.gradeCode
-      })[0].val
-      req.clazzName = this.formData[2].list.filter(ele => {
-        return ele.key === values.clazzCode
-      })[0].val
-      console.log(req)
-      await this.addStudent(req)
-      this.$message.success('添加成功')
-      setTimeout(() => {
-        this.picUrl = ''
-        this.showList()
-        this.$refs.form.reset()
-      }, 2000)
     },
     goDetail (record) {
       console.log(record)
