@@ -30,7 +30,7 @@
             <img :src="userInfo.photoSrc" alt />
           </div>
         </div>
-        <a-menu slot="overlay" class="user-dropdown-menu-wrapper">
+        <a-menu v-if="false" slot="overlay" class="user-dropdown-menu-wrapper">
           <a-menu-item key="1" v-if="false">
             <a href="javascript:;">
               <a-icon type="home" />
