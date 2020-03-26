@@ -19,7 +19,7 @@
       listType="picture-card"
       class="avatar-uploader"
       :showUploadList="false"
-      :action="fileInfo.url"
+      :action="reqUrl"
       :beforeUpload="beforeUpload"
       @change="uploadPic"
     >
@@ -34,22 +34,20 @@
   </div>
 </template>
 <script>
+import hostEnv from '@config/host-env'
+import { mapState } from 'vuex'
 function getBase64 (img, callback) {
   const reader = new FileReader()
   reader.addEventListener('load', () => callback(reader.result))
   reader.readAsDataURL(img)
 }
-export {
-  default as EyeOutline
-}
-  from '@ant-design/icons/lib/outline/EyeOutline'
-export {
-  default as DeleteOutline
-}
-  from '@ant-design/icons/lib/outline/DeleteOutline'
 export default {
   name: 'UploadFile',
   props: {
+    isCheck: {
+      type: Boolean,
+      default: false
+    },
     length: {
       type: Number,
       default: 3
@@ -74,13 +72,24 @@ export default {
   },
   data () {
     return {
+      reqUrl: '',
       previewVisible: false,
       uploadTag: false,
       previewImage: '',
       currentIndex: -1
     }
   },
+  mounted () {
+    if (this.fileInfo.url) {
+      this.reqUrl = this.fileInfo.url
+    } else {
+      this.reqUrl = !this.isCheck ? `${hostEnv.zhangkun}/file/freeUpload?schoolCode=${this.schoolCode}` : `${hostEnv.zhangkun}/file/uploadUserPhoto?schoolCode=${this.schoolCode}`
+    }
+  },
   computed: {
+    ...mapState('home', [
+      'schoolCode'
+    ]),
     fileList: {
       get () {
         return this.value

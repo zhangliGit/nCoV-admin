@@ -6,12 +6,12 @@
     justify="end"
     align="middle"
   >
-    <span class="page-total">一共{{ total }}条</span>
+    <span class="page-total">一共{{ total }}条12</span>
     <a-pagination
       :pageSize.sync="value.size"
       :total="total"
-      :size="size"
       :current="value.page"
+      :size="size"
       showSizeChanger
       :showQuickJumper="jumper"
       @change="changePage"

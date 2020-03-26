@@ -6,82 +6,90 @@
       </a-col>
       <a-col class="qui-fx qui-fx-ac" v-if="isSearch">
         <div class="qui-fx">
-          <a-form :form="form" layout="inline" class="qui-fx">
+          <a-form
+            :form="form"
+            layout="inline"
+            class="qui-fx"
+          >
             <div v-for="(item, index) in searchLabel" :key="index">
               <!--下拉选择文本框-->
               <a-form-item v-if="item.type === 'selectInput'">
                 <a-input
-                  style="width: 100%"
                   :placeholder="item.placeholder"
                   v-decorator="[
                     item.value,
                     {
-                      rules: [{ required: false, message: item.placeholder || '请输入' }]
-                    }
+                      rules: [{ required: false, message: item.placeholder || '请输入' }],
+                    },
                   ]"
+                  style="width: 100%"
                 >
                   <a-select
                     slot="addonBefore"
                     v-decorator="['prefix', { initialValue: item.selectType[0].val }]"
                     style="min-width: 70px"
                   >
-                    <a-select-option
-                      :value="list.val"
-                      v-for="(list, index1) in item.selectType"
-                      :key="index1"
-                    >
-                      {{
-                      list.val
-                      }}
+                    <a-select-option :value="list.val" v-for="(list, index1) in item.selectType" :key="index1">
+                      {{ list.val }}
                     </a-select-option>
                   </a-select>
                 </a-input>
               </a-form-item>
               <!--下拉选择文本框-->
               <!--文本框-->
-              <a-form-item :label="item.label" v-if="item.type === 'input'">
+              <a-form-item
+                :label="item.label"
+                v-if="item.type === 'input'"
+              >
                 <a-input
-                  style="width: 120px"
                   :placeholder="item.placeholder"
-                  v-decorator="[item.value, { rules: [{ required: false, message: item.placeholder || '请输入' }] }]"
+                  v-decorator="[
+                    item.value,
+                    {rules: [
+                      { required: false, message: item.placeholder || '请输入' }
+                    ]}
+                  ]"
                 />
               </a-form-item>
               <!--选择框-->
-              <a-form-item :label="item.label" v-if="item.type === 'select'">
+              <a-form-item
+                :label="item.label"
+                v-if="item.type === 'select'"
+              >
                 <a-select
-                  v-decorator="[item.value, { rules: [{ required: false, message: item.placeholder }] }]"
+                  v-decorator="[
+                    item.value,
+                    { rules: [{ required: false, message: item.placeholder }]}
+                  ]"
                   style="width: 120px"
                   :placeholder="item.placeholder || '全部'"
                 >
-                  <a-select-option
-                    v-for="(item2, index2) in item.list"
-                    :value="item2.key"
-                    :key="index2"
-                  >
-                    {{
-                    item2.val
-                    }}
+                  <a-select-option v-for="(item2, index2) in item.list" :value="item2.key" :key="index2">
+                    {{ item2.val }}
                   </a-select-option>
                 </a-select>
               </a-form-item>
               <!--单选日期-->
-              <a-form-item :label="item.label" v-if="item.type === 'singleTime'">
-                <a-date-picker
-                  v-decorator="[item.value, { rules: [{ required: false, message: item.placeholder }] }]"
-                />
+              <a-form-item
+                :label="item.label"
+                v-if="item.type === 'singleTime'"
+              >
+                <a-date-picker v-decorator="[item.value, {rules: [{ required: false, message: item.placeholder }]}]" />
               </a-form-item>
               <!--复选日期-->
-              <a-form-item :label="item.label" v-if="item.type === 'rangeTime'">
-                <a-range-picker
-                  style="width: 280px"
-                  v-decorator="[item.value, { rules: [{ required: false, message: item.placeholder }] }]"
-                />
+              <a-form-item
+                :label="item.label"
+                v-if="item.type === 'rangeTime'"
+              >
+                <a-range-picker style="width: 280px" v-decorator="[item.value, {rules: [{ required: false, message: item.placeholder }]}]" />
               </a-form-item>
             </div>
+            <!--地区选择-->
+            <slot name="area"></slot>
           </a-form>
         </div>
         <a-button v-if="isSearch" type="primary" style="margin-left: 0px" @click="searchBtn">搜索</a-button>
-        <a-button v-if="isReset" style="margin-left: 0px" type="dashed" @click="resetBtn">重置</a-button>
+        <a-button v-if="isReset" style="margin-left: 5px; background:#e8e8e8;color:#999" type="default" @click="resetBtn">重置</a-button>
         <slot name="right"></slot>
       </a-col>
     </a-row>
@@ -111,18 +119,18 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       moment,
       form: this.$form.createForm(this)
     }
   },
   methods: {
-    resetBtn() {
+    resetBtn () {
       this.form.resetFields()
       this.searchBtn()
     },
-    searchBtn(e) {
+    searchBtn (e) {
       if (e) e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
@@ -148,10 +156,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.ant-input {
-  width: 120px !important;
-}
-.search-form {
-  padding: 8px 0 15px 0;
-}
+  .search-form {
+    padding: 4px 5px 15px 5px;
+  }
 </style>
