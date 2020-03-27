@@ -45,7 +45,7 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import SubmitForm from '@c/SubmitForm'
+import SubmitForm from '../component/SubmitForm'
 import chooseUser from '@c/ChooseUser'
 import GradeClass from '@c/GradeClass'
 const columns = [
@@ -154,7 +154,6 @@ export default {
           val: ele.gradeName
         })
       })
-      this.$forceUpdate()
     },
     select(item) {
       this.gradeCode = item.gradeCode
