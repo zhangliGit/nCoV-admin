@@ -8,17 +8,18 @@
     :destroyOnClose="true"
     :confirmLoading="confirmLoading"
   >
-    <a-row type="flex" justify="end" style="margin-bottom: 15px; margin-right: 215px">
+    <a-row type="flex" justify="end" style="margin-bottom: 15px;">
       <a-col>
         <span>姓名：</span>
-        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入姓名" />
-        <a-button type="primary">查询</a-button>
+        <a-input v-model="searchName" style="width: 120px;margin-right: 10px" placeholder="请输入姓名" />
+        <a-button type="primary" @click="showList(searchName)" style="margin-right: 10px">查询</a-button>
+        <a-button type="dashed" @click="rese()">重置</a-button>
       </a-col>
     </a-row>
     <div class="choose-user qui-fx">
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
-          is-check
+          is-radio
           :scroll-h="100"
           :page-list="pageList"
           v-model="chooseList"
@@ -37,7 +38,7 @@
           @change-page="showList"
         ></page-num>
       </div>
-      <div class="user-box qui-fx-ver">
+      <!--       <div class="user-box qui-fx-ver">
         <div class="title qui-fx-jsb">
           <span>已选择</span>
           <span>{{ totalList.length }}人</span>
@@ -50,15 +51,15 @@
             </li>
           </ul>
         </div>
-      </div>
+      </div> -->
     </div>
   </a-modal>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import PageNum from '@c/PageNum'
 import TableList from '@c/TableList'
-import $ajax from '@u/ajax-serve'
 const columns = [
   {
     title: '序号',
@@ -105,6 +106,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('home', ['userInfo']),
     status: {
       get() {
         return this.value
@@ -115,11 +117,7 @@ export default {
     }
   },
   async mounted() {
-    const userData = await $ajax.get({
-      url: 'http://yapi.demo.qunar.com/mock/5691/getTable'
-    })
-    this.total = userData.total
-    this.userList = userData.data
+    this.showList()
   },
   data() {
     return {
@@ -132,10 +130,27 @@ export default {
       total: 0,
       columns,
       userList: [],
-      totalList: []
+      totalList: [],
+      searchName: ''
     }
   },
   methods: {
+    ...mapActions('home', ['getUserList']),
+    async showList(searchVal = '') {
+      const req = {
+        ...this.pageList,
+        schoolCode: this.userInfo.orgCode,
+        userName: searchVal,
+        userType: '1'
+      }
+      const res = await this.getUserList(req)
+      this.userList = res.result.list
+      this.total = res.result.totalCount
+    },
+    rese() {
+      this.searchName = ''
+      this.showList()
+    },
     reset() {
       this.confirmLoading = false
       this.$emit('input', false)
@@ -175,8 +190,7 @@ export default {
       }
       this.confirmLoading = true
       this.$emit('submit', this.totalList)
-    },
-    showList() {}
+    }
   }
 }
 </script>

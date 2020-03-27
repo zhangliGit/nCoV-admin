@@ -11,6 +11,7 @@ const schoolApi = {
   getClassInfoList: '/school/classInfo/getClassDetailInfo#postForm', // 班级信息列表
   deleteClass: '/school/classInfo/deleteById#delete', // 删除班级
   bathAddClass: '/school/classInfo/bathAddClass#postForm', // 新增班级
+  classTeacher: '/school/teacherrelationclass/save#post', // 班级绑定班主任
   getUserList: '/school/userinfo/getUserInfoList#post', // 学生教职工管理列表
   addStudent: '/mobile/patriarchinfo/stu/mobile/save#post', // 新增学生
   editUser: '/school/userinfo/updateStudentInfo#post', // 编辑人员信息

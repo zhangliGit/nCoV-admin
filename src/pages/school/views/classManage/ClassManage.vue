@@ -2,8 +2,8 @@
   <div class="page-layout qui-fx">
     <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
     </submit-form>
-    <choose-user ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
-    </choose-user>
+    <choose-teacher ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
+    </choose-teacher>
     <div class="page-left qui-fx-ver">
       <grade-tree @select="select"></grade-tree>
     </div>
@@ -18,7 +18,7 @@
         :table-list="userList">
         <template v-slot:actions="action">
           <a-tooltip placement="topLeft" title="绑定班主任">
-            <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher()"></a-button>
+            <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher(action.record)"></a-button>
           </a-tooltip>
           <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
             <template slot="title">
@@ -41,7 +41,7 @@ import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '@c/SubmitForm'
-import chooseUser from '@c/ChooseUser'
+import ChooseTeacher from '../component/ChooseTeacher'
 import GradeTree from '../component/GradeTree'
 const columns = [
   {
@@ -107,7 +107,7 @@ export default {
     TableList,
     SearchForm,
     SubmitForm,
-    chooseUser,
+    ChooseTeacher,
     PageNum,
     GradeTree
   },
@@ -116,6 +116,7 @@ export default {
       columns,
       formData,
       title: '添加班级',
+      record: null,
       formStatus: false,
       userTag: false,
       pageList: {
@@ -139,7 +140,7 @@ export default {
   },
   methods: {
     ...mapActions('home', [
-      'getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList'
+      'getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList', 'classTeacher'
     ]),
     // 获取年级列表
     async getGradeInfo() {
@@ -170,8 +171,9 @@ export default {
     addClass() {
       this.formStatus = true
     },
-    addTeacher() {
+    addTeacher(record) {
       this.userTag = true
+      this.record = record
     },
     // 删除班级
     async del(record) {
@@ -209,8 +211,17 @@ export default {
         this.showList()
       }, 2000)
     },
-    chooseUser (item) {
+    async chooseUser (item) {
       console.log(item)
+      console.log(this.record)
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        teacherCode: item[0].userCode,
+        id: this.record.id,
+        classCode: this.record.class_code
+
+      }
+      const res = await this.classTeacher(req)
       setTimeout(() => {
         this.$refs.chooseUser.reset()
       }, 2000)
