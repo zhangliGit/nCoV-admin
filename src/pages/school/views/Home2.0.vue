@@ -13,24 +13,31 @@
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
-        <a-col :span="18">
+        <a-col :span="16">
           <chart-component :style="{ height: chartHeight }" :id="heatId" :option="heatOption"></chart-component>
         </a-col>
-        <a-col :span="6">
-          <chart-component :style="{ height: chartHeight }" :id="userPieId" :option="userPieOption"></chart-component>
+        <a-col :span="8">
+          <a-row >
+            <a-col :span="12">
+              <chart-component :style="{ height: chartHeight }" :id="highUserPieId" :option="highUserPieOption"></chart-component>
+            </a-col>
+            <a-col :span="12">
+              <chart-component :style="{ height: chartHeight }" :id="middleUserPieId" :option="middleUserPieOption"></chart-component>
+            </a-col>
+          </a-row>
         </a-col>
       </a-row>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
-        <a-col :span="18">
+        <a-col :span="16">
           <chart-component
             :style="{ height: chartHeight }"
             :id="unReportId"
             :option="unReportOption"
           ></chart-component>
         </a-col>
-        <a-col :span="6">
+        <a-col :span="8">
           <chart-component
             :style="{ height: chartHeight }"
             :id="unHealthyId"
@@ -61,15 +68,18 @@ export default {
       baseList: [],
       heatId: 'heatId',
       unReportId: 'unReportId',
-      userPieId: 'userPieId',
+      highUserPieId: 'highUserPieId',
+      middleUserPieId: 'middleUserPieId',
       unHealthyId: 'unHealthyId',
       heatOption: {},
       unReportOption: {},
-      userPieOption: {},
+      highUserPieOption: {},
+      middleUserPieOption: {},
       unHealthyOption: {},
       heatChart: null,
       unReportChart: null,
-      userPieChart: null,
+      highUserPieChart: null,
+      middleUserPieChart: null,
       unHealthyChart: null,
       chartHeight: '',
       dailyData: {},
@@ -90,7 +100,7 @@ export default {
   },
   methods: {
     ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
-    getDateTime(date) {
+    getDateTime (date) {
       if (date === '' || date === null) {
         return '--'
       }
@@ -113,37 +123,33 @@ export default {
       const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
       const res = await this.getDailyData(req)
       this.dailyData = res.result
-      this.initUserPieChart()
-      this.baseList = [
-        {
-          id: 1,
-          icon: reportImg,
-          num: res.result.reportNum,
-          tip: '已上报人数',
-          color: '#e6fbea'
-        },
-        {
-          id: 2,
-          icon: unreportImg,
-          num: res.result.noReportNum,
-          tip: '未上报人数',
-          color: '#e0f3ff'
-        },
-        {
-          id: 3,
-          icon: unhealthyImg,
-          num: res.result.healthNum,
-          tip: '健康异常人数',
-          color: '#f2efff'
-        },
-        {
-          id: 4,
-          icon: heatImg,
-          num: res.result.feverNum,
-          tip: '发热人数',
-          color: '#ffdedf'
-        }
-      ]
+      this.initHighUserPieChart()
+      this.initMiddleUserPieChart()
+      this.baseList = [{
+        id: 1,
+        icon: reportImg,
+        num: res.result.reportNum,
+        tip: '已上报人数',
+        color: '#e6fbea'
+      }, {
+        id: 2,
+        icon: unreportImg,
+        num: res.result.noReportNum,
+        tip: '未上报人数',
+        color: '#e0f3ff'
+      }, {
+        id: 3,
+        icon: unhealthyImg,
+        num: res.result.healthNum,
+        tip: '健康异常人数',
+        color: '#f2efff'
+      }, {
+        id: 4,
+        icon: heatImg,
+        num: res.result.feverNum,
+        tip: '发热人数',
+        color: '#ffdedf'
+      }]
     },
     async symptomGet() {
       const res = await this.getSymptomList()
@@ -163,6 +169,48 @@ export default {
       console.log('this.symptomList', this.symptomList)
       this.initUnHealthyChart()
     },
+    async initUnHealthyChart() {
+      this.unHealthyOption = {
+        chart: {
+          type: 'column'
+        },
+        title: {
+          text: '返校时间分布'
+        },
+        xAxis: {
+          categories: [
+            '03-23', '03-24', '03-25', '03-26', '03-27', '03-28', '03-29', '03-30', '03-31', '04-01'
+          ],
+          crosshair: true
+        },
+        yAxis: {
+          min: 0,
+          title: {
+            text: ''
+          }
+        },
+        tooltip: {
+          // head + 每个 point + footer 拼接成完整的 table
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+		'<td style="padding:0"><b>{point.y:1f} 人</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+        },
+        plotOptions: {
+          column: {
+            borderWidth: 0
+          }
+        },
+        series: [{
+          name: '人数',
+          data: [49, 71, 106, 129, 144, 176, 148, 194, 95, 54]
+        }]
+      }
+      this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
+    },
+    /*
     async initUnHealthyChart() {
       this.unHealthyOption = {
         chart: {
@@ -192,37 +240,36 @@ export default {
             showInLegend: true
           }
         },
-        series: [
-          {
-            name: 'Brands',
-            colorByPoint: true,
-            data: this.symptomList
-            // [{
-            //   name: '发热',
-            //   y: 61.41,
-            //   sliced: true,
-            //   selected: true
-            // }, {
-            //   name: '咳嗽',
-            //   y: 11.84
-            // }, {
-            //   name: '腹泻',
-            //   y: 10.85
-            // }, {
-            //   name: '咽痛',
-            //   y: 4.67
-            // }, {
-            //   name: '乏力',
-            //   y: 4.18
-            // }, {
-            //   name: '鼻塞流涕',
-            //   y: 7.05
-            // }]
-          }
-        ]
+        series: [{
+          name: 'Brands',
+          colorByPoint: true,
+          data: this.symptomList
+          // [{
+          //   name: '发热',
+          //   y: 61.41,
+          //   sliced: true,
+          //   selected: true
+          // }, {
+          //   name: '咳嗽',
+          //   y: 11.84
+          // }, {
+          //   name: '腹泻',
+          //   y: 10.85
+          // }, {
+          //   name: '咽痛',
+          //   y: 4.67
+          // }, {
+          //   name: '乏力',
+          //   y: 4.18
+          // }, {
+          //   name: '鼻塞流涕',
+          //   y: 7.05
+          // }]
+        }]
       }
       this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
     },
+    */
     async initHeatChart() {
       const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
         new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
@@ -368,8 +415,8 @@ export default {
       }
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
     },
-    async initUserPieChart() {
-      this.userPieOption = {
+    async initHighUserPieChart() {
+      this.highUserPieOption = {
         chart: {
           spacing: [40, 0, 40, 0]
         },
@@ -378,7 +425,8 @@ export default {
         },
         title: {
           floating: true,
-          text: '健康异常人员分布'
+          text: ''
+          // text: '健康异常人员分布',
         },
         tooltip: {
           pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -397,19 +445,59 @@ export default {
             }
           }
         },
-        series: [
-          {
-            type: 'pie',
-            innerSize: '80%',
-            name: '市场份额',
-            data: [
-              ['发热', this.dailyData.healthNum],
-              ['未发热', this.dailyData.noFeverNum]
-            ]
-          }
-        ]
+        series: [{
+          type: 'pie',
+          innerSize: '80%',
+          name: '市场份额',
+          data: [
+            ['发热', this.dailyData.healthNum],
+            ['未发热', this.dailyData.noFeverNum]
+          ]
+        }]
       }
-      this.userPieChart = new Highcharts.Chart(this.userPieId, this.userPieOption)
+      this.highUserPieChart = new Highcharts.Chart(this.highUserPieId, this.highUserPieOption)
+    },
+    async initMiddleUserPieChart() {
+      this.middleUserPieOption = {
+        chart: {
+          spacing: [40, 0, 40, 0]
+        },
+        credits: {
+          enabled: false
+        },
+        title: {
+          floating: true,
+          text: ''
+          // text: '健康异常人员分布'
+        },
+        tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        colors: ['#ff8d8c', '#69a7fe'],
+        plotOptions: {
+          pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+              enabled: true,
+              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+              style: {
+                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+              }
+            }
+          }
+        },
+        series: [{
+          type: 'pie',
+          innerSize: '80%',
+          name: '市场份额',
+          data: [
+            ['发热', this.dailyData.healthNum],
+            ['未发热', this.dailyData.noFeverNum]
+          ]
+        }]
+      }
+      this.middleUserPieChart = new Highcharts.Chart(this.middleUserPieId, this.middleUserPieOption)
     }
   }
 }

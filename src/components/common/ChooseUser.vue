@@ -10,26 +10,27 @@
   >
     <a-row type="flex" justify="end" style="margin-bottom: 15px; margin-right: 215px">
       <a-col>
-        <span>姓名：</span>
-        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入姓名" />
-        <a-button type="primary">查询</a-button>
+        <span>姓名/工号：</span>
+        <a-input v-model="keyword" style="width: 120px;margin-right: 10px" placeholder="请输入姓名" />
+        <a-button type="primary" @click="getUserList">查询</a-button>
       </a-col>
     </a-row>
     <div class="choose-user qui-fx">
       <div class="org-box">
-        <org-tree></org-tree>
+        <org-tree @select="select"></org-tree>
       </div>
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
-          is-check
-          :scroll-h="100"
+          :is-check="isCheck"
+          :is-radio="isRadio"
+          :scroll-h="500"
           :page-list="pageList"
           v-model="chooseList"
           :columns="columns"
           @clickRow="clickRow"
           @selectAll="selectAll"
-          :table-list="userList"
-        ></table-list>
+          :table-list="userList">
+        </table-list>
         <page-num
           :jumper="false"
           v-model="pageList"
@@ -37,8 +38,7 @@
           :mar-bot="0"
           size="small"
           :total="total"
-          @change-page="showList"
-        ></page-num>
+          @change-page="getUserList"></page-num>
       </div>
       <div class="user-box qui-fx-ver">
         <div class="title qui-fx-jsb">
@@ -48,7 +48,7 @@
         <div class="qui-fx-f1" style="overflow: auto">
           <ul>
             <li v-for="(item, index) in totalList" :key="item.id" class="qui-fx-jsb">
-              <span>{{ item.name }}</span>
+              <span>{{ item.userName }}</span>
               <a-tag @click="delUser(item.id, index)" color="#f50">删除</a-tag>
             </li>
           </ul>
@@ -63,6 +63,8 @@ import PageNum from './PageNum'
 import TableList from './TableList'
 import OrgTree from './OrgTree'
 import $ajax from '@u/ajax-serve'
+import { mapState } from 'vuex'
+import hostEnv from '@config/host-env'
 const columns = [
   {
     title: '序号',
@@ -78,12 +80,12 @@ const columns = [
   },
   {
     title: '手机号',
-    dataIndex: 'phone',
+    dataIndex: 'mobile',
     width: '30%'
   },
   {
     title: '工号',
-    dataIndex: 'code',
+    dataIndex: 'workNo',
     width: '30%'
   }
 ]
@@ -95,6 +97,14 @@ export default {
     OrgTree
   },
   props: {
+    isRadio: {
+      type: Boolean,
+      default: false
+    },
+    isCheck: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       default: ''
@@ -105,24 +115,24 @@ export default {
     }
   },
   computed: {
+    ...mapState('home', [
+      'schoolCode'
+    ]),
     status: {
-      get() {
+      get () {
         return this.value
       },
-      set() {
+      set () {
         this.$emit('input', false)
       }
     }
   },
-  async mounted() {
-    const userData = await $ajax.get({
-      url: 'http://yapi.demo.qunar.com/mock/81652/getTable'
-    })
-    this.total = userData.total
-    this.userList = userData.data
+  async mounted () {
+    this.getUserList()
   },
-  data() {
+  data () {
     return {
+      keyword: '',
       confirmLoading: false,
       chooseList: [],
       pageList: {
@@ -136,18 +146,36 @@ export default {
     }
   },
   methods: {
-    reset() {
+    async getUserList () {
+      const res = await $ajax.post({
+        url: `${hostEnv.lvzhuo}/userinfo/teacher/user/queryTeacherInfo`,
+        params: {
+          orgCode: this.orgCode || null,
+          keyword: this.keyword,
+          schoolCode: this.schoolCode,
+          ...this.pageList
+        }
+      })
+      this.userList = res.data.list
+      this.total = res.data.total
+    },
+    select (item) {
+      this.pageList.page = 1
+      this.orgCode = item.code
+      this.getUserList()
+    },
+    reset () {
       this.confirmLoading = false
       this.$emit('input', false)
     },
-    error() {
+    error () {
       this.confirmLoading = false
     },
-    delUser(id, index) {
+    delUser (id, index) {
       this.totalList.splice(index, 1)
       this.chooseList.splice(this.chooseList.indexOf(id), 1)
     },
-    selectAll(item, type) {
+    selectAll (item, type) {
       if (type) {
         this.totalList = this.totalList.concat(item)
       } else {
@@ -160,23 +188,27 @@ export default {
       }
     },
     // 监听选中或取消
-    clickRow(item, type) {
+    clickRow (item, type) {
       if (type) {
-        this.totalList.push(item)
+        if (this.isCheck) {
+          this.totalList.push(item)
+        } else {
+          this.totalList = [item]
+        }
       } else {
         const index = this.totalList.findIndex(list => list.id === item.id)
         this.totalList.splice(index, 1)
       }
     },
-    submitOk() {
+    submitOk () {
       if (this.totalList.length === 0) {
         this.$message.warning('请选择人员')
         return
       }
       this.confirmLoading = true
+      console.log(this.totalList)
       this.$emit('submit', this.totalList)
-    },
-    showList() {}
+    }
   }
 }
 </script>
@@ -185,7 +217,7 @@ export default {
 .choose-user {
   height: 600px;
   .org-box {
-    width: 200px;
+    width: 200px
   }
   .user-box {
     border: 1px #f5f5f5 solid;
@@ -193,10 +225,10 @@ export default {
     width: 200px;
     .title {
       padding: 0 10px;
-      background-color: #f5f5f5;
+      background-color:#f5f5f5;
       height: 41px;
       line-height: 41px;
-      border-bottom: 1px #f5f5f5 solid;
+      border-bottom: 1px #f5f5f5 solid
     }
     li {
       border-bottom: 1px #f5f5f5 solid;

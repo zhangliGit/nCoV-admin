@@ -11,11 +11,14 @@ const schoolApi = {
   getClassInfoList: '/school/classInfo/getClassDetailInfo#postForm', // 班级信息列表
   deleteClass: '/school/classInfo/deleteById#delete', // 删除班级
   bathAddClass: '/school/classInfo/bathAddClass#postForm', // 新增班级
+  classTeacher: '/school/teacherrelationclass/save#post', // 班级绑定班主任
+  delClassTeacher: '/school/teacherrelationclass/unBindClass#postForm', // 班级解绑班主任
   getUserList: '/school/userinfo/getUserInfoList#post', // 学生教职工管理列表
   addStudent: '/mobile/patriarchinfo/stu/mobile/save#post', // 新增学生
   editUser: '/school/userinfo/updateStudentInfo#post', // 编辑人员信息
   deleUser: '/school/userinfo/deleteUserById#delete', // 删除人员信息
   addTeacher: '/user/staff/save#post', // 新增教职工
+  riskList: '/operate/riskinfo/getList#get', // 风险类型
   getRiskList: '/school/userinfo/getRiskUserList#post', // 风险人员名单
   addRisk: '/school/riskpersoninfo/batchSaveRiskPerson#post', // 新增风险人员
   getreportList: '/school/userinfo/getUserInfoList#post', // 上报记录

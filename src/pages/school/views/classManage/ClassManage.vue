@@ -7,15 +7,15 @@
       v-model="formStatus"
       :form-data="formData"
     ></submit-form>
-    <choose-user
+    <choose-teacher
       ref="chooseUser"
       v-if="userTag"
       v-model="userTag"
       @submit="chooseUser"
       title="选择教职工"
-    ></choose-user>
+    ></choose-teacher>
     <div class="page-left qui-fx-ver">
-      <grade-tree :is-grade="true" @select="select"></grade-tree>
+      <grade-class :is-grade="true" @select="select"></grade-class>
     </div>
     <div class="page-right qui-fx-ver">
       <div class="top-btn-group" style="padding: 8px 0 15px 0;">
@@ -24,8 +24,14 @@
       </div>
       <table-list :page-list="pageList" :columns="columns" :table-list="userList">
         <template v-slot:actions="action">
-          <a-tooltip placement="topLeft" title="绑定班主任">
-            <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher()"></a-button>
+          <a-popconfirm v-if="action.record.user_name" placement="left" okText="确定" cancelText="取消" @confirm="delTeacher(action.record)">
+            <template slot="title">您确定解绑班主任吗?</template>
+            <a-tooltip placement="topLeft" title="解绑班主任">
+              <a-button size="small" class="add-action-btn" icon="plus"></a-button>
+            </a-tooltip>
+          </a-popconfirm>
+          <a-tooltip v-else placement="topLeft" title="绑定班主任">
+            <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher(action.record)"></a-button>
           </a-tooltip>
           <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
             <template slot="title">您确定删除吗?</template>
@@ -45,9 +51,9 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import SubmitForm from '@c/SubmitForm'
-import chooseUser from '@c/ChooseUser'
-import GradeTree from '@c/GradeTree'
+import SubmitForm from '../component/SubmitForm'
+import ChooseTeacher from '../component/ChooseTeacher'
+import GradeClass from '@c/GradeClass'
 const columns = [
   {
     title: '序号',
@@ -112,15 +118,16 @@ export default {
     TableList,
     SearchForm,
     SubmitForm,
-    chooseUser,
+    ChooseTeacher,
     PageNum,
-    GradeTree
+    GradeClass
   },
   data() {
     return {
       columns,
       formData,
       title: '添加班级',
+      record: null,
       formStatus: false,
       userTag: false,
       pageList: {
@@ -136,15 +143,15 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  created() {
+  created() {},
+  async mounted() {
     this.getGradeInfo()
-    this.showList('')
   },
-  async mounted() {},
   methods: {
-    ...mapActions('home', ['getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList']),
+    ...mapActions('home', ['getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList', 'classTeacher', 'delClassTeacher']),
     // 获取年级列表
     async getGradeInfo() {
+      this.formData[0].list = []
       const req = {
         schoolCode: this.userInfo.orgCode
       }
@@ -157,8 +164,7 @@ export default {
       })
     },
     select(item) {
-      console.log(item)
-      this.gradeCode = item.gradeId
+      this.gradeCode = item.gradeCode
       this.showList()
     },
     async showList(gradeCode = this.gradeCode) {
@@ -172,8 +178,18 @@ export default {
     addClass() {
       this.formStatus = true
     },
-    addTeacher() {
+    addTeacher(record) {
       this.userTag = true
+      this.record = record
+    },
+    async delTeacher(record) {
+      const req = {
+        schoolCode: record.school_code,
+        classCode: record.class_code
+      }
+      await this.delClassTeacher(req)
+      this.$message.success('解绑成功')
+      this.showList()
     },
     // 删除班级
     async del(record) {
@@ -211,10 +227,21 @@ export default {
         this.showList()
       }, 2000)
     },
-    chooseUser(item) {
+    async chooseUser(item) {
       console.log(item)
+      console.log(this.record)
+      const req = {
+        schoolCode: this.userInfo.orgCode,
+        teacherCode: item[0].userCode,
+        id: this.record.user_name ? this.record.id : null,
+        classCode: this.record.class_code
+      }
+      const res = await this.classTeacher(req)
+      console.log(res)
       setTimeout(() => {
+        this.$message.success('绑定成功')
         this.$refs.chooseUser.reset()
+        this.showList()
       }, 2000)
     }
   }

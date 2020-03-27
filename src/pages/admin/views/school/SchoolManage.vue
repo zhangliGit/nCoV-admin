@@ -31,7 +31,7 @@
         </a-popconfirm>
       </template>
     </table-list>
-    <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+    <page-num v-model="pageList" :total="total" @change-page="changePage"></page-num>
     <add-school ref="addSchool" @update="showList" :title="title"></add-school>
   </div>
 </template>
@@ -176,6 +176,10 @@ export default {
       this.schoolList = res.result.list
       this.total = res.result.totalCount
     },
+    changePage(page, size) {
+      this.pageList.organizationType = '2'
+      this.showList()
+    },
     del(record) {
       this.delOrg(record.id).then(() => {
         this.$message.success('操作成功')
@@ -196,6 +200,7 @@ export default {
         this.title = '编辑学校'
       } else {
         this.title = '新增学校'
+        this.$refs.addSchool.appForm = {}
       }
     }
     // submitForm(values) {
