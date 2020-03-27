@@ -11,8 +11,8 @@
     <a-row type="flex" justify="end" style="margin-bottom: 15px; margin-right: 215px">
       <a-col>
         <span>名称：</span>
-        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入名称" />
-        <a-button type="primary">查询</a-button>
+        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入名称" v-model="searchValue" />
+        <a-button type="primary" @click="search">查询</a-button>
       </a-col>
     </a-row>
     <div class="choose-user qui-fx">
@@ -118,7 +118,8 @@ export default {
       total: 0,
       columns,
       userList: [],
-      totalList: []
+      totalList: [],
+      searchValue: ''
     }
   },
   methods: {
@@ -132,7 +133,6 @@ export default {
         item.userName = item.organizationName
         return item
       })
-      console.log('this.userList', this.userList)
     },
     reset() {
       this.confirmLoading = false
@@ -146,7 +146,6 @@ export default {
       this.chooseList.splice(this.chooseList.indexOf(id), 1)
     },
     selectAll(item, type) {
-      console.log('selectAll', item)
       if (type) {
         this.totalList = this.totalList.concat(item)
       } else {
@@ -158,9 +157,12 @@ export default {
         })
       }
     },
+    search() {
+      this.pageList.organizationName = this.searchValue
+      this.schoolGet()
+    },
     // 监听选中或取消
     clickRow(item, type) {
-      console.log('===', item)
       if (type) {
         this.totalList.push(item)
       } else {
@@ -175,8 +177,7 @@ export default {
       }
       this.confirmLoading = true
       this.$emit('submit', this.totalList)
-    },
-    showList() {}
+    }
   }
 }
 </script>

@@ -89,6 +89,7 @@ const $ajax = {
     }
   },
   async post(obj, tag = true) {
+    if (tag) showToast()
     try {
       let res = await axios({
         url: obj.url,
@@ -157,7 +158,7 @@ const $ajax = {
       return responseRes(err.response.data)
     }
   },
-  async postWithPara (obj, tag = true) {
+  async postWithPara(obj, tag = true) {
     if (tag) showToast()
     try {
       let res = await axios({

@@ -3,8 +3,9 @@
     <div class="title">
       {{ title }}
     </div>
+    <a-skeleton style="padding: 0 15px" v-if="tabList.length == 0" active :paragraph="{rows: 10}" />
     <ul>
-      <li :style="{color: currentIndex === index ? fontCol : '', background: currentIndex === index ? bgCol : ''}" @click="changeTab(list, index)" v-for="(list, index) in tabList" :key="list.key">
+      <li :class="{'act': currentIndex === index}" @click="changeTab(list, index)" v-for="(list, index) in tabList" :key="list.key">
         {{ list.val }}
       </li>
     </ul>
@@ -12,6 +13,7 @@
 </template>
 
 <script>
+import NoData from './NoData'
 export default {
   name: 'VerticalTab',
   props: {
@@ -19,20 +21,15 @@ export default {
       type: String,
       default: ''
     },
-    fontCol: {
-      type: String,
-      default: '#fff'
-    },
-    bgCol: {
-      type: String,
-      default: '#ccc'
-    },
     tabList: {
       type: Array,
       default: () => {
         return []
       }
     }
+  },
+  components: {
+    NoData
   },
   data () {
     return {
@@ -55,22 +52,35 @@ export default {
       font-size: 16px;
       font-weight: bold;
       color: @main-color;
-      height: 50px;
+      height: 45px;
       text-align: center;
-      line-height: 50px;
+      line-height: 45px;
       background-color: #fafafa;
     }
     ul {
       width: 100%;
       li {
-        height: 50px;
-        line-height: 50px;
+        height: 42px;
+        line-height: 42px;
         cursor: pointer;
         text-align: center;
         border-bottom: 1px @bor-color solid;
+        position: relative;
         &.act {
-          background-color: @dark-color;
-          color:#fff;
+          background-color: #e6f7ff;
+          color:#666;
+          &::before {
+            position: absolute;
+            content: '';
+            border: 8px#666 solid;
+            border-top: 8px transparent solid;
+            border-right: 8px transparent solid;
+            border-bottom: 8px transparent solid;
+            top: 14px;
+            left: 15px;
+            width: 0;
+            height: 0;
+          }
         }
       }
     }

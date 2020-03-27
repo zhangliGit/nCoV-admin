@@ -25,20 +25,20 @@ export default {
     $route: {
       handler (to) {
         const route = {
-          path: to.path,
+          path: to.fullPath,
           title: to.meta.title
         }
         if (!to.path.lastIndexOf('/')) {
           this.routeAddress = [route]
+        }
+        // 跳转的path是否存在
+        const _index = this.routeAddress.findIndex(item => {
+          return item.path === route.path
+        })
+        if (_index === -1) {
+          this.routeAddress.push(route)
         } else {
-          const index = this.routeAddress.findIndex(item => {
-            return item.path === to.path
-          })
-          if (index !== -1) {
-            this.routeAddress.splice(index + 1)
-          } else {
-            this.routeAddress.push(route)
-          }
+          this.routeAddress.splice(_index + 1)
         }
       },
       immediate: true
@@ -47,7 +47,10 @@ export default {
   methods: {
     backCom () {
       const item = this.routeAddress[this.routeAddress.length - 2]
-      this.$router.push(item.path)
+      this.$router.push({
+        path: item.path,
+        query: item.query
+      })
     },
     changeRoute (item) {
       this.$router.push(item.path)
@@ -60,7 +63,7 @@ export default {
 .router-menu {
   background-color: #fff;
   padding: 0 5px;
-  margin: 8px 0 5px 0;
+  margin: 8px 0 10px 0;
   ul {
     margin-bottom: 0px
   }

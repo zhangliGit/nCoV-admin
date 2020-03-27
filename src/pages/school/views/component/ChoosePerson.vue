@@ -11,7 +11,7 @@
     <a-row type="flex" justify="space-between" style="margin-bottom: 15px;">
       <a-col>
         <span>姓名：</span>
-        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入姓名" v-model="searchVal"/>
+        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入姓名" v-model="searchVal" />
         <a-button type="primary" @click="showList(searchVal)">查询</a-button>
         <a-button type="dashed" @click="rest" style="margin-left:10px">重置</a-button>
       </a-col>
@@ -32,7 +32,7 @@
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
           is-check
-          :scroll-h="100"
+          :scroll-h="0"
           v-model="chooseList"
           :columns="columns"
           @clickRow="clickRow"
@@ -49,7 +49,7 @@
         <div class="qui-fx-f1" style="overflow: auto">
           <ul>
             <li v-for="(item, index) in totalList" :key="item.id" class="qui-fx-jsb">
-              <span>{{ item.name }}</span>
+              <span>{{ item.userName }}</span>
               <a-tag @click="delUser(item.id, index)" color="#f50">删除</a-tag>
             </li>
           </ul>

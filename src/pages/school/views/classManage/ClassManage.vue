@@ -1,29 +1,40 @@
 <template>
   <div class="page-layout qui-fx">
-    <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
-    </submit-form>
-    <choose-teacher ref="chooseUser" v-if="userTag" v-model="userTag" @submit="chooseUser" title="选择教职工">
-    </choose-teacher>
+    <submit-form
+      ref="form"
+      @submit-form="submitForm"
+      :title="title"
+      v-model="formStatus"
+      :form-data="formData"
+    ></submit-form>
+    <choose-teacher
+      ref="chooseUser"
+      v-if="userTag"
+      v-model="userTag"
+      @submit="chooseUser"
+      title="选择教职工"
+    ></choose-teacher>
     <div class="page-left qui-fx-ver">
-      <grade-tree @select="select"></grade-tree>
+      <grade-class :is-grade="true" @select="select"></grade-class>
     </div>
     <div class="page-right qui-fx-ver">
       <div class="top-btn-group" style="padding: 8px 0 15px 0;">
         <a-button icon="plus" class="add-btn" @click="addClass()">添加班级</a-button>
         <!-- <a-button icon="export" class="export-btn">导出</a-button> -->
       </div>
-      <table-list
-        :page-list="pageList"
-        :columns="columns"
-        :table-list="userList">
+      <table-list :page-list="pageList" :columns="columns" :table-list="userList">
         <template v-slot:actions="action">
-          <a-tooltip placement="topLeft" title="绑定班主任">
+          <a-popconfirm v-if="action.record.user_name" placement="left" okText="确定" cancelText="取消" @confirm="delTeacher(action.record)">
+            <template slot="title">您确定解绑班主任吗?</template>
+            <a-tooltip placement="topLeft" title="解绑班主任">
+              <a-button size="small" class="add-action-btn" icon="plus"></a-button>
+            </a-tooltip>
+          </a-popconfirm>
+          <a-tooltip v-else placement="topLeft" title="绑定班主任">
             <a-button size="small" class="add-action-btn" icon="plus" @click="addTeacher(action.record)"></a-button>
           </a-tooltip>
           <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-            <template slot="title">
-              您确定删除吗?
-            </template>
+            <template slot="title">您确定删除吗?</template>
             <a-tooltip placement="topLeft" title="删除">
               <a-button size="small" class="del-action-btn" icon="delete"></a-button>
             </a-tooltip>
@@ -40,9 +51,9 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import SubmitForm from '@c/SubmitForm'
+import SubmitForm from '../component/SubmitForm'
 import ChooseTeacher from '../component/ChooseTeacher'
-import GradeTree from '../component/GradeTree'
+import GradeClass from '@c/GradeClass'
 const columns = [
   {
     title: '序号',
@@ -109,9 +120,9 @@ export default {
     SubmitForm,
     ChooseTeacher,
     PageNum,
-    GradeTree
+    GradeClass
   },
-  data () {
+  data() {
     return {
       columns,
       formData,
@@ -132,18 +143,15 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  created() {
+  created() {},
+  async mounted() {
     this.getGradeInfo()
-    this.showList('')
-  },
-  async mounted () {
   },
   methods: {
-    ...mapActions('home', [
-      'getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList', 'classTeacher'
-    ]),
+    ...mapActions('home', ['getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList', 'classTeacher', 'delClassTeacher']),
     // 获取年级列表
     async getGradeInfo() {
+      this.formData[0].list = []
       const req = {
         schoolCode: this.userInfo.orgCode
       }
@@ -156,8 +164,7 @@ export default {
       })
     },
     select(item) {
-      console.log(item)
-      this.gradeCode = item.gradeId
+      this.gradeCode = item.gradeCode
       this.showList()
     },
     async showList(gradeCode = this.gradeCode) {
@@ -175,6 +182,15 @@ export default {
       this.userTag = true
       this.record = record
     },
+    async delTeacher(record) {
+      const req = {
+        schoolCode: record.school_code,
+        classCode: record.class_code
+      }
+      await this.delClassTeacher(req)
+      this.$message.success('解绑成功')
+      this.showList()
+    },
     // 删除班级
     async del(record) {
       console.log(record)
@@ -190,7 +206,7 @@ export default {
       }, 2000)
     },
     // 添加班级
-    async submitForm (values) {
+    async submitForm(values) {
       console.log(values)
       const gradeName = this.formData[0].list.filter(ele => {
         if (ele.key === values.gradeName) {
@@ -211,33 +227,35 @@ export default {
         this.showList()
       }, 2000)
     },
-    async chooseUser (item) {
+    async chooseUser(item) {
       console.log(item)
       console.log(this.record)
       const req = {
         schoolCode: this.userInfo.orgCode,
         teacherCode: item[0].userCode,
-        id: this.record.id,
+        id: this.record.user_name ? this.record.id : null,
         classCode: this.record.class_code
-
       }
       const res = await this.classTeacher(req)
+      console.log(res)
       setTimeout(() => {
+        this.$message.success('绑定成功')
         this.$refs.chooseUser.reset()
+        this.showList()
       }, 2000)
     }
   }
 }
 </script>
 <style lang="less" scoped>
-  .top{
-    margin-bottom: 10px;
-  }
-  .page-left {
-    background: #fff;
-    margin-right: 10px;
-  }
-  .page-right {
-    width: 100%;
-  }
+.top {
+  margin-bottom: 10px;
+}
+.page-left {
+  background: #fff;
+  margin-right: 10px;
+}
+.page-right {
+  width: 100%;
+}
 </style>

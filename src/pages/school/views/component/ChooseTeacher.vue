@@ -20,7 +20,7 @@
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
           is-radio
-          :scroll-h="100"
+          :scroll-h="500"
           :page-list="pageList"
           v-model="chooseList"
           :columns="columns"

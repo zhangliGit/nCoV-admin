@@ -17,10 +17,29 @@
             :placeholder="item.placeholder"
             :read-only="item.readonly"
             :disabled="item.disabled"
+            :type="item.password ? 'password': 'text'"
             v-decorator="[
               item.value,
               { initialValue: item.initValue + '', rules: [
-                { type: item.validator || '', len: item.len, max: item.max, required: !item.hasOwnProperty('required') || item.required, message: item.placeholder }
+                { len: item.len, max: item.max || 100, required: !item.hasOwnProperty('required') || item.required, message: item.placeholder },
+                { pattern: item.regular ? rules[item.regular] : '', message: item.placeholder}
+              ]}
+            ]"
+          />
+        </a-form-item>
+        <!--数字文本框-->
+        <a-form-item v-bind="formItemLayout" :label="item.label" v-if="item.type === 'numberInput'">
+          <a-input-number
+            style="width: 100%"
+            :placeholder="item.placeholder"
+            :read-only="item.readonly"
+            :disabled="item.disabled"
+            :min="item.min"
+            :max="item.max"
+            v-decorator="[
+              item.value,
+              { initialValue: item.initValue + '', rules: [
+                { required: !item.hasOwnProperty('required') || item.required, message: item.placeholder },
               ]}
             ]"
           />
@@ -79,7 +98,12 @@
           </a-select>
         </a-form-item>
         <!--上传图片-->
-        <a-form-item v-bind="formItemLayout" :label="item.label" v-if="item.type === 'upload'">
+        <a-form-item
+          v-bind="formItemLayout"
+          :label="item.label"
+          :required="!item.hasOwnProperty('required') || item.required"
+          v-if="item.type === 'upload'"
+        >
           <slot name="upload"></slot>
         </a-form-item>
         <!--单个日期-->
@@ -91,6 +115,7 @@
         <!--日期区间-->
         <a-form-item v-bind="formItemLayout" :label="item.label" v-if="item.type === 'rangeTime'">
           <a-range-picker
+            style="width: 280px"
             v-decorator="[item.value, {initialValue: [moment(item.initValue[0] || new Date(), 'YYYY-MM-DD'), moment(item.initValue[1] || new Date(), 'YYYY-MM-DD')], rules: [{ required: !item.hasOwnProperty('required') || item.required, message: item.placeholder }]}]"
           />
         </a-form-item>
@@ -132,6 +157,13 @@ export default {
   },
   data() {
     return {
+      rules: {
+        url: /^(((ht|f)tps?):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/,
+        file: /\//,
+        ip: /^((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}$/,
+        phone: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
+        email: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+      },
       moment,
       confirmLoading: false,
       form: this.$form.createForm(this),

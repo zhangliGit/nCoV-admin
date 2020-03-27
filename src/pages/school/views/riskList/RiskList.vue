@@ -12,8 +12,7 @@
       @submit="chooseUser"
       title="选择风险人员"
     ></choose-person>
-    <table-list :page-list="pageList" :columns="columns" :table-list="userList">
-    </table-list>
+    <table-list :page-list="pageList" :columns="columns" :table-list="userList"></table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
   </div>
 </template>
@@ -178,7 +177,7 @@ export default {
       }
       const res = await this.getRiskList(req)
       this.userList = res.result.list
-      this.total = res.result.total
+      this.total = res.result.totalCount
     },
     add() {
       this.userTag = true

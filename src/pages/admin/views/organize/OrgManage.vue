@@ -11,6 +11,9 @@
       <a-button icon="plus" class="add-btn" @click="modify(0)">新增机构</a-button>
     </div>
     <table-list :page-list="pageList" :columns="columns" :table-list="orgList" @clickNum="clickNum">
+      <template v-slot:totalNums="number">
+        <a-tag color="green" @click="clickNum(number.record)">{{ number.record.number }}</a-tag>
+      </template>
       <template v-slot:actions="action">
         <!-- <a-tooltip placement="topLeft" title="详情">
           <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
@@ -31,7 +34,7 @@
         </a-popconfirm>
       </template>
     </table-list>
-    <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+    <page-num v-model="pageList" :total="total" @change-page="changePage"></page-num>
   </div>
 </template>
 
@@ -64,7 +67,8 @@ const formData = [
     label: '账号',
     max: 50,
     placeholder: '请输入账号'
-  }, {
+  },
+  {
     value: 'password',
     initValue: '',
     type: 'input',
@@ -85,7 +89,7 @@ const formData = [
     initValue: '',
     type: 'input',
     label: '手机号',
-    max: 50,
+    max: 12,
     placeholder: '请输入手机号'
   }
 ]
@@ -96,19 +100,23 @@ const columns = [
     scopedSlots: {
       customRender: 'index'
     }
-  }, {
+  },
+  {
     title: '机构名称',
     dataIndex: 'organizationName',
     width: '14%'
-  }, {
+  },
+  {
     title: '机构编码',
     dataIndex: 'organizationCode',
     width: '12%'
-  }, {
+  },
+  {
     title: '账号',
     dataIndex: 'manageName',
     width: '14%'
-  }, {
+  },
+  {
     title: '密码',
     dataIndex: 'password',
     width: '14%'
@@ -122,14 +130,16 @@ const columns = [
     title: '手机号码',
     dataIndex: 'phone',
     width: '14%'
-  }, {
+  },
+  {
     title: '关联学校数',
     // dataIndex: 'num',
     width: '10%',
     scopedSlots: {
-      customRender: 'num'
+      customRender: 'totalNum'
     }
-  }, {
+  },
+  {
     title: '操作',
     width: '14%',
     scopedSlots: {
@@ -151,7 +161,7 @@ export default {
         size: 20,
         organizationType: '1'
       },
-      total: 100,
+      total: 0,
       columns,
       orgList: [],
       title: '新增机构',
@@ -179,8 +189,11 @@ export default {
       this.orgList = res.result.list
       this.total = res.result.totalCount
     },
+    changePage(page, size) {
+      this.pageList.organizationType = '1'
+      this.showList()
+    },
     del(record) {
-      console.log(record)
       this.delOrg(record.id).then(() => {
         this.$message.success('操作成功')
         this.$tools.goNext(() => {
@@ -197,9 +210,10 @@ export default {
         this.formData = this.$tools.fillForm(formData, record)
       } else {
         this.title = '新增机构'
+        this.formData = this.$tools.fillForm(formData, {})
       }
     },
-    async submitForm (values) {
+    async submitForm(values) {
       values.organizationType = '1'
       // console.log(values)
       try {
@@ -224,7 +238,6 @@ export default {
       }
     },
     clickNum(record) {
-      console.log(record)
       this.$router.push({
         query: {
           pcode: record.organizationCode

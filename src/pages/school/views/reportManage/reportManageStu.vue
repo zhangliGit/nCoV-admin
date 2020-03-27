@@ -1,6 +1,8 @@
 <template>
   <div class="page-layout qui-fx">
-    <grade-tree @select="select"></grade-tree>
+    <div class="page-left">
+      <grade-class @select="select"></grade-class>
+    </div>
     <div class="qui-fx-f1 qui-fx-ver">
       <search-form @search-form="searchForm" :search-label="searchLabel">
         <div slot="left" class="top-btn-group">
@@ -28,7 +30,7 @@
 import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import SearchForm from '@c/SearchForm'
-import GradeTree from '../component/GradeTree'
+import GradeClass from '@c/GradeClass'
 import PageNum from '@c/PageNum'
 const searchLabel = [
   {
@@ -146,7 +148,7 @@ const columns = [
 export default {
   name: 'ReportManageStu',
   components: {
-    GradeTree,
+    GradeClass,
     TableList,
     SearchForm,
     PageNum
@@ -155,7 +157,7 @@ export default {
     return {
       searchLabel,
       columns,
-      total: 100,
+      total: 0,
       pageList: {
         page: 1,
         size: 20,
@@ -171,15 +173,13 @@ export default {
     ...mapState('home', ['userInfo'])
   },
   mounted() {
-    this.showList()
+    // this.showList()
   },
   methods: {
     ...mapActions('home', ['getreportList']),
     select(item) {
-      this.gradeCode = item.gradeId
-      if (item.gradeId !== item.key) {
-        this.classCode = item.key
-      }
+      this.gradeCode = item.gradeCode
+      this.classCode = item.classCode
       this.showList()
     },
     async showList() {
@@ -194,10 +194,11 @@ export default {
       this.pageList = Object.assign(values, this.pageList)
       this.showList()
     },
-       reportList() {
+    reportList() {
       const schoolCode = this.userInfo.orgCode
-      window.location.href ='http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +schoolCode+'&userType=2&excelUrl=1'   
-      },
+      window.location.href =
+        '/admin/school/userinfo/exportPersonnelInfo?schoolCode=' + schoolCode + '&userType=2&excelUrl=1'
+    },
     detail(record) {
       this.$router.push({
         path: '/component/detail',
@@ -217,10 +218,8 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.student-leave {
-  .page-left {
-    background: #fff;
-    margin-right: 10px;
-  }
+.page-left {
+  background: #fff;
+  margin-right: 10px;
 }
 </style>

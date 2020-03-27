@@ -1,26 +1,29 @@
 <template>
   <div class="page-layout qui-fx">
     <div class="page-left qui-fx-ver">
-      <grade-tree @select="select"></grade-tree>
+      <grade-class @select="select"></grade-class>
     </div>
     <div class="page-right qui-fx-ver">
       <search-form isReset @search-form="searchForm" :search-label="searchLabel">
         <div slot="left" class="top-btn-group">
           <a-button icon="plus" class="add-btn" @click="add(0)">添加学生</a-button>
           <!--<a-button icon="export" class="export-btn">导入学生</a-button>
-          <a-button icon="export" class="export-all-btn">导入人脸</a-button> -->
+          <a-button icon="export" class="export-all-btn">导入人脸</a-button>-->
           <!-- <a-button icon="export" class="del-btn">导出</a-button> -->
         </div>
       </search-form>
-      <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
+      <submit-form
+        ref="form"
+        @submit-form="submitForm"
+        :title="title"
+        v-model="formStatus"
+        :form-data="formData"
+      >
         <div slot="upload">
           <upload-one :file-info="fileInfo" v-model="picUrl"></upload-one>
         </div>
       </submit-form>
-      <table-list
-        :page-list="pageList"
-        :columns="columns"
-        :table-list="userList">
+      <table-list :page-list="pageList" :columns="columns" :table-list="userList">
         <template v-slot:actions="action">
           <span>{{action.record.gradeName}}{{action.record.className}}</span>
         </template>
@@ -29,16 +32,14 @@
             <a-button size="small" class="edit-action-btn" icon="form"></a-button>
           </a-tooltip>
           <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-            <template slot="title">
-              您确定删除吗?
-            </template>
+            <template slot="title">您确定删除吗?</template>
             <a-tooltip placement="topLeft" title="删除">
               <a-button size="small" class="del-action-btn" icon="delete"></a-button>
             </a-tooltip>
           </a-popconfirm>
           <!--           <a-tooltip placement="topLeft" title="查看健康档案">
             <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
-          </a-tooltip> -->
+          </a-tooltip>-->
         </template>
       </table-list>
       <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
@@ -53,11 +54,11 @@ import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
 import SubmitForm from '../component/SubmitForm'
 import UploadOne from '@c/UploadOne'
-import GradeTree from '../component/GradeTree'
+import GradeClass from '@c/GradeClass'
 const columns = [
   {
     title: '序号',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -65,13 +66,13 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '9%',
-    customRender: (text) => {
+    width: '10%',
+    customRender: text => {
       if (text === '1') {
         return '男'
       } else if (text === '2') {
@@ -82,17 +83,9 @@ const columns = [
     }
   },
   {
-    title: '年级',
-    dataIndex: 'gradeName',
-    width: '9%',
-    scopedSlots: {
-      customRender: 'className'
-    }
-  },
-  {
     title: '班级',
     dataIndex: 'className',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'className'
     }
@@ -100,12 +93,12 @@ const columns = [
   {
     title: '学号',
     dataIndex: 'workNo',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '人脸照片',
     dataIndex: 'profilePhoto',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'photoPic'
     }
@@ -113,17 +106,17 @@ const columns = [
   {
     title: '出生日期',
     dataIndex: 'birthday',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '家长',
     dataIndex: 'patriarchName',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '电话',
     dataIndex: 'patriarchPhone',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '操作',
@@ -233,9 +226,9 @@ export default {
     SubmitForm,
     UploadOne,
     PageNum,
-    GradeTree
+    GradeClass
   },
-  data () {
+  data() {
     return {
       columns,
       searchLabel,
@@ -269,15 +262,14 @@ export default {
     this.fileInfo.url = `/admin/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
     this.formData[1].selectGrade = this.selectGrade
   },
-  async mounted () {
+  async mounted() {
     this.getGradeInfo()
   },
   methods: {
-    ...mapActions('home', [
-      'getClassList', 'getGradeList', 'getUserList', 'addStudent', 'deleUser', 'editUser'
-    ]),
+    ...mapActions('home', ['getClassList', 'getGradeList', 'getUserList', 'addStudent', 'deleUser', 'editUser']),
     // 获取年级列表
     async getGradeInfo() {
+      this.formData[1].list = []
       const req = {
         schoolCode: this.userInfo.orgCode
       }
@@ -307,13 +299,8 @@ export default {
     },
     // 切换班级
     select(item) {
-      console.log(item)
-      this.gradeCode = item.gradeId
-      if (item.gradeId === item.key) {
-        this.classCode = ''
-      } else {
-        this.classCode = item.key
-      }
+      this.gradeCode = item.gradeCode
+      this.classCode = item.classCode
       this.showList()
     },
     async showList(gradeCode = this.gradeCode, classCode = this.classCode, searchObj = {}) {
@@ -331,7 +318,8 @@ export default {
     },
     add(type, record = {}) {
       this.formStatus = true
-      if (type) { // 编辑
+      if (type) {
+        // 编辑
         this.type = 1
         this.record = record
         console.log(record)
@@ -339,7 +327,8 @@ export default {
         this.formData[2].initValue = record.className
         this.selectGrade(record.gradeCode)
         this.picUrl = record['profilePhoto']
-      } else { // 添加
+      } else {
+        // 添加
         this.type = 0
         this.formData = formData
         this.picUrl = ''
@@ -357,7 +346,7 @@ export default {
         this.showList()
       }, 2000)
     },
-    searchForm (values) {
+    searchForm(values) {
       console.log(values)
       const searchObj = {
         userName: values.name,
@@ -365,7 +354,7 @@ export default {
       }
       this.showList(this.gradeCode, this.classCode, searchObj)
     },
-    async submitForm (values) {
+    async submitForm(values) {
       console.log(values)
       if (this.type) {
         const req = {
@@ -423,7 +412,7 @@ export default {
         }, 2000)
       }
     },
-    goDetail (record) {
+    goDetail(record) {
       console.log(record)
       const obj = {
         path: '/healthManageStu',
@@ -435,14 +424,14 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  .top{
-    margin-bottom: 10px;
-  }
-  .page-left {
-    background: #fff;
-    margin-right: 10px;
-  }
-  .page-right {
-    width: 100%;
-  }
+.top {
+  margin-bottom: 10px;
+}
+.page-left {
+  background: #fff;
+  margin-right: 10px;
+}
+.page-right {
+  width: 100%;
+}
 </style>
