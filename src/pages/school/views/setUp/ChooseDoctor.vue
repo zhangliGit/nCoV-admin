@@ -11,8 +11,8 @@
     <a-row type="flex" justify="end" style="margin-bottom: 15px; margin-right: 215px">
       <a-col>
         <span>姓名：</span>
-        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入姓名" />
-        <a-button type="primary">查询</a-button>
+        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入姓名" v-model="searchValue" />
+        <a-button type="primary" @click="search">查询</a-button>
       </a-col>
     </a-row>
     <div class="choose-user qui-fx">
@@ -136,7 +136,8 @@ export default {
       total: 0,
       columns,
       userList: [],
-      totalList: []
+      totalList: [],
+      searchValue: ''
     }
   },
   methods: {
@@ -186,6 +187,10 @@ export default {
       }
       this.confirmLoading = true
       this.$emit('submit', this.totalList)
+    },
+    search() {
+      this.pageList.userName = this.searchValue
+      this.showList()
     }
   }
 }

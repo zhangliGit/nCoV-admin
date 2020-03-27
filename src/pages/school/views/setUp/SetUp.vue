@@ -9,10 +9,10 @@
         <a-row :gutter="24" v-for="item in tempList" :key="item.id">
           <a-col :span="11">
             <a-form-item :label="item.bodyPartsName" :label-col="{ span: 10 }" :wrapper-col="{ span: 14 }">
-              <a-input
+              <a-input-number
                 @blur="tempChange"
                 v-decorator="[
-                  `${item.bodyPartsCode}+${item.bodyPartsName}=${item.id}`,
+                  `${item.bodyPartsCode}+${item.bodyPartsName}=${item.id}-${item.temperature}`,
                   { initialValue: item.temperature, rules: [{ required: true, message: '请填写发热温度值' }]}
                 ]"
               />
@@ -290,16 +290,19 @@ export default {
       })
     },
     tempChange(e) {
-      const req = {
-        schoolCode: this.userInfo.orgCode,
-        bodyPartsCode: e.target.id.split('+')[0],
-        bodyPartsName: e.target.id.split('+')[1].split('=')[0],
-        id: e.target.id.split('+')[1].split('=')[1],
-        temperature: e.target.value
+      const temp = e.target.offsetParent.id.split('+')[1].split('=')[1].split('-')[1]
+      if (temp !== e.target.value) {
+        const req = {
+          schoolCode: this.userInfo.orgCode,
+          bodyPartsCode: e.target.offsetParent.id.split('+')[0],
+          bodyPartsName: e.target.offsetParent.id.split('+')[1].split('=')[0],
+          id: e.target.offsetParent.id.split('+')[1].split('=')[1].split('-')[0],
+          temperature: e.target.value
+        }
+        this.updateTmpList(req).then(res => {
+          this.$message.success('操作成功')
+        })
       }
-      this.updateTmpList(req).then(res => {
-        this.$message.success('操作成功')
-      })
     },
     // 通知人员更新
     infoChange(code, type, checked) {
@@ -371,5 +374,8 @@ export default {
       margin-left: 12px;
     }
   }
+}
+.ant-input-number{
+  width: 100%;
 }
 </style>
