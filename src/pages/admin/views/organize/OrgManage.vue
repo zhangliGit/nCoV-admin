@@ -31,7 +31,7 @@
         </a-popconfirm>
       </template>
     </table-list>
-    <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+    <page-num v-model="pageList" :total="total" @change-page="changePage"></page-num>
   </div>
 </template>
 
@@ -86,7 +86,7 @@ const formData = [
     initValue: '',
     type: 'input',
     label: '手机号',
-    max: 50,
+    max: 12,
     placeholder: '请输入手机号'
   }
 ]
@@ -186,8 +186,11 @@ export default {
       this.orgList = res.result.list
       this.total = res.result.totalCount
     },
+    changePage(page, size) {
+      this.pageList.organizationType = '1'
+      this.showList()
+    },
     del(record) {
-      console.log(record)
       this.delOrg(record.id).then(() => {
         this.$message.success('操作成功')
         this.$tools.goNext(() => {
@@ -204,6 +207,7 @@ export default {
         this.formData = this.$tools.fillForm(formData, record)
       } else {
         this.title = '新增机构'
+        this.formData = this.$tools.fillForm(formData, {})
       }
     },
     async submitForm(values) {
@@ -231,7 +235,6 @@ export default {
       }
     },
     clickNum(record) {
-      console.log(record)
       this.$router.push({
         query: {
           pcode: record.organizationCode
