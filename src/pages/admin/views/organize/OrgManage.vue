@@ -60,13 +60,22 @@ const formData = [
     max: 50,
     placeholder: '请输入机构编码'
   },
+  // {
+  //   value: 'manageName',
+  //   initValue: '',
+  //   type: 'input',
+  //   label: '账号',
+  //   max: 50,
+  //   placeholder: '请输入账号'
+  // },
   {
-    value: 'manageName',
+    value: 'phone',
     initValue: '',
     type: 'input',
-    label: '账号',
-    max: 50,
-    placeholder: '请输入账号'
+    label: '手机号',
+    max: 12,
+    placeholder: '请输入正确的手机号',
+    regular: 'phone'
   },
   {
     value: 'password',
@@ -75,7 +84,7 @@ const formData = [
     label: '密码',
     max: 50,
     placeholder: '请输入密码'
-  },
+  }
   // {
   //   value: 'admin',
   //   initValue: '',
@@ -84,14 +93,7 @@ const formData = [
   //   max: 50,
   //   placeholder: '请输入管理员'
   // },
-  {
-    value: 'phone',
-    initValue: '',
-    type: 'input',
-    label: '手机号',
-    max: 12,
-    placeholder: '请输入手机号'
-  }
+
 ]
 const columns = [
   {

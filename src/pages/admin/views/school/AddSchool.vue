@@ -28,12 +28,23 @@
           ]"
         />
       </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="账号" >
+      <!-- <a-form-item v-bind="formItemLayout" label="账号" >
         <a-input
           placeholder="请输入账号"
           v-decorator="[
             'manageName',
             { initialValue: appForm.manageName, rules: [ { required: true, message: '请输入账号' } ]}
+          ]"
+        />
+      </a-form-item> -->
+      <a-form-item v-bind="formItemLayout" label="手机号" >
+        <a-input
+          placeholder="请输入手机号"
+          v-decorator="[
+            'phone',
+            { initialValue: appForm.phone, rules: [
+              { required: true, message: '请输入正确的手机号' ,pattern: rules.phone}
+            ]}
           ]"
         />
       </a-form-item>
@@ -43,15 +54,6 @@
           v-decorator="[
             'password',
             { initialValue: appForm.password, rules: [ { required: true, message: '请输入6-16密码' } ]}
-          ]"
-        />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="手机号" >
-        <a-input
-          placeholder="请输入手机号"
-          v-decorator="[
-            'phone',
-            { initialValue: appForm.phone, rules: [ { required: true, message: '请输入手机号' } ]}
           ]"
         />
       </a-form-item>
@@ -142,7 +144,10 @@ export default {
       middle: 'k12_02',
       high: 'k12_03',
       recordId: '',
-      managerId: ''
+      managerId: '',
+      rules: {
+        phone: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/
+      }
     }
   },
   methods: {
