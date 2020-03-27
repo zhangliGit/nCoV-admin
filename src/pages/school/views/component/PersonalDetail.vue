@@ -29,9 +29,10 @@
       <a-menu-item key="title">体检数据</a-menu-item>
     </a-menu>
     <div style="text-align:right;">
-      <a-button class="add-btn" @click="updateReport()">更新体检数据</a-button>
+      <a-button class="add-btn" @click="updateReport()">{{msg}}</a-button>
     </div>
-    <div class="process qui-fx-jsb qui-fx-ac">
+    <no-data v-if="noData" msg="暂无体检信息~"></no-data>
+    <div class="process qui-fx-jsb qui-fx-ac" v-if="reportShow">
       <div class="qui-fx-jsa qui-fx-ac">
         <div class="qui-fx-ver">
           <a-row class="padd-l10">
@@ -67,6 +68,8 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SubmitForm from '@c/SubmitForm'
+import NoData from '@c/NoData'
+
 const formData = [
   {
     value: 'userHeight',
@@ -232,7 +235,22 @@ const columns = [
   {
     title: '上报时间',
     dataIndex: 'reportTime',
-    width: '12%'
+    width: '12%',
+     customRender: text => {
+      return (
+        new Date(text).getFullYear() +
+        '-' +
+        (new Date(text).getMonth() + 1 > 9 ? new Date(text).getMonth() + 1 : '0' + (new Date(text).getMonth() + 1)) +
+        '-' +
+        (new Date(text).getDate() > 9 ? new Date(text).getDate() : '0' + new Date(text).getDate()) +
+        ' ' +
+        (new Date(text).getHours() > 9 ? new Date(text).getHours() : '0' + new Date(text).getHours()) +
+        ':' +
+        (new Date(text).getMinutes() > 9 ? new Date(text).getMinutes() : '0' + new Date(text).getMinutes()) +
+        ':' +
+        (new Date(text).getSeconds() > 9 ? new Date(text).getSeconds() : '0' + new Date(text).getSeconds())
+      )
+    }
   }
 ]
 export default {
@@ -241,10 +259,14 @@ export default {
     TableList,
     PageNum,
     ChartComponent,
-    SubmitForm
+    SubmitForm,
+    NoData
   },
   data() {
     return {
+      msg: '',
+      noData: false,
+      reportShow: false,
       formData,
       title: '更新体检数据',
       formStatus: false,
@@ -265,8 +287,8 @@ export default {
         geneticDiseaseMark: '',
         createTime: ''
       },
-      reportTime: [],
-      temperature: []
+      reportTime: [2.1,2.3,2.5,3.4],
+      temperature: [34,36,37,38]
     }
   },
   computed: {
@@ -311,7 +333,16 @@ export default {
       const schoolCode = this.userInfo.orgCode
       const req = 'userCode=' + userCode + '&schoolCode=' + schoolCode
       const res = await this.getLatestMedicalInfo(req)
-      if (res.result) this.detailData = res.result
+      if (res.result) {
+        this.msg = '更新体检数据'
+        this.detailData = res.result
+        this.reportShow = true
+        this.noData = false
+      } else {
+        this.msg = '新增体检数据'
+        this.noData = true
+        this.reportShow = false
+      }
     },
     //获取个人体温数据
     async getTemperature() {
@@ -321,8 +352,8 @@ export default {
         'userCode=' +
         userCode +
         '&schoolCode=CANPOINT' +
-        '&startTime=2020-03-09 12:12：12' +
-        '&endTime=2020-03-19 12:12:12'
+        '&startTime=' +
+        '&endTime='
       const res = await this.getTemperatureData(par)
       this.reportTime = []
       this.temperature = []

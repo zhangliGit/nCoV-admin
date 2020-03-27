@@ -46,10 +46,8 @@ const columns = [
     customRender: text => {
       if (text === 1) {
         return '男'
-      } else if (text === 2) {
-        return '女'
       } else {
-        return '未知'
+        return '女'
       }
     }
   },
@@ -97,7 +95,22 @@ const columns = [
   {
     title: '风险时间',
     dataIndex: 'riskTime',
-    width: '10%'
+    width: '10%',
+     customRender: text => {
+      return (
+        new Date(text).getFullYear() +
+        '-' +
+        (new Date(text).getMonth() + 1 > 9 ? new Date(text).getMonth() + 1 : '0' + (new Date(text).getMonth() + 1)) +
+        '-' +
+        (new Date(text).getDate() > 9 ? new Date(text).getDate() : '0' + new Date(text).getDate()) +
+        ' ' +
+        (new Date(text).getHours() > 9 ? new Date(text).getHours() : '0' + new Date(text).getHours()) +
+        ':' +
+        (new Date(text).getMinutes() > 9 ? new Date(text).getMinutes() : '0' + new Date(text).getMinutes()) +
+        ':' +
+        (new Date(text).getSeconds() > 9 ? new Date(text).getSeconds() : '0' + new Date(text).getSeconds())
+      )
+    }
   },
   {
     title: '人脸图像',

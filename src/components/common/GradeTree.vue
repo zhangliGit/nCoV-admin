@@ -1,7 +1,7 @@
 <template>
   <div class="grade-tree">
     <a-skeleton v-if="treeData.length == 0 && !noData" active :paragraph="{rows: 10}" />
-    <no-data v-if="noData" msg="暂无数据~"></no-data>
+    <no-data v-if="noData" msg="数据~"></no-data>
     <a-tree
       v-if="treeData.length > 0"
       @select="select"
