@@ -259,11 +259,11 @@ export default {
       detailList: [],
       detailInfo: '',
       detailData: {
-        userHeight:'',
-        userWeight:'',
-        majorDiseaseMark:'',
-        geneticDiseaseMark:'',
-        createTime:''
+        userHeight: '',
+        userWeight: '',
+        majorDiseaseMark: '',
+        geneticDiseaseMark: '',
+        createTime: ''
       },
       reportTime: [],
       temperature: []
@@ -272,7 +272,7 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  activated() {
+  mounted() {
     this.getTemperature()
     this.initUnReportChart()
     this.showList()
@@ -311,8 +311,7 @@ export default {
       const schoolCode = this.userInfo.orgCode
       const req = 'userCode=' + userCode + '&schoolCode=' + schoolCode
       const res = await this.getLatestMedicalInfo(req)
-      if(res.result)
-      this.detailData = res.result
+      if (res.result) this.detailData = res.result
     },
     //获取个人体温数据
     async getTemperature() {
