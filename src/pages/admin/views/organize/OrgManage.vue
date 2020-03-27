@@ -11,6 +11,9 @@
       <a-button icon="plus" class="add-btn" @click="modify(0)">新增机构</a-button>
     </div>
     <table-list :page-list="pageList" :columns="columns" :table-list="orgList" @clickNum="clickNum">
+      <template v-slot:totalNums="number">
+        <a-tag color="green" @click="clickNum(number.record)">{{ number.record.number }}</a-tag>
+      </template>
       <template v-slot:actions="action">
         <!-- <a-tooltip placement="topLeft" title="详情">
           <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="goDetail(action.record)"></a-button>
@@ -133,7 +136,7 @@ const columns = [
     // dataIndex: 'num',
     width: '10%',
     scopedSlots: {
-      customRender: 'num'
+      customRender: 'totalNum'
     }
   },
   {

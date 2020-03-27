@@ -1,81 +1,57 @@
 <template>
-  <div id="tableList" class="qui-fx-f1" style="overflow: hidden">
-    <a-table
-      style="height: 400px"
-      :scroll="{y: this.$tools.setScroll('tableList') - scrollH}"
-      :customRow="customRow"
-      :pagination="false"
-      :rowKey="(record) => record.id"
-      :rowSelection="selectObj"
-      :columns="columns"
-      :dataSource="tableList"
-    >
-      <template
-        v-if="isIndex"
-        slot="index"
-        slot-scope="text, record, index"
-      >{{ index | getPageIndex(pageList) }}</template>
-      <template slot="photoPic" slot-scope="text">
-        <a-popover placement="left" v-if="isZoom">
-          <template slot="content">
-            <img
-              :src="text"
-              style="max-width: 200px; margin: 0 auto; max-height: 220px; display: block;"
-              alt
-            />
-          </template>
-          <img
-            :src="text"
-            :style="{width: `${width}px`, margin: '0 auto', height: `${height}px`, display: 'block'}"
-            alt
-          />
-        </a-popover>
-        <img
-          v-if="!isZoom"
-          :src="text"
-          :style="{width: `${width}px`, height: `${height}px`, display: 'block'}"
-          alt
-        />
-      </template>
-      <template slot="snapPic" slot-scope="text">
-        <a-popover placement="left" v-if="isZoom">
-          <template slot="content">
-            <img
-              :src="text"
-              style="margin: 0 auto; max-width: 200px; max-height: 220px; display: block;"
-              alt
-            />
-          </template>
-          <img
-            :src="text"
-            :style="{width: `${width}px`, margin: '0 auto', height: `${height}px`, display: 'block'}"
-            alt
-          />
-        </a-popover>
-        <img
-          v-if="!isZoom"
-          :src="text"
-          :style="{width: `${width}px`, height: `${height}px`, display: 'block'}"
-          alt
-        />
-      </template>
-      <template slot="action" slot-scope="text, record">
-        <slot name="actions" :record="record"></slot>
-      </template>
-      <template slot="num" slot-scope="text">
-        <div
-          class="table-total-num"
-          @click="numDetail(text)"
-        >{{ text.number === null ? 0 : text.number}}</div>
-      </template>
-    </a-table>
+  <div class="qui-fx-f1" style="min-height: 400px">
+    <div id="tableList" :style="{overflow: overFlow ? 'auto' : 'hidden', position: 'absolute', zIndex: 1, width: '100%', height: '100%'}">
+      <a-table
+        style="height: 400px"
+        :scroll="{y: scrollH || this.$tools.setScroll('tableList')}"
+        :customRow="customRow"
+        :pagination="false"
+        :rowKey="(record) => record.id"
+        :rowSelection="selectObj"
+        :columns="columns"
+        :dataSource="tableList">
+        <template v-if="isIndex" slot="index" slot-scope="text, record, index">
+          {{ index | getPageIndex(pageList) }}
+        </template>
+        <template slot="photoPic" slot-scope="text">
+          <a-popover placement="left" v-if="isZoom">
+            <template slot="content">
+              <img :src="text" style="max-width: 200px; max-height: 220px; display: block; " alt="">
+            </template>
+            <img :src="text||noImg" :style="{width: `${width}px`, height: `${height}px`, display: 'block', backgroundColor: '#f5f5f5'}" alt="">
+          </a-popover>
+          <img v-if="!isZoom" :src="text||noImg" :style="{width: `${width}px`, height: `${height}px`, display: 'block', backgroundColor: '#f5f5f5'}" alt="">
+        </template>
+        <template slot="snapPic" slot-scope="text">
+          <a-popover placement="left" v-if="isZoom">
+            <template slot="content">
+              <img :src="text||noImg" style="max-width: 200px; max-height: 220px; display: block;" alt="">
+            </template>
+            <img :src="text||noImg" :style="{width: `${width}px`, height: `${height}px`, display: 'block', backgroundColor: '#f5f5f5'}" alt="">
+          </a-popover>
+          <img v-if="!isZoom" :src="text||noImg" :style="{width: `${width}px`, height: `${height}px`, display: 'block', backgroundColor: '#f5f5f5'}" alt="">
+        </template>
+        <template slot="totalNum" slot-scope="text, record">
+          <slot name="totalNums" :record="record"></slot>
+        </template>
+        <template slot="action" slot-scope="text, record">
+          <slot name="actions" :record="record"></slot>
+        </template>
+      </a-table>
+    </div>
+
   </div>
 </template>
 
 <script>
+import noImg from './img/no_img.png'
 export default {
   name: 'TableList',
   props: {
+    overFlow: {
+      type: Boolean,
+      default: false
+    },
     width: {
       type: Number,
       default: 60
@@ -86,6 +62,7 @@ export default {
     },
     scrollH: {
       type: Number,
+      required: false,
       default: 0
     },
     isZoom: {
@@ -144,7 +121,7 @@ export default {
     }
   },
   computed: {
-    typeForm() {
+    typeForm () {
       if (this.isRadio) {
         return 'radio'
       } else if (this.isCheck) {
@@ -154,52 +131,48 @@ export default {
       }
     },
     selectedRowKeys: {
-      get() {
+      get () {
         return this.value
       },
-      set(val) {
+      set (val) {
         this.$emit('input', val)
       }
     },
-    selectObj() {
+    selectObj () {
       if (!this.isRadio && !this.isCheck) return null
-      return {
-        type: this.typeForm,
-        onSelectAll: this.onSelectAll,
-        selectedRowKeys: this.selectedRowKeys,
-        onSelect: this.selectChange,
-        onChange: this.onSelectChange
-      }
+      return { type: this.typeForm, onSelectAll: this.onSelectAll, selectedRowKeys: this.selectedRowKeys, onSelect: this.selectChange, onChange: this.onSelectChange }
     }
   },
-  data() {
-    return {}
+  data () {
+    return {
+      noImg
+    }
   },
   methods: {
-    onSelectAll(type, selectedRows, changeRows) {
+    onSelectAll (type, selectedRows, changeRows) {
       const data = changeRows.map(item => {
         return {
           id: item.id,
-          name: item.userName
+          userName: item.userName
         }
       })
       this.$emit('selectAll', data, type)
     },
     // 点击单行表格
-    customRow(record, index) {
+    customRow (record, index) {
       return {
         on: {
           click: () => {
             if (this.isRadio) {
               this.selectedRowKeys = [record.id]
-              this.$emit('clickRow', { id: record.id, name: record.userName, ...record }, true)
+              this.$emit('clickRow', record, true)
             } else if (this.isCheck) {
               const index = this.selectedRowKeys.indexOf(record.id)
               if (index > -1) {
                 this.selectedRowKeys.splice(index, 1)
-                this.$emit('clickRow', { id: record.id, name: record.userName, ...record }, false)
+                this.$emit('clickRow', record, false)
               } else {
-                this.$emit('clickRow', { id: record.id, name: record.userName, ...record }, true)
+                this.$emit('clickRow', record, true)
                 this.selectedRowKeys.push(record.id)
               }
             }
@@ -208,31 +181,26 @@ export default {
       }
     },
     // 点击单选框
-    selectChange(record) {
-      if (this.isRadio) this.selectedRowKeys = [record.id]
+    selectChange (record, type) {
+      if (this.isRadio) {
+        this.selectedRowKeys = [record.id]
+      } else {
+        const index = this.selectedRowKeys.indexOf(record.id)
+        if (index > -1) {
+          this.selectedRowKeys.splice(index, 1)
+        } else {
+          this.selectedRowKeys.push(record.id)
+        }
+      }
+      this.$emit('clickRow', record, type)
     },
     // 点击复选框
-    onSelectChange(record) {
+    onSelectChange (record) {
       if (this.isCheck) this.selectedRowKeys = record
-    },
-    numDetail(record) {
-      this.$emit('clickNum', record)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.table-total-num {
-  display: inline-block;
-  background-color: #e6f7ff;
-  border: 1px solid #91d5ff;
-  padding: 0 10px;
-  line-height: 20px;
-  font-size: 12px;
-  height: 22px;
-  border-radius: 4px;
-  color: #1890ff;
-  cursor: pointer;
-}
 </style>

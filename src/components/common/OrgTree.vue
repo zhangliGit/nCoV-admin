@@ -1,120 +1,87 @@
 <template>
   <div class="grade-tree">
-    <a-tree @select="select" :loadData="onLoadData" :treeData="treeData" showLine> </a-tree>
+    <a-skeleton v-if="orgData.length == 0 && !noData" active :paragraph="{rows: 10}" />
+    <no-data v-if="noData" msg="暂无组织机构~"></no-data>
+    <a-tree
+      v-if="orgData.length > 0"
+      @select="select"
+      :treeData="orgData"
+      :defaultExpandedKeys="defaultKey"
+      :defaultSelectedKeys="defaultKey"
+      showLine
+    >
+    </a-tree>
   </div>
 </template>
 
 <script>
+import NoData from './NoData'
 import $ajax from '@u/ajax-serve'
+import { mapState } from 'vuex'
+import hostEnv from '@config/host-env'
 export default {
   name: 'OrgTree',
-  props: {
-    gradeUrl: {
-      type: String,
-      default: 'http://192.168.2.247:3000/mock/40/getGrade'
-    },
-    classUrl: {
-      type: String,
-      default: 'http://192.168.2.247:3000/mock/40/getClass'
-    }
-  },
-  data() {
+  data () {
     return {
-      treeData: [],
-      gradeId: '',
-      classId: '',
-      gradeList: []
+      noData: false,
+      orgData: [],
+      defaultKey: []
     }
   },
-  computed: {},
-  mounted() {
-    this.initMenu()
+  components: {
+    NoData
+  },
+  computed: {
+    ...mapState('home', [
+      'schoolCode'
+    ])
+  },
+  mounted () {
+    this.showList()
   },
   methods: {
-    onExpand() {},
-    // 点击节点
-    select(obj, tree) {
-      const gradeIds = []
-      this.gradeList.forEach(el => {
-        return gradeIds.push(el.gradeId)
+    select (selectedKeys, info) {
+      this.$emit('select', {
+        name: info.node.title,
+        code: info.node.eventKey
       })
-      if (gradeIds.indexOf(obj[0]) === -1) {
-        this.classId = obj[0]
+    },
+    async showList () {
+      const res = await $ajax.get({
+        url: `${hostEnv.lvzhuo}/school/org/getSchoolRoot/${this.schoolCode}`
+      })
+      if (res.data === null || res.data.length === 0) {
+        this.noData = true
+        return
       } else {
-        this.gradeId = obj[0]
-        this.classId = ''
+        this.noData = false
       }
-      if (tree.selectedNodes.length === 0) return
-      const selectObj = {
-        gradeId: this.gradeId,
-        key: this.classId,
-        code: tree.selectedNodes[0].data.props.pCode,
-        title: tree.selectedNodes[0].data.props.title,
-        year: tree.selectedNodes[0].data.props.year
-      }
-      this.$emit('select', selectObj)
+      const data = this.newOrgData([res.data])
+      this.defaultKey = [data[0].key]
+      this.orgData = data
     },
-    async initMenu() {
-      const res = await $ajax.get({ url: 'http://yapi.demo.qunar.com/mock/5691/orgRoot' })
-      const selectObj = {
-        gradeId: res.data[0].id,
-        key: '',
-        code: '',
-        title: res.data[0].orgName,
-        year: ''
-      }
-      this.gradeList = res.data
-      this.treeData = res.data.map(item => {
-        return {
-          title: item.orgName,
-          key: item.id,
-          pCode: item.id
+    // 深层递归
+    newOrgData (data) {
+      data.forEach(item => {
+        item.children = item.orgChilds || null
+        item.title = item.name
+        item.key = item.code
+        if (item.orgChilds && item.orgChilds.length > 0) {
+          this.newOrgData(item.orgChilds)
         }
       })
-      this.onLoadData({
-        dataRef: {
-          pCode: res.data[0].id,
-          key: res.data[0].id
-        }
-      })
-      this.$emit('select', selectObj)
-    },
-    async onLoadData(treeNode) {
-      return new Promise(resolve => {
-        if (treeNode.dataRef.children) {
-          resolve()
-          return
-        }
-        this.orgId = treeNode.dataRef.key
-        $ajax
-          .get({
-            url: 'http://yapi.demo.qunar.com/mock/5691/orgChild',
-            params: {
-              gradeId: this.orgId
-            }
-          })
-          .then(res => {
-            treeNode.dataRef.children = res.data.map(item => {
-              return {
-                title: item.orgName,
-                key: item.id,
-                isLeaf: item.isLeaf
-              }
-            })
-            this.treeData = [...this.treeData]
-            resolve()
-          })
-      })
+      return data
     }
   }
 }
 </script>
 
 <style lang="less" scoed>
-.grade-tree {
-  width: 200px;
-  min-height: 400px;
-  max-height: 600px;
-  overflow-y: auto;
-}
+  .grade-tree {
+    padding: 0 10px;
+    width: 200px;
+    min-height: 400px;
+    max-height: 600px;
+    overflow-y: auto
+  }
 </style>

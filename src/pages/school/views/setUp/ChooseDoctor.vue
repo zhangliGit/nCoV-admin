@@ -45,7 +45,7 @@
         <div class="qui-fx-f1" style="overflow: auto">
           <ul>
             <li v-for="(item, index) in totalList" :key="item.id" class="qui-fx-jsb">
-              <span>{{ item.name }}</span>
+              <span>{{ item.userName }}</span>
               <a-tag @click="delUser(item.id, index)" color="#f50">删除</a-tag>
             </li>
           </ul>

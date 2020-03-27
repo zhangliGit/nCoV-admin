@@ -10,19 +10,17 @@
   >
     <a-row type="flex" justify="end" style="margin-bottom: 15px; margin-right: 215px">
       <a-col>
-        <span>姓名：</span>
-        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入姓名" />
-        <span>学号：</span>
-        <a-input style="width: 120px;margin-right: 10px" placeholder="请输入学号" />
-        <a-button type="primary">查询</a-button>
+        <span>姓名/学号：</span>
+        <a-input v-model="keyword" style="width: 120px;margin-right: 10px" placeholder="请输入关键字" />
+        <a-button type="primary" @click="getStudentList">查询</a-button>
       </a-col>
     </a-row>
-    <div class="choose-user qui-fx">
+    <div class="choose-user qui-fx" >
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
           is-check
           is-zoom
-          :scroll-h="100"
+          :scroll-h="500"
           :page-list="pageList"
           v-model="chooseList"
           :columns="columns"
@@ -37,7 +35,7 @@
           :mar-bot="0"
           size="small"
           :total="total"
-          @change-page="showList"></page-num>
+          @change-page="getStudentList"></page-num>
       </div>
       <div class="user-box qui-fx-ver">
         <div class="title qui-fx-jsb">
@@ -47,7 +45,7 @@
         <div class="qui-fx-f1" style="overflow: auto">
           <ul>
             <li v-for="(item, index) in totalList" :key="item.id" class="qui-fx-jsb">
-              <span>{{ item.name }}</span>
+              <span>{{ item.userName }}</span>
               <a-tag @click="delUser(item.id, index)" color="#f50">删除</a-tag>
             </li>
           </ul>
@@ -61,6 +59,8 @@
 import PageNum from './PageNum'
 import TableList from './TableList'
 import $ajax from '@u/ajax-serve'
+import { mapState } from 'vuex'
+import hostEnv from '@config/host-env'
 const columns = [
   {
     title: '序号',
@@ -72,21 +72,24 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '15%'
+    width: '20%'
   },
   {
     title: '性别',
     dataIndex: 'sex',
-    width: '10%'
+    width: '15%',
+    customRender: (text) => {
+      return parseInt(text) === 1 ? '男' : '女'
+    }
   },
   {
     title: '学号',
-    dataIndex: 'phone',
-    width: '25%'
+    dataIndex: 'workNo',
+    width: '20%'
   },
   {
-    title: '抓拍照',
-    dataIndex: 'photo',
+    title: '照片',
+    dataIndex: 'photoUrl',
     width: '30%',
     scopedSlots: {
       customRender: 'photoPic'
@@ -100,6 +103,10 @@ export default {
     TableList
   },
   props: {
+    isAll: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       default: ''
@@ -107,9 +114,20 @@ export default {
     value: {
       type: Boolean,
       default: false
+    },
+    isRadio: {
+      type: Boolean,
+      default: false
+    },
+    isCheck: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
+    ...mapState('home', [
+      'schoolCode'
+    ]),
     status: {
       get () {
         return this.value
@@ -119,12 +137,8 @@ export default {
       }
     }
   },
-  async mounted () {
-    const userData = await $ajax.post({
-      url: 'http://192.168.2.247:3000/mock/40/getTable#post'
-    })
-    this.total = userData.total
-    this.userList = userData.data
+  mounted () {
+    this.getStudentList()
   },
   data () {
     return {
@@ -134,6 +148,7 @@ export default {
         page: 1,
         size: 20
       },
+      keyword: '',
       total: 0,
       columns,
       userList: [],
@@ -141,6 +156,18 @@ export default {
     }
   },
   methods: {
+    async getStudentList () {
+      const res = await $ajax.post({
+        url: `${hostEnv.lvzhuo}/userinfo/student/user/without/class`,
+        params: {
+          keyword: this.keyword,
+          schoolCode: this.schoolCode,
+          ...this.pageList
+        }
+      })
+      this.userList = res.data.list
+      this.total = res.data.total
+    },
     reset () {
       this.confirmLoading = false
       this.$emit('input', false)
@@ -180,9 +207,6 @@ export default {
       }
       this.confirmLoading = true
       this.$emit('submit', this.totalList)
-    },
-    showList () {
-
     }
   }
 }

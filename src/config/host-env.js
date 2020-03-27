@@ -13,7 +13,7 @@ if (ConfigEnv === 'test') {
   wangxuanzhang = '/wangxuanzhang'
 } else if (ConfigEnv === 'prod') {
   // 线上接口
-  wangxuanzhang = 'pc-yq'
+  wangxuanzhang = '/pc-yq'
 } else {
   wangxuanzhang = '/admin'
 }

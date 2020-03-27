@@ -9,27 +9,16 @@
       :beforeUpload="beforeUpload"
       @change="uploadPic"
     >
-      <img
-        :style="{height: fileInfo.h + 'px', width: fileInfo.w + 'px'}"
-        v-if="imageUrl !== ''"
-        :src="imageUrl"
-        alt
-      />
-      <div
-        v-else
-        :style="{height: fileInfo.h + 'px', width: fileInfo.w + 'px'}"
-        class="qui-fx-ac-jc"
-      >
-        <div>
-          <a-icon :type="uploadTag ? 'loading' : 'plus'" />
-        </div>
+      <img :style="{height: fileInfo.h + 'px', width: fileInfo.w + 'px'}" v-if="imageUrl !== ''" :src="imageUrl" alt="" />
+      <div v-else :style="{height: fileInfo.h + 'px', width: fileInfo.w + 'px'}" class="qui-fx-ac-jc">
+        <div><a-icon :type="uploadTag ? 'loading' : 'plus'" /></div>
         <div class="ant-upload-text">{{ fileInfo.tip }}</div>
       </div>
     </a-upload>
   </div>
 </template>
 <script>
-function getBase64(img, callback) {
+function getBase64 (img, callback) {
   const reader = new FileReader()
   reader.addEventListener('load', () => callback(reader.result))
   reader.readAsDataURL(img)
@@ -52,14 +41,14 @@ export default {
       }
     }
   },
-  data() {
+  data () {
     return {
       imageUrl: this.value,
       uploadTag: false
     }
   },
   methods: {
-    beforeUpload(file) {
+    beforeUpload (file) {
       const isJpg = file.type === 'image/jpeg'
       const isPng = file.type === 'image/png'
       if (!isJpg && !isPng) {
@@ -71,7 +60,7 @@ export default {
       }
       return (isJpg || isPng) && isLt5M
     },
-    uploadPic(info) {
+    uploadPic (info) {
       if (info.file.status === 'uploading') {
         this.uploadTag = true
         return
@@ -81,7 +70,7 @@ export default {
           this.$message.warning(info.file.response.message)
           return
         }
-        getBase64(info.file.originFileObj, imageUrl => {
+        getBase64(info.file.originFileObj, (imageUrl) => {
           this.imageUrl = imageUrl
           const url = info.file.response.data[0].url
           this.$emit('input', url)

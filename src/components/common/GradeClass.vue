@@ -1,21 +1,24 @@
 <template>
-  <div class="grade-tree">
-    <a-tree @select="select" :loadData="onLoadData" :treeData="treeData"></a-tree>
+  <div class="grade-class">
+    <a-tree
+      v-if="treeData.length > 0"
+      :defaultSelectedKeys="defaultSelectedKeys"
+      @select="select"
+      :loadData="onLoadData"
+      :treeData="treeData"
+    ></a-tree>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import $ajax from '@u/ajax-serve'
 export default {
   name: 'GradeClass',
   props: {
-    gradeUrl: {
-      type: String,
-      default: 'http://192.168.2.247:3000/mock/40/getGrade'
-    },
-    classUrl: {
-      type: String,
-      default: 'http://192.168.2.247:3000/mock/40/getClass'
+    isGrade: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -23,10 +26,13 @@ export default {
       treeData: [],
       gradeId: '',
       classId: '',
-      gradeList: []
+      gradeList: [],
+      defaultSelectedKeys: ['1']
     }
   },
-  computed: {},
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   mounted() {
     this.initMenu()
   },
@@ -53,15 +59,14 @@ export default {
       this.$emit('select', selectObj)
     },
     async initMenu() {
-      const res = await $ajax.get({ url: '/admin/operate/gradeinfo/getGradelist?schoolCode=QPZX' })
+      const res = await $ajax.get({ url: '/admin/operate/gradeinfo/getGradelist?schoolCode=' + this.userInfo.orgCode })
       const selectObj = {
-        gradeId: res.result[0].gradeCode,
-        key: '',
-        code: '',
-        title: res.result[0].gradeName,
-        year: ''
+        gradeCode: res.result[0].gradeCode,
+        classCode: '',
+        name: res.result[0].gradeName
       }
       this.gradeList = res.result
+      this.defaultSelectedKeys = [res.result[0].gradeCode]
       this.treeData = res.result.map(item => {
         return {
           title: item.gradeName,
@@ -79,6 +84,7 @@ export default {
       this.$emit('select', selectObj)
     },
     async onLoadData(treeNode) {
+      if (this.isGrade) return
       return new Promise(resolve => {
         if (treeNode.dataRef.children) {
           resolve()
@@ -87,7 +93,11 @@ export default {
         this.gradeCode = treeNode.dataRef.key
         $ajax
           .post({
-            url: '/admin/school/classInfo/getClassInfoByGradeCode?schoolCode=QPZX&gradeCode=' + this.gradeCode
+            url:
+              '/admin/school/classInfo/getClassInfoByGradeCode?schoolCode=' +
+              this.userInfo.orgCode +
+              '&gradeCode=' +
+              this.gradeCode
           })
           .then(res => {
             treeNode.dataRef.children = res.result.map(item => {
@@ -107,7 +117,8 @@ export default {
 </script>
 
 <style lang="less" scoed>
-.grade-tree {
+.grade-class {
+  background: #fff;
   width: 200px;
   min-height: 400px;
   max-height: 600px;

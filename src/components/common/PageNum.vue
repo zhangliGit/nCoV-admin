@@ -10,8 +10,8 @@
     <a-pagination
       :pageSize.sync="value.size"
       :total="total"
-      :size="size"
       :current="value.page"
+      :size="size"
       showSizeChanger
       :showQuickJumper="jumper"
       @change="changePage"

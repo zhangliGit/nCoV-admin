@@ -15,7 +15,7 @@
       title="选择教职工"
     ></choose-user>
     <div class="page-left qui-fx-ver">
-      <grade-tree :is-grade="true" @select="select"></grade-tree>
+      <grade-class :is-grade="true" @select="select"></grade-class>
     </div>
     <div class="page-right qui-fx-ver">
       <div class="top-btn-group" style="padding: 8px 0 15px 0;">
@@ -45,9 +45,9 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import SubmitForm from '@c/SubmitForm'
+import SubmitForm from '../component/SubmitForm'
 import chooseUser from '@c/ChooseUser'
-import GradeTree from '@c/GradeTree'
+import GradeClass from '@c/GradeClass'
 const columns = [
   {
     title: '序号',
@@ -114,7 +114,7 @@ export default {
     SubmitForm,
     chooseUser,
     PageNum,
-    GradeTree
+    GradeClass
   },
   data() {
     return {
@@ -136,11 +136,10 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  created() {
+  created() {},
+  async mounted() {
     this.getGradeInfo()
-    this.showList('')
   },
-  async mounted() {},
   methods: {
     ...mapActions('home', ['getClassList', 'getGradeList', 'bathAddClass', 'deleteClass', 'getClassInfoList']),
     // 获取年级列表
@@ -157,8 +156,7 @@ export default {
       })
     },
     select(item) {
-      console.log(item)
-      this.gradeCode = item.gradeId
+      this.gradeCode = item.gradeCode
       this.showList()
     },
     async showList(gradeCode = this.gradeCode) {
