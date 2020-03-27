@@ -5,9 +5,6 @@
 
 const ConfigEnv = process.env.VUE_APP_URL
 let wangxuanzhang = ''
-let zhux = ''
-let zhangkun = ''
-let lvzhuo = ''
 
 if (ConfigEnv === 'test') {
   wangxuanzhang = '/wangxuanzhang'

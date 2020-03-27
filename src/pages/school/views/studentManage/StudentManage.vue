@@ -58,7 +58,7 @@ import GradeClass from '@c/GradeClass'
 const columns = [
   {
     title: '序号',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'index'
     }
@@ -66,12 +66,12 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '性别',
     dataIndex: 'gender',
-    width: '9%',
+    width: '10%',
     customRender: text => {
       if (text === '1') {
         return '男'
@@ -83,17 +83,9 @@ const columns = [
     }
   },
   {
-    title: '年级',
-    dataIndex: 'gradeName',
-    width: '9%',
-    scopedSlots: {
-      customRender: 'className'
-    }
-  },
-  {
     title: '班级',
     dataIndex: 'className',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'className'
     }
@@ -101,12 +93,12 @@ const columns = [
   {
     title: '学号',
     dataIndex: 'workNo',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '人脸照片',
     dataIndex: 'profilePhoto',
-    width: '9%',
+    width: '10%',
     scopedSlots: {
       customRender: 'photoPic'
     }
@@ -114,17 +106,17 @@ const columns = [
   {
     title: '出生日期',
     dataIndex: 'birthday',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '家长',
     dataIndex: 'patriarchName',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '电话',
     dataIndex: 'patriarchPhone',
-    width: '9%'
+    width: '10%'
   },
   {
     title: '操作',
@@ -277,6 +269,7 @@ export default {
     ...mapActions('home', ['getClassList', 'getGradeList', 'getUserList', 'addStudent', 'deleUser', 'editUser']),
     // 获取年级列表
     async getGradeInfo() {
+      this.formData[1].list = []
       const req = {
         schoolCode: this.userInfo.orgCode
       }
