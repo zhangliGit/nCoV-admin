@@ -28,15 +28,15 @@
           ]"
         />
       </a-form-item>
-      <!-- <a-form-item v-bind="formItemLayout" label="账号" >
+      <a-form-item v-bind="formItemLayout" label="管理员姓名" >
         <a-input
-          placeholder="请输入账号"
+          placeholder="管理员姓名"
           v-decorator="[
             'manageName',
-            { initialValue: appForm.manageName, rules: [ { required: true, message: '请输入账号' } ]}
+            { initialValue: appForm.manageName, rules: [ { required: true, message: '管理员姓名' } ]}
           ]"
         />
-      </a-form-item> -->
+      </a-form-item>
       <a-form-item v-bind="formItemLayout" label="手机号" >
         <a-input
           placeholder="请输入手机号"
@@ -170,6 +170,8 @@ export default {
               this.$tools.goNext(() => {
                 this.$emit('update')
               })
+            }).catch(() => {
+              this.confirmLoading = false
             })
           } else {
             this.addOrg(values).then(() => {
@@ -179,6 +181,8 @@ export default {
               this.$tools.goNext(() => {
                 this.$emit('update')
               })
+            }).catch(() => {
+              this.confirmLoading = false
             })
           }
         }

@@ -5,7 +5,7 @@
     </div>
     <div class="qui-fx-f1 qui-fx-ver">
       <search-form @search-form="searchForm" :search-label="searchLabel">
-        <div slot="left" class="top-btn-group">
+        <div slot="left">
           <a-button icon="export" class="export-btn" @click="reportList()">导出</a-button>
         </div>
       </search-form>
@@ -113,12 +113,14 @@ const columns = [
     dataIndex: 'healthyState',
     width: '10%',
     customRender: text => {
-      if (text === 1) {
+      if (parseInt(text) === 1) {
         return '疑似'
-      } else if (text === 2) {
+      } else if (parseInt(text) === 2) {
         return '确诊'
-      } else {
+      } else if (parseInt(text) === 3) {
         return '健康'
+      } else {
+        return '未知'
       }
     }
   },
@@ -126,7 +128,7 @@ const columns = [
     title: '风险时间',
     dataIndex: 'riskTime',
     width: '10%',
-     customRender: text => {
+    customRender: text => {
       return (
         new Date(text).getFullYear() +
         '-' +
@@ -195,17 +197,17 @@ export default {
       this.classCode = item.classCode
       this.showList()
     },
-    async showList() {
+    async showList(searchObj = {}) {
       this.pageList.schoolCode = this.userInfo.orgCode
       this.pageList.gradeCode = this.gradeCode
       this.pageList.classCode = this.classCode
-      const res = await this.getreportList(this.pageList)
+      const res = await this.getreportList({ ...this.pageList, ...searchObj })
       this.userList = res.result.list
       this.total = res.result.totalCount
     },
     searchForm(values) {
-      this.pageList = Object.assign(values, this.pageList)
-      this.showList()
+      this.pageList.page = 1
+      this.showList(values)
     },
     reportList() {
       const schoolCode = this.userInfo.orgCode

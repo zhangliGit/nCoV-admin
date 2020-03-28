@@ -1,7 +1,7 @@
 <template>
   <div class="page-layout qui-fx-ver">
     <search-form isReset @search-form="searchForm" :search-label="searchLabel">
-      <div slot="left" class="top-btn-group">
+      <div slot="left">
         <a-button icon="plus" class="add-btn" @click="add(0)">添加教职工</a-button>
         <!-- <a-button icon="plus" class="add-btn">邀请教职工</a-button>
         <a-button icon="export" class="export-btn">导入教职工</a-button>
@@ -149,11 +149,12 @@ const formData = [
     initValue: '',
     type: 'input',
     label: '手机号',
-    placeholder: '手机号'
+    placeholder: '请输入正确的手机号',
+    regular: 'phone'
   },
   {
     value: 'classChargeMark',
-    initValue: 1,
+    initValue: '1',
     list: [
       {
         key: '1',
@@ -170,8 +171,7 @@ const formData = [
   },
   {
     value: 'gender',
-    initValue: 1,
-    required: false,
+    initValue: '1',
     list: [
       {
         key: '1',
@@ -289,7 +289,7 @@ export default {
       }, 2000)
     },
     searchForm(values) {
-      console.log(values)
+      this.pageList.page = 1
       const searchObj = {
         userName: values.name,
         phone: values.phone
@@ -307,7 +307,11 @@ export default {
         }
         console.log(req)
         req.userNo = values.workNo
-        await this.editUser(req)
+        try {
+          await this.editUser(req)
+        } catch (e) {
+          this.$refs.form.error()
+        }
         this.$message.success('编辑成功')
         setTimeout(() => {
           this.picUrl = ''
@@ -322,7 +326,11 @@ export default {
         }
         console.log(req)
         req.userNo = values.workNo
-        await this.addTeacher(req)
+        try {
+          await this.addTeacher(req)
+        } catch (e) {
+          this.$refs.form.error()
+        }
         this.$message.success('添加成功')
         setTimeout(() => {
           this.picUrl = ''

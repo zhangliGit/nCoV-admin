@@ -100,7 +100,7 @@ const columns = [
   {
     title: '学校名称',
     dataIndex: 'organizationName',
-    width: '20%'
+    width: '25%'
   },
   {
     title: '学校编码',
@@ -108,9 +108,14 @@ const columns = [
     width: '15%'
   },
   {
-    title: '账号',
+    title: '管理员姓名',
     dataIndex: 'manageName',
     width: '10%'
+  },
+  {
+    title: '手机号码',
+    dataIndex: 'phone',
+    width: '20%'
   },
   {
     title: '密码',
@@ -122,11 +127,6 @@ const columns = [
   //   dataIndex: 'admin',
   //   width: '15%'
   // },
-  {
-    title: '手机号码',
-    dataIndex: 'phone',
-    width: '20%'
-  },
   {
     title: '操作',
     width: '20%',

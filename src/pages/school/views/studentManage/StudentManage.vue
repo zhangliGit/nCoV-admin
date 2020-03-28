@@ -5,7 +5,7 @@
     </div>
     <div class="page-right qui-fx-ver">
       <search-form isReset @search-form="searchForm" :search-label="searchLabel">
-        <div slot="left" class="top-btn-group">
+        <div slot="left">
           <a-button icon="plus" class="add-btn" @click="add(0)">添加学生</a-button>
           <!--<a-button icon="export" class="export-btn">导入学生</a-button>
           <a-button icon="export" class="export-all-btn">导入人脸</a-button>-->
@@ -52,7 +52,7 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import SubmitForm from '../component/SubmitForm'
+import SubmitForm from '@c/SubmitForm'
 import UploadOne from '@c/UploadOne'
 import GradeClass from '@c/GradeClass'
 const columns = [
@@ -166,7 +166,7 @@ const formData = [
   },
   {
     value: 'gender',
-    initValue: 1,
+    initValue: '1',
     required: false,
     list: [
       {
@@ -215,7 +215,8 @@ const formData = [
     initValue: '',
     type: 'input',
     label: '家长手机号',
-    placeholder: '请输入家长手机号'
+    regular: 'phone',
+    placeholder: '请输入正确手机号'
   }
 ]
 export default {
@@ -347,7 +348,7 @@ export default {
       }, 2000)
     },
     searchForm(values) {
-      console.log(values)
+      this.pageList.page = 1
       const searchObj = {
         userName: values.name,
         workNo: values.workNo
@@ -375,8 +376,11 @@ export default {
         if (Array.isArray(values.gradeCode)) {
           req.gradeCode = values.gradeCode[0]
         }
-        console.log(req)
-        await this.editUser(req)
+        try {
+          await this.editUser(req)
+        } catch (e) {
+          this.$refs.form.error()
+        }
         this.$message.success('编辑成功')
         setTimeout(() => {
           this.picUrl = ''
@@ -403,7 +407,11 @@ export default {
           return ele.key === values.classCode
         })[0].val
         console.log(req)
-        await this.addStudent(req)
+        try {
+          await this.addStudent(req)
+        } catch (e) {
+          this.$refs.form.error()
+        }
         this.$message.success('添加成功')
         setTimeout(() => {
           this.picUrl = ''

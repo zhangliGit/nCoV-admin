@@ -103,8 +103,8 @@ module.exports = {
         }
       },
       '/admin': {
-        // target: 'http://39.97.164.4:9001/', // 外网
-        target: 'http://wxz-test-001.natapp1.cc',
+        target: 'http://39.97.164.4:9001/', // 外网
+        // target: 'http://wxz-test-001.natapp1.cc',
         changeOrigin: true,
         pathRewrite: {
           '^/admin': ''
