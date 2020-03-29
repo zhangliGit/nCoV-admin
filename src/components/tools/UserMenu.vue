@@ -27,7 +27,7 @@
         <div class="action ant-dropdown-link user-dropdown-menu">
           <div style="float: left">{{ userInfo.orgName }}</div>
           <div style="float: left" class="person-img">
-            <img :src="userInfo.photoSrc" alt />
+            <img :src="userImg" alt />
           </div>
         </div>
         <a-menu v-if="false" slot="overlay" class="user-dropdown-menu-wrapper">
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import userImg from '@a/img/user-img.png'
 import { mapState } from 'vuex'
 
 export default {
@@ -66,6 +67,7 @@ export default {
   },
   data() {
     return {
+      userImg,
       passTag: false,
       form: this.$form.createForm(this)
     }
