@@ -285,7 +285,7 @@ export default {
         geneticDiseaseMark: '',
         createTime: ''
       },
-      reportTime: [2.3,2.4,2.5,2.7],
+      reportTime: [],
       temperature: [36,37,35,36]
     }
   },
@@ -294,7 +294,7 @@ export default {
   },
   mounted() {
     this.getTemperature()
-    this.initUnReportChart()
+    // this.initUnReportChart()
     this.showList()
     this.getReportList()
   },
@@ -369,11 +369,15 @@ export default {
       const res = await this.getTemperatureData(par)
       this.reportTime = []
       this.temperature = []
+      if(res.result){
       res.result.forEach(item => {
         this.reportTime.push(item.reportTime)
         this.temperature.push(item.temperature)
       })
-      // this.initUnReportChart();
+      }else{
+         this.noData = true
+      }
+      this.initUnReportChart();
     },
     //获取上报信息记录
     async getReportList() {
@@ -410,21 +414,21 @@ export default {
         tooltip: {
           pointFormat: '{series.name} <b>{point.y}</b>℃'
         },
-        plotOptions: {
-          area: {
-            pointStart: 2,
-            marker: {
-              enabled: false,
-              symbol: 'circle',
-              radius: 2,
-              states: {
-                hover: {
-                  enabled: true
-                }
-              }
-            }
-          }
-        },
+        // plotOptions: {
+        //   area: {
+        //     pointStart: 2,
+        //     marker: {
+        //       enabled: false,
+        //       symbol: 'circle',
+        //       radius: 2,
+        //       states: {
+        //         hover: {
+        //           enabled: true
+        //         }
+        //       }
+        //     }
+        //   }
+        // },
         series: [
           {
             name: '体温',
