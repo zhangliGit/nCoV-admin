@@ -45,7 +45,7 @@ const home = {
   state: {
     systemName: '管理平台',
     userInfo: getState('userInfo', {
-      orgName: '超级管理员'
+      manageName: '超级管理员'
     })
   },
   actions: {
