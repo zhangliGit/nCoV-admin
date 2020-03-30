@@ -220,7 +220,11 @@ export default {
         classNum: values.classNum,
         gradeName
       }
-      await this.bathAddClass(req)
+      try {
+        await this.bathAddClass(req)
+      } catch (err) {
+        this.$refs.form.error()
+      }
       this.$message.success('操作成功')
       setTimeout(() => {
         this.$refs.form.reset()
@@ -236,8 +240,11 @@ export default {
         id: this.record.user_name ? this.record.id : null,
         classCode: this.record.class_code
       }
-      const res = await this.classTeacher(req)
-      console.log(res)
+      try {
+        await this.classTeacher(req)
+      } catch (e) {
+        this.$refs.chooseUser.error()
+      }
       setTimeout(() => {
         this.$message.success('绑定成功')
         this.$refs.chooseUser.reset()
