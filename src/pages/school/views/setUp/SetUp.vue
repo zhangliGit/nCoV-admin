@@ -1,6 +1,6 @@
 <template>
   <div class="set-up page-layout qui-fx-ver">
-    <a-form :form="form" :style="{maxHeight:maxHeight}">
+    <a-form :form="form" :style="{ maxHeight: maxHeight }">
       <div>
         <div class="title-box" style="margin-bottom:10px;">
           <span class="title-icon"></span>
@@ -13,7 +13,7 @@
                 @blur="tempChange"
                 v-decorator="[
                   `${item.bodyPartsCode}+${item.bodyPartsName}=${item.id}-${item.temperature}`,
-                  { initialValue: item.temperature, rules: [{ required: true, message: '请填写发热温度值' }]}
+                  { initialValue: item.temperature, rules: [{ required: true, message: '请填写发热温度值' }] }
                 ]"
               />
             </a-form-item>
@@ -27,13 +27,8 @@
           <span class="title-text">校医人员设置</span>
         </div>
         <a-form-item label="校医人员" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-tag
-            closable
-            v-for="item in appForm.teacher"
-            @close="del(item.id)"
-            :key="item.id"
-          >
-            {{item.userName}}
+          <a-tag closable v-for="item in appForm.teacher" @close="del(item.id)" :key="item.id">
+            {{ item.userName }}
           </a-tag>
           <a-tag @click="chooseDoctor" style="background: #fff; borderStyle: dashed;">
             <a-icon type="plus" /> 添加
@@ -212,20 +207,29 @@ export default {
   },
   methods: {
     moment,
-    ...mapActions('home',
-      [
-        'gettmpList', 'getInformUser', 'addDoctor',
-        'getInfoDoctor', 'getInformWay', 'updateTmpList',
-        'updateInformWay', 'updateInformUser', 'unBindDoc'
-      ]),
+    ...mapActions('home', [
+      'gettmpList',
+      'getInformUser',
+      'addDoctor',
+      'getInfoDoctor',
+      'getInformWay',
+      'updateTmpList',
+      'updateInformWay',
+      'updateInformUser',
+      'unBindDoc'
+    ]),
     // 温度设置列表
     async tmpListGet() {
-      const res = await this.gettmpList(`schoolCode=${this.userInfo.orgCode}`)
+      const res = await this.gettmpList({
+        schoolCode: this.userInfo.orgCode
+      })
       this.tempList = res.result
     },
     // 通知方式：微信、短信
     async informWayGet() {
-      const res = await this.getInformWay(`schoolCode=${this.userInfo.orgCode}`)
+      const res = await this.getInformWay({
+        schoolCode: this.userInfo.orgCode
+      })
       this.infoCheck = res.result.filter(item => {
         if (item.informState === '1') {
           return item.informWayCode
@@ -238,7 +242,9 @@ export default {
     },
     // 通知人员
     async informUserGet() {
-      const res = await this.getInformUser(`schoolCode=${this.userInfo.orgCode}`)
+      const res = await this.getInformUser({
+        schoolCode: this.userInfo.orgCode
+      })
       this.teacherCheck = res.result.filter(item => {
         if (item.userType === '1' && item.informState === '1') {
           return item.informPersonType
@@ -255,13 +261,17 @@ export default {
       })
       if (this.studentCheck.length > 0) {
         this.studentSelf = this.studentCheck.some(v => v.informPersonType === this.studentSelfCheck) ? ['PERSON03'] : []
-        this.studentTeacher = this.studentCheck.some(v => v.informPersonType === this.studentTeacherCheck) ? ['PERSON04'] : []
+        this.studentTeacher = this.studentCheck.some(v => v.informPersonType === this.studentTeacherCheck)
+          ? ['PERSON04']
+          : []
         this.studentDoc = this.studentCheck.some(v => v.informPersonType === this.studentDocCheck) ? ['PERSON02'] : []
       }
     },
     // 已选校医
     async doctorList() {
-      const userData = await this.getInfoDoctor(`schoolCode=${this.userInfo.orgCode}`)
+      const userData = await this.getInfoDoctor({
+        schoolCode: this.userInfo.orgCode
+      })
       this.userList = userData.result
       this.appForm.teacher = this.userList
       // this.appForm.teacher = this.userList.map(el => el.userName).join(',')
@@ -290,13 +300,19 @@ export default {
       })
     },
     tempChange(e) {
-      const temp = e.target.offsetParent.id.split('+')[1].split('=')[1].split('-')[1]
+      const temp = e.target.offsetParent.id
+        .split('+')[1]
+        .split('=')[1]
+        .split('-')[1]
       if (temp !== e.target.value) {
         const req = {
           schoolCode: this.userInfo.orgCode,
           bodyPartsCode: e.target.offsetParent.id.split('+')[0],
           bodyPartsName: e.target.offsetParent.id.split('+')[1].split('=')[0],
-          id: e.target.offsetParent.id.split('+')[1].split('=')[1].split('-')[0],
+          id: e.target.offsetParent.id
+            .split('+')[1]
+            .split('=')[1]
+            .split('-')[0],
           temperature: e.target.value
         }
         this.updateTmpList(req).then(res => {
@@ -375,7 +391,7 @@ export default {
     }
   }
 }
-.ant-input-number{
+.ant-input-number {
   width: 100%;
 }
 </style>

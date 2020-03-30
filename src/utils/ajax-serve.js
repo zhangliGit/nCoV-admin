@@ -107,12 +107,10 @@ const $ajax = {
   },
   async postQuery(obj, tag = true) {
     if (tag) showToast()
-    console.log(obj.params['listSn'])
     let url = obj.url + '?'
     for (const key in obj.params) {
       url += key + '=' + obj.params[key] + '&'
     }
-    console.log(url)
     try {
       let res = await axios.post(url, qs.stringify({}))
       res = res.data
@@ -161,8 +159,12 @@ const $ajax = {
     if (tag) showToast()
     try {
       let res = await axios({
-        url: obj.url + obj.params,
-        method: 'post'
+        url: obj.url,
+        method: 'post',
+        data: JSON.stringify(obj.params),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       })
       res = res.data
       return responseRes(res)

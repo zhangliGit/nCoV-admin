@@ -15,10 +15,10 @@
     ></submit-form>
     <table-list is-check v-model="chooseList" :page-list="pageList" :columns="columns" :table-list="deviceList">
       <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="编辑" @click="editDevice(true, action.record)">
+        <a-tooltip placement="topLeft" title="编辑" @click.stop="editDevice(true, action.record)">
           <a-button size="small" class="edit-action-btn" icon="form"></a-button>
         </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="delDevice(action.record)">
+        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm.stop="delDevice(action.record)">
           <template slot="title">
             您确定删除吗?
           </template>
@@ -26,7 +26,12 @@
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
         </a-popconfirm>
-        <a-button size="small" class="del-action-btn" @click.stop="cleanUser(action.record)">清空人员信息</a-button>
+        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm.stop="cleanUser(action.record)">
+          <template slot="title">
+            您确定清空吗?
+          </template>
+          <a-button size="small" class="del-action-btn">清空人员信息</a-button>
+        </a-popconfirm>
       </template>
     </table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
