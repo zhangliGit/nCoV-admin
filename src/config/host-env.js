@@ -5,16 +5,19 @@
 
 const ConfigEnv = process.env.VUE_APP_URL
 let wangxuanzhang = ''
-
+let zhuxu = ''
 if (ConfigEnv === 'test') {
   wangxuanzhang = '/wangxuanzhang'
 } else if (ConfigEnv === 'prod') {
   // 线上接口
   wangxuanzhang = '/pc-yq'
+  zhuxu = '/mobile-yq'
 } else {
-  wangxuanzhang = '/admin'
+  wangxuanzhang = '/zhuxu'
+  zhuxu = '/zhuxu'
 }
 
 export default {
-  wangxuanzhang
+  wangxuanzhang,
+  zhuxu
 }

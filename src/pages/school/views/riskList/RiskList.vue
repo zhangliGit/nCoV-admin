@@ -1,7 +1,7 @@
 <template>
   <div class="page-layout qui-fx-ver">
     <search-form isReset @search-form="searchForm" :search-label="searchLabel">
-      <div slot="left" class="top-btn-group">
+      <div slot="left">
         <a-button icon="plus" class="add-btn" @click="add()">添加</a-button>
       </div>
     </search-form>
@@ -123,6 +123,10 @@ const searchLabel = [
   {
     list: [
       {
+        key: '',
+        val: '全部'
+      },
+      {
         key: '1',
         val: '疑似'
       },
@@ -186,7 +190,7 @@ export default {
       console.log(record)
     },
     searchForm(values) {
-      console.log(values)
+      this.pageList.page = 1
       const searchObj = {
         userName: values.userName,
         healthyState: values.healthyState
@@ -205,8 +209,11 @@ export default {
         riskType,
         userCodes
       }
-      const res = await this.addRisk(req)
-      console.log(res.result)
+      try {
+        await this.addRisk(req)
+      } catch (e) {
+        this.$refs.chooseUser.error()
+      }
       this.$message.success('添加成功')
       setTimeout(() => {
         this.$refs.chooseUser.reset()

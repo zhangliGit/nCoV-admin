@@ -1,7 +1,7 @@
 <template>
   <div class="page-layout qui-fx-ver">
     <search-form @search-form="searchForm" :search-label="searchLabel">
-      <div slot="left" class="top-btn-group">
+      <div slot="left">
         <a-button icon="export" class="export-btn" @click="reportList()">导出</a-button>
       </div>
     </search-form>
@@ -46,10 +46,8 @@ const columns = [
     customRender: text => {
       if (text === 1) {
         return '男'
-      } else if (text === 2) {
-        return '女'
       } else {
-        return '未知'
+        return '女'
       }
     }
   },
@@ -85,19 +83,36 @@ const columns = [
     dataIndex: 'healthyState',
     width: '10%',
     customRender: text => {
-      if (text === 1) {
+      if (parseInt(text) === 1) {
         return '疑似'
-      } else if (text === 2) {
+      } else if (parseInt(text) === 2) {
         return '确诊'
-      } else {
+      } else if (parseInt(text) === 3) {
         return '健康'
+      } else {
+        return '未知'
       }
     }
   },
   {
     title: '风险时间',
     dataIndex: 'riskTime',
-    width: '10%'
+    width: '10%',
+    customRender: text => {
+      return (
+        new Date(text).getFullYear() +
+        '-' +
+        (new Date(text).getMonth() + 1 > 9 ? new Date(text).getMonth() + 1 : '0' + (new Date(text).getMonth() + 1)) +
+        '-' +
+        (new Date(text).getDate() > 9 ? new Date(text).getDate() : '0' + new Date(text).getDate()) +
+        ' ' +
+        (new Date(text).getHours() > 9 ? new Date(text).getHours() : '0' + new Date(text).getHours()) +
+        ':' +
+        (new Date(text).getMinutes() > 9 ? new Date(text).getMinutes() : '0' + new Date(text).getMinutes()) +
+        ':' +
+        (new Date(text).getSeconds() > 9 ? new Date(text).getSeconds() : '0' + new Date(text).getSeconds())
+      )
+    }
   },
   {
     title: '人脸图像',
@@ -180,21 +195,23 @@ export default {
   },
   methods: {
     ...mapActions('home', ['getreportList']),
-    async showList() {
+    async showList(searchObj = {}) {
       this.pageList.schoolCode = this.userInfo.orgCode
-      const res = await this.getreportList(this.pageList)
+      const res = await this.getreportList({
+        ...this.pageList,
+        ...searchObj
+      })
       this.userList = res.result.list
       this.total = res.result.totalCount
     },
     searchForm(values) {
-      this.pageList = Object.assign(values, this.pageList)
-      this.showList()
-      console.log(values)
+      this.pageList.page = 1
+      this.showList(values)
     },
     reportList() {
       const schoolCode = this.userInfo.orgCode
       window.location.href =
-        'http://wxz-test-001.natapp1.cc/school/userinfo/exportPersonnelInfo?schoolCode=' +
+        '/admin/school/userinfo/exportPersonnelInfo?schoolCode=' +
         schoolCode +
         '&userType=1&excelUrl=1'
     },

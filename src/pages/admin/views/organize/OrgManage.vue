@@ -60,14 +60,14 @@ const formData = [
     max: 50,
     placeholder: '请输入机构编码'
   },
-  // {
-  //   value: 'manageName',
-  //   initValue: '',
-  //   type: 'input',
-  //   label: '账号',
-  //   max: 50,
-  //   placeholder: '请输入账号'
-  // },
+  {
+    value: 'manageName',
+    initValue: '',
+    type: 'input',
+    label: '管理员姓名',
+    max: 50,
+    placeholder: '请输入管理员姓名'
+  },
   {
     value: 'phone',
     initValue: '',
@@ -114,8 +114,13 @@ const columns = [
     width: '12%'
   },
   {
-    title: '账号',
+    title: '管理员姓名',
     dataIndex: 'manageName',
+    width: '14%'
+  },
+  {
+    title: '手机号码',
+    dataIndex: 'phone',
     width: '14%'
   },
   {
@@ -128,11 +133,6 @@ const columns = [
   //   dataIndex: 'admin',
   //   width: '15%'
   // },
-  {
-    title: '手机号码',
-    dataIndex: 'phone',
-    width: '14%'
-  },
   {
     title: '关联学校数',
     // dataIndex: 'num',

@@ -63,7 +63,7 @@ const columns = [
     }
   },
   {
-    title: '疫情类型',
+    title: '风险类型',
     dataIndex: 'riskName',
     width: '15%'
   },
@@ -124,7 +124,7 @@ export default {
   methods: {
     ...mapActions('home', ['getRiskList', 'addRisk', 'updateRisk', 'delRisk']),
     async showList() {
-      let check = ''
+      const check = ''
       const res = await this.getRiskList()
       this.yqList = res.result
     },

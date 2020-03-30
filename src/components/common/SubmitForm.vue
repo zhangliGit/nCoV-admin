@@ -192,6 +192,9 @@ export default {
             if (values[key] instanceof Array && values[key][0]._isAMomentObject) {
               values[key] = [moment(values[key][0]).format('YYYY-MM-DD'), moment(values[key][1]).format('YYYY-MM-DD')]
             }
+            if (Array.isArray(values[key])) {
+              values[key] = values[key][0]
+            }
           }
           this.confirmLoading = true
           this.$emit('submit-form', values)

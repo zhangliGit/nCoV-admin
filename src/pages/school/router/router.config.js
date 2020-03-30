@@ -10,6 +10,7 @@ const Home = resolve => require(['../views/Home.vue'], resolve)
 const DailyReport = resolve => require(['../views/dailyReport/DailyReport.vue'], resolve)
 const SetUp = resolve => require(['../views/setUp/SetUp.vue'], resolve)
 const PersonalDetail = resolve => require(['../views/component/PersonalDetail.vue'], resolve)
+const DeviceManage = resolve => require(['../views/deviceManage/DeviceManage.vue'], resolve)
 
 export const asyncRouterMap = [
   {
@@ -53,6 +54,15 @@ export const asyncRouterMap = [
       riskList,
       reportManage,
       // healthManage,
+      {
+        path: '/deviceManage',
+        name: 'deviceManage',
+        component: DeviceManage,
+        meta: {
+          title: '设备管理',
+          icon: 'setting'
+        }
+      },
       {
         path: '/setUp',
         name: 'setUp',
