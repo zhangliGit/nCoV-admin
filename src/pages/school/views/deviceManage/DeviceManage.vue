@@ -226,7 +226,11 @@ export default {
     },
     async syncUser() {
       console.log(this.chooseList)
-      await this.cleanDeviceUser({
+      if (this.chooseList.length === 0) {
+        this.$message.warning('请勾选同步的设备')
+        return
+      }
+      await this.syncUserInfo({
         listSn: this.chooseList
       })
       this.$message.success('人员信息同步成功')
