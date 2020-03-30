@@ -82,10 +82,10 @@
         </div>
         <table-list :page-list="pageList" :columns="columns" :table-list="userList">
           <template v-slot:stucollects="stucollect">
-            <span>{{ stucollect.record.realStudentCount }}/{{ stucollect.record.totalStudentCount}}</span>
+            <span>{{ stucollect.record.realStudentCount }} / {{ stucollect.record.totalStudentCount}}</span>
           </template>
           <template v-slot:teacollects="teacollect">
-            <span>{{ teacollect.record.realTeacherCount }}/{{ teacollect.record.totalTeacherCount}}</span>
+            <span>{{ teacollect.record.realTeacherCount }} / {{ teacollect.record.totalTeacherCount}}</span>
           </template>
           <template v-slot:actions="action">
             <a-tooltip placement="topLeft" title="详情">
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '../components/TableList'
 import PageNum from '@c/PageNum'
 import Highcharts from 'highcharts/highstock'
@@ -154,6 +154,9 @@ export default {
     TableList,
     PageNum
   },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   data() {
     return {
       columns,
@@ -173,7 +176,7 @@ export default {
         page: 1,
         size: 20
       },
-      total: 0,
+      total: 1,
       userList: [],
       schoolData: {
         schoolNum: 0,
@@ -201,13 +204,14 @@ export default {
     console.log(this.xDate)
   },
   mounted() {
+    console.log(this.userInfo)
   },
   methods: {
     ...mapActions('home', ['getBaseData', 'getDailyList', 'getTemperatureChart', 'getReportChart']),
     // 获取学校用户数量
     async showBaseData() {
       const req = {
-        userId: '3'
+        userId: this.userInfo.phone
       }
       const res = await this.getBaseData(req)
       this.schoolData.schoolNum = res.result.schoolCount

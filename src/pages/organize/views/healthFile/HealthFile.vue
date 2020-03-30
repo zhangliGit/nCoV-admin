@@ -1,5 +1,5 @@
 <template>
-  <div class="health-file page-layout">
+  <div class="health-file qui-page">
     <a-row :gutter="14">
       <a-col class="qui-fx-ver" :span="16">
         <a-row :gutter="14">
@@ -97,7 +97,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import TableList from '@c/TableList'
+import TableList from '../components/TableList'
 import PageNum from '@c/PageNum'
 import xs1Img from '@a/img/organize/xs.png'
 import xx1Img from '@a/img/organize/xx.png'
@@ -229,9 +229,9 @@ export default {
         page: 1,
         size: 20
       },
-      heatTotal: 0,
-      touchTotal: 0,
-      fillTotal: 0,
+      heatTotal: 1,
+      touchTotal: 1,
+      fillTotal: 1,
       heatList: [],
       touchList: [],
       fillList: [],
