@@ -11,12 +11,7 @@
               </a-input>
             </div>
             <div style="margin: 20px 0" class="qui-fx qui-fx-ac">
-              <a-input
-                type="password"
-                style="height:40px;"
-                placeholder="请输入密码"
-                v-model="loginForm.passCode"
-              >
+              <a-input type="password" style="height:40px;" placeholder="请输入密码" v-model="loginForm.passCode">
                 <a-icon style="font-size: 20px;" slot="prefix" type="lock" />
               </a-input>
             </div>
@@ -34,7 +29,7 @@
                   <a-icon style="font-size: 20px;" slot="prefix" type="lock" />
                 </a-input>
               </div>
-              <div :class="['btn-yzm', { 'act': total !== 60 }]" @click="getYzm">{{ yzmTip }}</div>
+              <div :class="['btn-yzm', { act: total !== 60 }]" @click="getYzm">{{ yzmTip }}</div>
             </div>
             <div class="login-btn" @click="login">登录</div>
           </a-tab-pane>
@@ -76,9 +71,13 @@ export default {
   },
   methods: {
     ...mapMutations('home', ['updateState']),
-    async getYzm () {
+    async getYzm() {
       if (this.total !== 60) return
-      if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginForm.phone) || this.loginForm.phone === '') {
+      // if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginForm.phone) || this.loginForm.phone === '') {
+      //   this.$message.warning('请输入正确的手机号')
+      //   return
+      // }
+      if (this.loginForm.phone === '') {
         this.$message.warning('请输入正确的手机号')
         return
       }
@@ -102,7 +101,7 @@ export default {
       }, 1000)
     },
     async login() {
-      if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginForm.phone) || this.loginForm.phone === '') {
+      if (this.loginForm.phone === '') {
         this.$message.warning('请输入正确的手机号')
         return
       }
@@ -132,6 +131,10 @@ export default {
           eduCode: data.orgList[0].eduCode,
           token: data.token
         }
+        this.updateState({
+          key: 'systemName',
+          data: data.manageName
+        })
         this.updateState({
           key: 'userInfo',
           data: info
@@ -193,7 +196,7 @@ export default {
       opacity: 0.8;
     }
     .act {
-      opacity: .5;
+      opacity: 0.5;
     }
     input:focus {
       border: 2px solid #3498db;
