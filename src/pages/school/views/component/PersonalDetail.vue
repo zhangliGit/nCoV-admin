@@ -19,7 +19,7 @@
             <a-col class="mar-b10" :span="12">性别 : {{ detailInfo.gender ? '女' : '男'}}</a-col>
             <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo}}</a-col>
             <a-col class="mar-b10" :span="12">生日 : {{detailInfo. birthday}}</a-col>
-            <a-col class="mar-b10" :span="12">职位 : {{ detailInfo.classChargeMark}}</a-col>
+            <a-col class="mar-b10" :span="12">人员类型 : {{ detailInfo.userType ? '教职工' : '学生'}}</a-col>
             <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime}}</a-col>
           </a-row>
         </div>
@@ -27,10 +27,8 @@
     </div>
     <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
       <a-menu-item key="title">体检数据</a-menu-item>
-    </a-menu>
-    <div style="text-align:right;">
       <a-button class="add-btn" @click="updateReport()">{{msg}}</a-button>
-    </div>
+    </a-menu>
     <no-data v-if="noData" msg="暂无体检信息~"></no-data>
     <div class="process qui-fx-jsb qui-fx-ac" v-if="reportShow">
       <div class="qui-fx-jsa qui-fx-ac">
@@ -287,8 +285,8 @@ export default {
         geneticDiseaseMark: '',
         createTime: ''
       },
-      reportTime: [2.1,2.3,2.5,3.4],
-      temperature: [34,36,37,38]
+      reportTime: [2.3,2.4,2.5,2.7],
+      temperature: [36,37,35,36]
     }
   },
   computed: {
@@ -305,6 +303,25 @@ export default {
   },
   methods: {
     ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo', 'getTemperatureData', 'getReportInfoList']),
+    getDateTime(date) {
+      if (date === '' || date === null) {
+        return '--'
+      }
+      const d = new Date(date)
+      return (
+        d.getFullYear() +
+        '-' +
+        (d.getMonth() + 1 > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) +
+        '-' +
+        (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) +
+        ' ' +
+        (d.getHours() > 9 ? d.getHours() : '0' + d.getHours()) +
+        ':' +
+        (d.getMinutes() > 9 ? d.getMinutes() : '0' + d.getMinutes()) +
+        ':' +
+        (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
+      )
+    },
     //更新体检数据
     updateReport() {
       this.formStatus = true
@@ -346,14 +363,9 @@ export default {
     },
     //获取个人体温数据
     async getTemperature() {
-      const userCode = this.$route.query.id
-      this.schoolCode = this.userInfo.orgCode
-      const par =
-        'userCode=' +
-        userCode +
-        '&schoolCode=CANPOINT' +
-        '&startTime=' +
-        '&endTime='
+        const par = `schoolCode=${this.userInfo.orgCode}&userCode=${this.$route.query.id}&startTime=${this.getDateTime(
+        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
+      )}&endTime=${this.getDateTime(new Date())}`
       const res = await this.getTemperatureData(par)
       this.reportTime = []
       this.temperature = []

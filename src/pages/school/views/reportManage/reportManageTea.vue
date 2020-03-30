@@ -224,7 +224,7 @@ export default {
           gender: record.gender,
           workNo: record.workNo,
           birthday: record.birthday,
-          classChargeMark: record.classChargeMark,
+          userType : record.userType,
           riskTime: record.riskTime,
           profilePhoto: record.profilePhoto
         }
