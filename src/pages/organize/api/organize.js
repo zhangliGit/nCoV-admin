@@ -3,7 +3,7 @@
  * @remak 接口路径后面加#{类型} 如 #post  #get #del
  */
 
-// import hostEnv from '@/config/host-env'
+import hostEnv from '@/config/host-env'
 
 const organizeApi = {
   getBaseData: '/education/school/ifno#get', // 获取学校数据
@@ -15,6 +15,6 @@ const organizeApi = {
   getStatistics: '/education/day/record#get' // 填报统计
 }
 for (const val in organizeApi) {
-  organizeApi[val] = `/admin${organizeApi[val]}`
+  organizeApi[val] = `${hostEnv.wangxuanzhang}${organizeApi[val]}`
 }
 export default organizeApi

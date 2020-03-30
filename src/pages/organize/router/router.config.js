@@ -10,10 +10,10 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '系统首页' },
-    redirect: '/daily',
+    redirect: '/home',
     children: [
       {
-        path: '/daily',
+        path: '/home',
         name: 'daily',
         component: Daily,
         meta: {

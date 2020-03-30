@@ -35,7 +35,7 @@ for (const key in apiList) {
     return resultBack(res)
   }
 }
-const projectName = 'organize' // 此处写项目名作为存储值，避免不同项目冲突
+const projectName = 'organize'
 const localData = window.localStorage.getItem(projectName) || '{}'
 const getState = (state, val) => {
   return JSON.parse(localData)[state] || val

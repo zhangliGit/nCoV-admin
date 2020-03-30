@@ -4,25 +4,20 @@
       <div class="login-input">
         <div class="login-text">全品疫情防控平台</div>
         <a-tabs v-model="autoKey">
-          <a-tab-pane tab="账号登录" key="1">
+          <a-tab-pane tab="账号登录" key="2">
             <div style="margin: 5px 0 20px">
               <a-input style="height:40px;" placeholder="请输入手机号" v-model="loginForm.phone">
                 <a-icon style="font-size: 20px; color: #666" slot="prefix" type="mobile" />
               </a-input>
             </div>
             <div style="margin: 20px 0" class="qui-fx qui-fx-ac">
-              <a-input
-                type="password"
-                style="height:40px;"
-                placeholder="请输入密码"
-                v-model="loginForm.passCode"
-              >
+              <a-input type="password" style="height:40px;" placeholder="请输入密码" v-model="loginForm.passCode">
                 <a-icon style="font-size: 20px;" slot="prefix" type="lock" />
               </a-input>
             </div>
             <div class="login-btn" @click="login">登录</div>
           </a-tab-pane>
-          <a-tab-pane tab="验证码登录" key="2">
+          <a-tab-pane tab="验证码登录" key="1">
             <div style="margin: 5px 0 20px">
               <a-input style="height:40px;" placeholder="请输入手机号" v-model="loginForm.phone">
                 <a-icon style="font-size: 20px; color: #666" slot="prefix" type="mobile" />
@@ -34,7 +29,7 @@
                   <a-icon style="font-size: 20px;" slot="prefix" type="lock" />
                 </a-input>
               </div>
-              <div class="btn-yzm">获取验证码</div>
+              <div :class="['btn-yzm', { act: total !== 60 }]" @click="getYzm">{{ yzmTip }}</div>
             </div>
             <div class="login-btn" @click="login">登录</div>
           </a-tab-pane>
@@ -45,6 +40,7 @@
 </template>
 
 <script>
+import hostEnv from '@/config/host-env'
 import $ajax from '@u/ajax-serve'
 import { mapMutations } from 'vuex'
 export default {
@@ -55,10 +51,18 @@ export default {
       default: 'admin'
     }
   },
+  beforeRouteLeave(to, from, next) {
+    this.total = 60
+    clearInterval(this.timer)
+    next()
+  },
   data() {
     return {
-      loginUrl: '/admin/operate/managerinfo/login',
-      autoKey: '1',
+      loginUrl: `${hostEnv.wangxuanzhang}/operate/managerinfo/login`,
+      yzUrl: `${hostEnv.zhuxu}/user/auth/code`,
+      autoKey: '2',
+      total: 60,
+      yzmTip: '获取验证码',
       loginForm: {
         phone: '',
         passCode: ''
@@ -67,9 +71,43 @@ export default {
   },
   methods: {
     ...mapMutations('home', ['updateState']),
+    async getYzm() {
+      if (this.total !== 60) return
+      // if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginForm.phone) || this.loginForm.phone === '') {
+      //   this.$message.warning('请输入正确的手机号')
+      //   return
+      // }
+      if (this.loginForm.phone === '') {
+        this.$message.warning('请输入正确的手机号')
+        return
+      }
+      await $ajax.get({
+        url: this.yzUrl,
+        params: {
+          phone: this.loginForm.phone,
+          type: 1
+        }
+      })
+      this.$message.warning('验证码已发送')
+      this.timer = setInterval(() => {
+        this.total--
+        this.yzmTip = `${this.total} s`
+        if (this.total === 0) {
+          this.total = 60
+          this.yzmTip = '获取验证码'
+          clearInterval(this.timer)
+          this.timer = null
+        }
+      }, 1000)
+    },
     async login() {
-      if (this.loginForm.userName === '' || this.loginForm.passWord === '') {
-        this.$message.warning('请输入账号或密码')
+      if (this.loginForm.phone === '') {
+        this.$message.warning('请输入正确的手机号')
+        return
+      }
+      if (this.loginForm.passWord === '') {
+        const msg = this.autoKey === '2' ? '请输入账号' : '请输入验证码'
+        this.$message.warning(msg)
         return
       }
       if (this.type === 'admin') {
@@ -79,7 +117,7 @@ export default {
           url: this.loginUrl,
           params: {
             ...this.loginForm,
-            loginType: 2
+            loginType: this.autoKey
           }
         })
         const data = res.result
@@ -94,10 +132,14 @@ export default {
           token: data.token
         }
         this.updateState({
+          key: 'systemName',
+          data: data.manageName
+        })
+        this.updateState({
           key: 'userInfo',
           data: info
         })
-        this.$router.push('/home')
+        this.$router.replace('/home')
       }
     }
   }
@@ -152,6 +194,9 @@ export default {
       color: #fff;
       cursor: pointer;
       opacity: 0.8;
+    }
+    .act {
+      opacity: 0.5;
     }
     input:focus {
       border: 2px solid #3498db;

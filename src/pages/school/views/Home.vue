@@ -14,28 +14,20 @@
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <chart-component :style="{ height: chartHeight }" :id="heatId" :option="heatOption"></chart-component>
+          <div id="heatId" :style="{height: chartHeight}"></div>
         </a-col>
         <a-col :span="6">
-          <chart-component :style="{ height: chartHeight }" :id="userPieId" :option="userPieOption"></chart-component>
+          <div id="userPieId" :style="{height: chartHeight}"></div>
         </a-col>
       </a-row>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <chart-component
-            :style="{ height: chartHeight }"
-            :id="unReportId"
-            :option="unReportOption"
-          ></chart-component>
+          <div id="unReportId" :style="{height: chartHeight}"></div>
         </a-col>
         <a-col :span="6">
-          <chart-component
-            :style="{ height: chartHeight }"
-            :id="unHealthyId"
-            :option="unHealthyOption"
-          ></chart-component>
+          <div id="unHealthyId" :style="{height: chartHeight}"></div>
         </a-col>
       </a-row>
     </div>
@@ -45,28 +37,16 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Highcharts from 'highcharts/highstock'
-import ChartComponent from './component/ChartComponent'
 import reportImg from '@a/img/report.gif'
 import heatImg from '@a/img/heat.png'
 import unhealthyImg from '@a/img/unhealthy.gif'
 import unreportImg from '@a/img/unreport.gif'
 export default {
   name: 'Home',
-  components: {
-    ChartComponent
-  },
   data() {
     return {
       reportImg,
       baseList: [],
-      heatId: 'heatId',
-      unReportId: 'unReportId',
-      userPieId: 'userPieId',
-      unHealthyId: 'unHealthyId',
-      heatOption: {},
-      unReportOption: {},
-      userPieOption: {},
-      unHealthyOption: {},
       heatChart: null,
       unReportChart: null,
       userPieChart: null,
@@ -85,8 +65,8 @@ export default {
   mounted() {
     this.showList()
     this.symptomGet()
-    this.initHeatChart()
-    this.initUnReportChart()
+    this.feverAndHealthGet()
+    this.noReportGet()
   },
   methods: {
     ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
@@ -113,7 +93,7 @@ export default {
       const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
       const res = await this.getDailyData(req)
       this.dailyData = res.result
-      this.initUserPieChart()
+      this.initUserPieChart('userPieId', res.result.healthNum, res.result.noFeverNum)
       this.baseList = [
         {
           id: 1,
@@ -160,11 +140,10 @@ export default {
           }
         }
       }
-      console.log('this.symptomList', this.symptomList)
-      this.initUnHealthyChart()
+      this.initUnHealthyChart('unHealthyId', res.result)
     },
-    async initUnHealthyChart() {
-      this.unHealthyOption = {
+    async initUnHealthyChart(id, data) {
+      Highcharts.chart(id, {
         chart: {
           plotBackgroundColor: null,
           plotBorderWidth: null,
@@ -196,34 +175,12 @@ export default {
           {
             name: 'Brands',
             colorByPoint: true,
-            data: this.symptomList
-            // [{
-            //   name: '发热',
-            //   y: 61.41,
-            //   sliced: true,
-            //   selected: true
-            // }, {
-            //   name: '咳嗽',
-            //   y: 11.84
-            // }, {
-            //   name: '腹泻',
-            //   y: 10.85
-            // }, {
-            //   name: '咽痛',
-            //   y: 4.67
-            // }, {
-            //   name: '乏力',
-            //   y: 4.18
-            // }, {
-            //   name: '鼻塞流涕',
-            //   y: 7.05
-            // }]
+            data: data
           }
         ]
-      }
-      this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
+      })
     },
-    async initHeatChart() {
+    async feverAndHealthGet() {
       const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
         new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
       )}&endTime=${this.getDateTime(new Date())}`
@@ -237,7 +194,10 @@ export default {
       const feverDate = res.result.feverNum.map(item => {
         return item.reportTime
       })
-      this.heatOption = {
+      this.initHeatChart('heatId', feverData, unnormalData, feverDate)
+    },
+    initHeatChart(id, feverData, unnormalData, feverDate) {
+      Highcharts.chart(id, {
         chart: {
           type: 'area'
         },
@@ -296,22 +256,23 @@ export default {
             data: unnormalData
           }
         ]
-      }
-      this.heatChart = new Highcharts.Chart(this.heatId, this.heatOption)
+      })
     },
-    async initUnReportChart() {
+    async noReportGet() {
       const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
         new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
       )}&endTime=${this.getDateTime(new Date())}`
       const res = await this.getNoReport(req)
-      console.log('+++++getNoReport', res)
       const data = res.result.map(item => {
         return item.num
       })
       const date = res.result.map(item => {
         return item.reportTime
       })
-      this.unReportOption = {
+      this.initUnReportChart('unReportId', data, date)
+    },
+    initUnReportChart(id, data, date) {
+      Highcharts.chart(id, {
         chart: {
           type: 'area'
         },
@@ -365,11 +326,10 @@ export default {
             data: data
           }
         ]
-      }
-      this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
+      })
     },
-    async initUserPieChart() {
-      this.userPieOption = {
+    initUserPieChart(id, healthNum, noFeverNum) {
+      Highcharts.chart(id, {
         chart: {
           spacing: [40, 0, 40, 0]
         },
@@ -401,15 +361,14 @@ export default {
           {
             type: 'pie',
             innerSize: '80%',
-            name: '市场份额',
+            name: '',
             data: [
-              ['发热', this.dailyData.healthNum],
-              ['未发热', this.dailyData.noFeverNum]
+              ['发热', healthNum],
+              ['未发热', noFeverNum]
             ]
           }
         ]
-      }
-      this.userPieChart = new Highcharts.Chart(this.userPieId, this.userPieOption)
+      })
     }
   }
 }
