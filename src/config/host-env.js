@@ -13,8 +13,8 @@ if (ConfigEnv === 'test') {
   wangxuanzhang = '/pc-yq'
   zhuxu = '/mobile-yq'
 } else {
-  wangxuanzhang = '/zhuxu'
-  zhuxu = '/zhuxu'
+  wangxuanzhang = '/wangxuanzhang'
+  zhuxu = '/wangxuanzhang'
 }
 
 export default {

@@ -25,7 +25,7 @@
     <div class="content-box">
       <a-dropdown>
         <div class="action ant-dropdown-link user-dropdown-menu">
-          <div style="float: left">{{ userInfo.orgName }}</div>
+          <div style="float: left">{{ userInfo.manageName }}</div>
           <div style="float: left" class="person-img">
             <img :src="userImg" alt />
           </div>

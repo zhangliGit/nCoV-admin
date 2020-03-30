@@ -111,6 +111,12 @@ export default {
         return
       }
       if (this.type === 'admin') {
+        this.updateState({
+          key: 'userInfo',
+          data: {
+            manageName: '超级管理员'
+          }
+        })
         this.$router.push('/orgManage')
       } else {
         const res = await $ajax.get({
@@ -133,7 +139,7 @@ export default {
         }
         this.updateState({
           key: 'systemName',
-          data: data.manageName
+          data: data.orgList[0].orgName
         })
         this.updateState({
           key: 'userInfo',

@@ -3,6 +3,7 @@
     <search-form isReset @search-form="searchForm" :search-label="searchLabel">
       <div slot="left">
         <a-button icon="plus" class="add-btn" @click="editDevice(false, {})">添加设备</a-button>
+        <a-button icon="plus" class="add-btn" @click="syncUser">同步人员信息</a-button>
       </div>
     </search-form>
     <submit-form
@@ -12,7 +13,7 @@
       v-model="formStatus"
       :form-data="formData"
     ></submit-form>
-    <table-list :page-list="pageList" :columns="columns" :table-list="deviceList">
+    <table-list is-check v-model="chooseList" :page-list="pageList" :columns="columns" :table-list="deviceList">
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="编辑" @click="editDevice(true, action.record)">
           <a-button size="small" class="edit-action-btn" icon="form"></a-button>
@@ -25,6 +26,7 @@
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
         </a-popconfirm>
+        <a-button size="small" class="del-action-btn" @click.stop="cleanUser(action.record)">清空人员信息</a-button>
       </template>
     </table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
@@ -74,7 +76,7 @@ const columns = [
     title: '设备类型',
     dataIndex: 'deviceType',
     width: '11%',
-    customRender: (text) => {
+    customRender: text => {
       if (parseInt(text) === 1) {
         return '面板机'
       } else if (parseInt(text) === 2) {
@@ -86,7 +88,7 @@ const columns = [
     title: '绑定人员类型',
     dataIndex: 'bindType',
     width: '11%',
-    customRender: (text) => {
+    customRender: text => {
       if (parseInt(text) === 1) {
         return '教职工'
       } else if (parseInt(text) === 2) {
@@ -102,7 +104,7 @@ const columns = [
     title: '设备状态',
     dataIndex: 'deviceState',
     width: '11%',
-    customRender: (text) => {
+    customRender: text => {
       if (parseInt(text) === 1) {
         return '在线'
       } else if (parseInt(text) === 2) {
@@ -152,10 +154,12 @@ const formData = [
       {
         key: '2',
         val: '学生'
-      }, {
+      },
+      {
         key: '3',
         val: '教职工学生'
-      }, {
+      },
+      {
         key: '4',
         val: '访客'
       }
@@ -194,6 +198,7 @@ export default {
     return {
       columns,
       searchLabel,
+      chooseList: [],
       pageList: {
         page: 1,
         size: 20
@@ -212,7 +217,20 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getDeviceList', 'addDevice', 'updateDevice']),
+    ...mapActions('home', ['getDeviceList', 'addDevice', 'updateDevice', 'syncUserInfo', 'cleanDeviceUser']),
+    async cleanUser(record) {
+      await this.cleanDeviceUser({
+        deviceSn: record.deviceSn
+      })
+      this.$message.success('清空人员成功')
+    },
+    async syncUser() {
+      console.log(this.chooseList)
+      await this.cleanDeviceUser({
+        listSn: this.chooseList
+      })
+      this.$message.success('人员信息同步成功')
+    },
     async showList(searchObj = {}) {
       const req = {
         ...this.pageList,
@@ -220,7 +238,12 @@ export default {
         schoolCode: this.userInfo.orgCode
       }
       const res = await this.getDeviceList(req)
-      this.deviceList = res.result.list
+      this.deviceList = res.result.list.map(item => {
+        return {
+          ...item,
+          id: item.deviceSn
+        }
+      })
       this.total = res.result.totalCount
     },
     editDevice(type, form) {
@@ -244,8 +267,7 @@ export default {
         await $ajax.del({
           url: `${hostEnv.wangxuanzhang}/school/deviceInfo/delete?id=${record.id}`
         })
-      } catch (e) {
-      }
+      } catch (e) {}
       this.$message.success('删除成功')
       this.$tools.goNext(() => {
         this.showList()
@@ -255,7 +277,7 @@ export default {
       this.pageList.page = 1
       this.showList(values)
     },
-    async submitForm (values) {
+    async submitForm(values) {
       console.log(values)
       if (this.isEdit) {
         values.id = this.id
