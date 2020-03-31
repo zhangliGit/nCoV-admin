@@ -1,62 +1,64 @@
 <template>
-  <div class="leave-detail page-layout qui-fx-ver">
-    <submit-form
-      ref="form"
-      @submit-form="submitForm"
-      :title="title"
-      v-model="formStatus"
-      :form-data="formData"
-    ></submit-form>
-    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">基本信息</a-menu-item>
-    </a-menu>
-    <div class="process qui-fx-jsb qui-fx-ac">
-      <div class="qui-fx-jsa qui-fx-ac">
-        <img :src="detailInfo.profilePhoto" alt />
-        <div class="qui-fx-ver">
-          <a-row class="padd-l10">
-            <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName}}</a-col>
-            <a-col class="mar-b10" :span="12">性别 : {{ detailInfo.gender ? '女' : '男'}}</a-col>
-            <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo}}</a-col>
-            <a-col class="mar-b10" :span="12">生日 : {{detailInfo. birthday}}</a-col>
-            <a-col class="mar-b10" :span="12">职位 : {{ detailInfo.classChargeMark}}</a-col>
-            <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime}}</a-col>
-          </a-row>
+  <div class="leave-detail qui-fx-f1 qui-fx-ver">
+    <div class="pos-box" style="overflow-y: scroll">
+      <submit-form
+        ref="form"
+        @submit-form="submitForm"
+        :title="title"
+        v-model="formStatus"
+        :form-data="formData"
+      ></submit-form>
+      <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+        <a-menu-item key="title">基本信息</a-menu-item>
+      </a-menu>
+      <div class="process qui-fx-jsb qui-fx-ac">
+        <div class="qui-fx-jsa qui-fx-ac">
+          <img :src="detailInfo.profilePhoto" alt />
+          <div class="qui-fx-ver">
+            <a-row class="padd-l10">
+              <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName }}</a-col>
+              <a-col class="mar-b10" :span="12">性别 : {{ detailInfo.gender ? '女' : '男' }}</a-col>
+              <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo }}</a-col>
+              <a-col class="mar-b10" :span="12">生日 : {{ detailInfo.birthday }}</a-col>
+              <a-col class="mar-b10" :span="12">人员类型 : {{ detailInfo.userType ? '教职工' : '学生' }}</a-col>
+              <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime }}</a-col>
+            </a-row>
+          </div>
         </div>
       </div>
-    </div>
-    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">体检数据</a-menu-item>
-    </a-menu>
-    <div style="text-align:right;">
-      <a-button class="add-btn" @click="updateReport()">{{msg}}</a-button>
-    </div>
-    <no-data v-if="noData" msg="暂无体检信息~"></no-data>
-    <div class="process qui-fx-jsb qui-fx-ac" v-if="reportShow">
-      <div class="qui-fx-jsa qui-fx-ac">
-        <div class="qui-fx-ver">
-          <a-row class="padd-l10">
-            <a-col class="mar-b10" :span="12">身高 :{{detailData.userHeight}}</a-col>
-            <a-col class="mar-b10" :span="12">体重 :{{detailData.userWeight}}</a-col>
-            <a-col class="mar-b10" :span="12">是否有重大病史 :{{detailData.majorDiseaseMark? '是' : '否'}}</a-col>
-            <a-col class="mar-b10" :span="12">是否有家族病史 :{{detailData.geneticDiseaseMark? '是' : '否'}}</a-col>
-            <a-col class="mar-b10" :span="12">创建时间 :{{detailData.createTime}}</a-col>
-          </a-row>
+      <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+        <a-menu-item key="title">体检数据</a-menu-item>
+        <a-button class="add-btn" style="float: right;margin-top: 5px" @click="updateReport()">{{ msg }}</a-button>
+      </a-menu>
+      <no-data v-if="noData" msg="暂无体检信息~"></no-data>
+      <div class="process qui-fx-jsb qui-fx-ac" v-if="reportShow">
+        <div class="qui-fx-jsa qui-fx-ac">
+          <div class="qui-fx-ver">
+            <a-row class="padd-l10">
+              <a-col class="mar-b10" :span="12">身高 :{{ detailData.userHeight }}</a-col>
+              <a-col class="mar-b10" :span="12">体重 :{{ detailData.userWeight }}</a-col>
+              <a-col class="mar-b10" :span="12">是否有重大病史 :{{ detailData.majorDiseaseMark ? '是' : '否' }}</a-col>
+              <a-col class="mar-b10" :span="12"
+                >是否有家族病史 :{{ detailData.geneticDiseaseMark ? '是' : '否' }}</a-col
+              >
+              <a-col class="mar-b10" :span="12">创建时间 :{{ detailData.createTime }}</a-col>
+            </a-row>
+          </div>
         </div>
       </div>
-    </div>
-    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">体温走势</a-menu-item>
-    </a-menu>
-    <div style="margin-top:10px;">
-      <chart-component :style="{height:chartHeight}" :id="unReportId" :option="unReportOption"></chart-component>
-    </div>
-    <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
-      <a-menu-item key="title">疫情上报记录</a-menu-item>
-    </a-menu>
-    <div class="qui-fx-f1 qui-fx-ver">
-      <table-list is-zoom :page-list="pageList" :columns="columns" :table-list="detailList"></table-list>
-      <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+      <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+        <a-menu-item key="title">体温走势</a-menu-item>
+      </a-menu>
+      <div style="margin-top:10px;">
+        <chart-component :style="{ height: chartHeight }" :id="unReportId" :option="unReportOption"></chart-component>
+      </div>
+      <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
+        <a-menu-item key="title">疫情上报记录</a-menu-item>
+      </a-menu>
+      <div class="qui-fx-f1 qui-fx-ver">
+        <table-list is-zoom :page-list="pageList" :columns="columns" :table-list="detailList"></table-list>
+        <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+      </div>
     </div>
   </div>
 </template>
@@ -236,7 +238,7 @@ const columns = [
     title: '上报时间',
     dataIndex: 'reportTime',
     width: '12%',
-     customRender: text => {
+    customRender: text => {
       return (
         new Date(text).getFullYear() +
         '-' +
@@ -287,8 +289,8 @@ export default {
         geneticDiseaseMark: '',
         createTime: ''
       },
-      reportTime: [2.1,2.3,2.5,3.4],
-      temperature: [34,36,37,38]
+      reportTime: [],
+      temperature: []
     }
   },
   computed: {
@@ -296,7 +298,6 @@ export default {
   },
   mounted() {
     this.getTemperature()
-    this.initUnReportChart()
     this.showList()
     this.getReportList()
   },
@@ -305,6 +306,25 @@ export default {
   },
   methods: {
     ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo', 'getTemperatureData', 'getReportInfoList']),
+    getDateTime(date) {
+      if (date === '' || date === null) {
+        return '--'
+      }
+      const d = new Date(date)
+      return (
+        d.getFullYear() +
+        '-' +
+        (d.getMonth() + 1 > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) +
+        '-' +
+        (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) +
+        ' ' +
+        (d.getHours() > 9 ? d.getHours() : '0' + d.getHours()) +
+        ':' +
+        (d.getMinutes() > 9 ? d.getMinutes() : '0' + d.getMinutes()) +
+        ':' +
+        (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
+      )
+    },
     //更新体检数据
     updateReport() {
       this.formStatus = true
@@ -331,8 +351,10 @@ export default {
       this.detailInfo = this.$route.query
       const userCode = this.$route.query.id
       const schoolCode = this.userInfo.orgCode
-      const req = 'userCode=' + userCode + '&schoolCode=' + schoolCode
-      const res = await this.getLatestMedicalInfo(req)
+      const res = await this.getLatestMedicalInfo({
+        userCode,
+        schoolCode
+      })
       if (res.result) {
         this.msg = '更新体检数据'
         this.detailData = res.result
@@ -346,22 +368,19 @@ export default {
     },
     //获取个人体温数据
     async getTemperature() {
-      const userCode = this.$route.query.id
-      this.schoolCode = this.userInfo.orgCode
-      const par =
-        'userCode=' +
-        userCode +
-        '&schoolCode=CANPOINT' +
-        '&startTime=' +
-        '&endTime='
-      const res = await this.getTemperatureData(par)
+      const res = await this.getTemperatureData({
+        schoolCode: this.userInfo.orgCode,
+        userCode: this.$route.query.id,
+        startTime: new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000),
+        endTime: this.getDateTime(new Date())
+      })
       this.reportTime = []
       this.temperature = []
       res.result.forEach(item => {
         this.reportTime.push(item.reportTime)
         this.temperature.push(item.temperature)
       })
-      // this.initUnReportChart();
+      this.initUnReportChart();
     },
     //获取上报信息记录
     async getReportList() {
@@ -428,9 +447,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .leave-detail {
-  min-height: 400px;
-  max-height: 600px;
-  overflow-y: auto;
+  overflow-y: scroll !important;
   overflow-x: hidden;
 }
 .leave-detail {

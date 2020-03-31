@@ -59,7 +59,11 @@ const constantRouterMap = [
     component: () => import('../views/user/Login')
   }
 ]
-
-const RouterMap = [...constantRouterMap, ...asyncRouterMap]
+let RouterMap
+if (process.env.VUE_APP_URL === 'prod') {
+  RouterMap = [...asyncRouterMap]
+} else {
+  RouterMap = [...constantRouterMap, ...asyncRouterMap]
+}
 
 export default RouterMap

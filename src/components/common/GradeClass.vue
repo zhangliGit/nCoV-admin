@@ -12,6 +12,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import hostEnv from '@/config/host-env'
 import $ajax from '@u/ajax-serve'
 export default {
   name: 'GradeClass',
@@ -27,7 +28,7 @@ export default {
       gradeId: '',
       classId: '',
       gradeList: [],
-      defaultSelectedKeys: ['1']
+      defaultSelectedKeys: []
     }
   },
   computed: {
@@ -59,7 +60,9 @@ export default {
       this.$emit('select', selectObj)
     },
     async initMenu() {
-      const res = await $ajax.get({ url: '/admin/operate/gradeinfo/getGradelist?schoolCode=' + this.userInfo.orgCode })
+      const res = await $ajax.get({
+        url: `${hostEnv.wangxuanzhang}/operate/gradeinfo/getGradelist?schoolCode=${this.userInfo.orgCode}`
+      })
       const selectObj = {
         gradeCode: res.result[0].gradeCode,
         classCode: '',
@@ -93,11 +96,7 @@ export default {
         this.gradeCode = treeNode.dataRef.key
         $ajax
           .post({
-            url:
-              '/admin/school/classInfo/getClassInfoByGradeCode?schoolCode=' +
-              this.userInfo.orgCode +
-              '&gradeCode=' +
-              this.gradeCode
+            url: `${hostEnv.wangxuanzhang}/school/classInfo/getClassInfoByGradeCode?schoolCode=${this.userInfo.orgCode}&gradeCode=${this.gradeCode}`
           })
           .then(res => {
             treeNode.dataRef.children = res.result.map(item => {

@@ -14,20 +14,20 @@
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <div id="heatId" :style="{height: chartHeight}"></div>
+          <div id="heatId" :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <div id="userPieId" :style="{height: chartHeight}"></div>
+          <div id="userPieId" :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <div id="unReportId" :style="{height: chartHeight}"></div>
+          <div id="unReportId" :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <div id="unHealthyId" :style="{height: chartHeight}"></div>
+          <div id="unHealthyId" :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
@@ -90,8 +90,10 @@ export default {
       )
     },
     async showList() {
-      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
-      const res = await this.getDailyData(req)
+      const res = await this.getDailyData({
+        schoolCode: this.userInfo.orgCode,
+        todayTime: this.getDateTime(new Date())
+      })
       this.dailyData = res.result
       this.initUserPieChart('userPieId', res.result.healthNum, res.result.noFeverNum)
       this.baseList = [
@@ -127,8 +129,10 @@ export default {
     },
     async symptomGet() {
       const res = await this.getSymptomList()
-      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
-      const result = await this.getSymptomsUser(req)
+      const result = await this.getSymptomsUser({
+        schoolCode: this.userInfo.orgCode,
+        todayTime: this.getDateTime(new Date())
+      })
       const res1 = res.result
       this.symptomList = result.result
       for (var i = 0; i < this.symptomList.length; i++) {
@@ -181,10 +185,11 @@ export default {
       })
     },
     async feverAndHealthGet() {
-      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
-        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
-      )}&endTime=${this.getDateTime(new Date())}`
-      const res = await this.getFeverAndHealth(req)
+      const res = await this.getFeverAndHealth({
+        schoolCode: this.userInfo.orgCode,
+        startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
+        endTime: this.getDateTime(new Date())
+      })
       const feverData = res.result.feverNum.map(item => {
         return item.num
       })
@@ -260,10 +265,11 @@ export default {
       })
     },
     async noReportGet() {
-      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
-        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
-      )}&endTime=${this.getDateTime(new Date())}`
-      const res = await this.getNoReport(req)
+      const res = await this.getNoReport({
+        schoolCode: this.userInfo.orgCode,
+        startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
+        endTime: this.getDateTime(new Date())
+      })
       const data = res.result.map(item => {
         return item.num
       })
