@@ -115,7 +115,7 @@ export default {
       if (this.loginForm.phone === '12345612345' && this.loginForm.passCode === '123456') {
         // 管理员
         if (process.env.VUE_APP_URL === 'prod') {
-          this.$router.replace = '/orgManage'
+          this.$router.replace('/orgManage')
         } else {
           window.location.href = '/admin#/orgManage'
         }
@@ -160,21 +160,21 @@ export default {
       if (data && data.orgList[0].orgType === '1') {
         // 组织机构
         if (process.env.VUE_APP_URL === 'prod') {
-          window.location.href = '/pc-protal/nCov-organize'
+          window.location.href = '/pc-protal/nCov-organize#/home'
         } else {
           window.location.href = '/organize#/home'
         }
       } else if (data && data.orgList[0].orgType === '2') {
         // 学校
         if (process.env.VUE_APP_URL === 'prod') {
-          window.location.href = '/pc-protal/nCov-school'
+          window.location.href = '/pc-protal/nCov-school#/home'
         } else {
           window.location.href = '/school#/home'
         }
       } else {
         // 管理员
         if (process.env.VUE_APP_URL === 'prod') {
-          this.$router.replace = '/orgManage'
+          this.$router.replace('/orgManage')
         } else {
           window.location.href = '/admin#/orgManage'
         }
