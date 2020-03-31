@@ -11,7 +11,12 @@
               </a-input>
             </div>
             <div style="margin: 20px 0" class="qui-fx qui-fx-ac">
-              <a-input type="password" style="height:40px;" placeholder="请输入密码" v-model="loginForm.passCode">
+              <a-input
+                type="password"
+                style="height:40px;"
+                placeholder="请输入密码"
+                v-model="loginForm.passCode"
+              >
                 <a-icon style="font-size: 20px;" slot="prefix" type="lock" />
               </a-input>
             </div>
@@ -73,11 +78,7 @@ export default {
     ...mapMutations('home', ['updateState']),
     async getYzm() {
       if (this.total !== 60) return
-      // if (!/^1(3|4|5|6|7|8|9)\d{9}$/.test(this.loginForm.phone) || this.loginForm.phone === '') {
-      //   this.$message.warning('请输入正确的手机号')
-      //   return
-      // }
-      if (this.loginForm.phone === '') {
+      if (!/^1(2|3|4|5|6|7|8|9)\d{9}$/.test(this.loginForm.phone) || this.loginForm.phone === '') {
         this.$message.warning('请输入正确的手机号')
         return
       }
@@ -101,45 +102,82 @@ export default {
       }, 1000)
     },
     async login() {
-      if (this.loginForm.phone === '') {
+      if (!/^1(2|3|4|5|6|7|8|9)\d{9}$/.test(this.loginForm.phone) || this.loginForm.phone === '') {
         this.$message.warning('请输入正确的手机号')
         return
       }
-      if (this.loginForm.passWord === '') {
+      if (this.loginForm.passCode === '') {
         const msg = this.autoKey === '2' ? '请输入账号' : '请输入验证码'
         this.$message.warning(msg)
         return
       }
-      if (this.type === 'admin') {
-        this.$router.push('/orgManage')
-      } else {
-        const res = await $ajax.get({
-          url: this.loginUrl,
-          params: {
-            ...this.loginForm,
-            loginType: this.autoKey
-          }
-        })
-        const data = res.result
-        const info = {
-          phone: data.phone,
-          manageName: data.manageName,
-          orgType: data.orgList[0].orgType,
-          orgName: data.orgList[0].orgName,
-          orgCode: data.orgList[0].orgCode,
-          pCode: data.orgList[0].pCode,
-          eduCode: data.orgList[0].eduCode,
-          token: data.token
+      console.log(this.loginForm)
+      if (this.loginForm.phone === '12345612345' && this.loginForm.passCode === '123456') {
+        // 管理员
+        if (process.env.VUE_APP_URL === 'prod') {
+          this.$router.replace('/orgManage')
+        } else {
+          window.location.href = '/admin#/orgManage'
         }
         this.updateState({
           key: 'systemName',
-          data: data.manageName
+          data: '平台管理'
         })
         this.updateState({
           key: 'userInfo',
-          data: info
+          data: {
+            manageName: '超级管理员'
+          }
         })
-        this.$router.replace('/home')
+        return
+      }
+      const res = await $ajax.get({
+        url: this.loginUrl,
+        params: {
+          ...this.loginForm,
+          loginType: this.autoKey
+        }
+      })
+      const data = res.result
+      const info = {
+        phone: data.phone,
+        manageName: data.manageName,
+        orgType: data.orgList[0].orgType,
+        orgName: data.orgList[0].orgName,
+        orgCode: data.orgList[0].orgCode,
+        pCode: data.orgList[0].pCode,
+        eduCode: data.orgList[0].eduCode,
+        token: data.token
+      }
+      this.updateState({
+        key: 'systemName',
+        data: data.orgList[0].orgName
+      })
+      this.updateState({
+        key: 'userInfo',
+        data: info
+      })
+      if (data && data.orgList[0].orgType === '1') {
+        // 组织机构
+        if (process.env.VUE_APP_URL === 'prod') {
+          window.location.href = '/pc-protal/nCov-organize#/home'
+        } else {
+          window.location.href = '/organize#/home'
+        }
+      } else if (data && data.orgList[0].orgType === '2') {
+        // 学校
+        if (process.env.VUE_APP_URL === 'prod') {
+          window.location.href = '/pc-protal/nCov-school#/home'
+        } else {
+          window.location.href = '/school#/home'
+        }
+      } else {
+        // 管理员
+        if (process.env.VUE_APP_URL === 'prod') {
+          this.$router.replace('/orgManage')
+        } else {
+          window.location.href = '/admin#/orgManage'
+        }
       }
     }
   }

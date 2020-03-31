@@ -35,7 +35,7 @@ for (const key in apiList) {
     return resultBack(res)
   }
 }
-const projectName = 'organize'
+const projectName = 'yq_admin'
 const localData = window.localStorage.getItem(projectName) || '{}'
 const getState = (state, val) => {
   return JSON.parse(localData)[state] || val
@@ -43,9 +43,9 @@ const getState = (state, val) => {
 const home = {
   namespaced: true,
   state: {
-    systemName: '管理平台',
+    systemName: getState('systemName', '管理平台'),
     userInfo: getState('userInfo', {
-      orgName: '超级管理员'
+      manageName: '超级管理员'
     })
   },
   actions: {

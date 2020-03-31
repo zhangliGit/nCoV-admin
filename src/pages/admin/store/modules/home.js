@@ -35,7 +35,7 @@ for (const key in apiList) {
     return resultBack(res)
   }
 }
-const projectName = 'admin' // 此处写项目名作为存储值，避免不同项目冲突
+const projectName = 'yq_admin' // 此处写项目名作为存储值，避免不同项目冲突
 const localData = window.localStorage.getItem(projectName) || '{}'
 const getState = (state, val) => {
   return JSON.parse(localData)[state] || val
@@ -43,9 +43,9 @@ const getState = (state, val) => {
 const home = {
   namespaced: true,
   state: {
-    systemName: '管理平台',
+    systemName: getState('systemName', '管理平台'),
     userInfo: getState('userInfo', {
-      orgName: '超级管理员'
+      manageName: '管理员'
     })
   },
   actions: {

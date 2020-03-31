@@ -28,6 +28,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import hostEnv from '@/config/host-env'
 import TableList from '@c/TableList'
 import SearchForm from '@c/SearchForm'
 import GradeClass from '@c/GradeClass'
@@ -211,8 +212,7 @@ export default {
     },
     reportList() {
       const schoolCode = this.userInfo.orgCode
-      window.location.href =
-        '/admin/school/userinfo/exportPersonnelInfo?schoolCode=' + schoolCode + '&userType=2&excelUrl=1'
+      window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=2&excelUrl=1`
     },
     detail(record) {
       this.$router.push({
