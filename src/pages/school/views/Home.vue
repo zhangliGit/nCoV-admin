@@ -217,6 +217,7 @@ export default {
           categories: feverDate
         },
         yAxis: {
+          min: 0,
           title: {
             text: ''
           },
@@ -292,6 +293,7 @@ export default {
           categories: date
         },
         yAxis: {
+          min: 0,
           title: {
             text: ''
           },
