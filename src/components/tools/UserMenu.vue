@@ -30,14 +30,14 @@
             <img :src="userImg" alt />
           </div>
         </div>
-        <a-menu v-if="false" slot="overlay" class="user-dropdown-menu-wrapper">
+        <a-menu slot="overlay" class="user-dropdown-menu-wrapper">
           <a-menu-item key="1" v-if="false">
             <a href="javascript:;">
               <a-icon type="home" />
               <span>个人中心</span>
             </a>
           </a-menu-item>
-          <a-menu-item key="2">
+          <a-menu-item key="2" v-if="false">
             <a href="javascript:;" @click="passTag = true">
               <a-icon type="unlock" />
               <span>修改密码</span>
@@ -81,7 +81,13 @@ export default {
         }
       })
     },
-    handleLogout() {}
+    handleLogout() {
+      if (process.env.VUE_APP_URL === 'prod') {
+        window.location.href = '/pc-protal/nCov-admin'
+      } else {
+        window.location.href = '/'
+      }
+    }
   }
 }
 </script>
