@@ -289,8 +289,8 @@ export default {
         geneticDiseaseMark: '',
         createTime: ''
       },
-      reportTime: [2.3, 2.4, 2.5, 2.7],
-      temperature: [36, 37, 35, 36]
+      reportTime: [],
+      temperature: []
     }
   },
   computed: {
@@ -298,7 +298,6 @@ export default {
   },
   mounted() {
     this.getTemperature()
-    this.initUnReportChart()
     this.showList()
     this.getReportList()
   },
@@ -381,7 +380,7 @@ export default {
         this.reportTime.push(item.reportTime)
         this.temperature.push(item.temperature)
       })
-      // this.initUnReportChart();
+      this.initUnReportChart();
     },
     //获取上报信息记录
     async getReportList() {
