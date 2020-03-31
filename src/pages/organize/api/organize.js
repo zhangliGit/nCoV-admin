@@ -12,7 +12,12 @@ const organizeApi = {
   getReportChart: '/education/no/record#get', // 疫情上报态势
   getTemperature: '/education/exc/record#get', // 体温异常史
   getTouch: '/education/contact/record#get', // 疫情人员接触史
-  getStatistics: '/education/day/record#get' // 填报统计
+  getStatistics: '/education/static/record#get', // 填报统计
+  getDailyData: '/index/page/getEpidemicData#postQuery', // 获取首页疫情日报数据
+  getFeverAndHealth: '/index/page/getFeverAndHealthData#postQuery', // 获取首页发热和健康数
+  getNoReport: '/index/page/getNoReportUserData#postQuery', // 获取首页未上报人数统计
+  getSymptomsUser: '/index/page/getSymptomsUserData#postQuery', // 获取首页个症状人数统计
+  getSymptomList: '/operate/symptomsinfo/list#get' // 获取症状信息列表
 }
 for (const val in organizeApi) {
   organizeApi[val] = `${hostEnv.wangxuanzhang}${organizeApi[val]}`

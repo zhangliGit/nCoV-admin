@@ -57,6 +57,12 @@
       <template slot="className" slot-scope="text, record">
         <slot name="classNames" :record="record"></slot>
       </template>
+      <template slot="teacollect" slot-scope="text, record">
+        <slot name="teacollects" :record="record"></slot>
+      </template>
+      <template slot="stucollect" slot-scope="text, record">
+        <slot name="stucollects" :record="record"></slot>
+      </template>
       <template slot="num" slot-scope="text" >
         <div class="table-total-num" @click="numDetail(text)">{{ text.number === null ? 0 : text.number}}</div>
       </template>

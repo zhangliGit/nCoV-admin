@@ -31,7 +31,7 @@
         </a-col>
       </a-row>
     </div>
-    <div style="margin-top:10px;" >
+    <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
           <chart-component :style="{height:chartHeight}" :id="unReportId" :option="unReportOption"></chart-component>
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import Highcharts from 'highcharts/highstock'
 import ChartComponent from './component/ChartComponent'
 import reportImg from '@a/img/report.gif'
@@ -114,21 +115,97 @@ export default {
       chartHeight: ''
     }
   },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   created() {
     this.chartHeight = ((document.body.clientHeight - 310) * 0.5) + 'px'
   },
   mounted() {
-    this.initHeatChart()
-    this.initUnReportChart()
-    this.initUserPieChart()
-    this.initUnHealthyChart()
+    this.showList()
+    this.symptomGet()
+    this.feverAndHealthGet()
+    this.noReportGet()
   },
   methods: {
+    ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
     chooseSchool(value) {
       console.log(value)
     },
-    initUnHealthyChart() {
-      this.unHealthyOption = {
+    getDateTime(date) {
+      if (date === '' || date === null) {
+        return '--'
+      }
+      const d = new Date(date)
+      return (
+        d.getFullYear() +
+        '-' +
+        (d.getMonth() + 1 > 9 ? d.getMonth() + 1 : '0' + (d.getMonth() + 1)) +
+        '-' +
+        (d.getDate() > 9 ? d.getDate() : '0' + d.getDate()) +
+        ' ' +
+        (d.getHours() > 9 ? d.getHours() : '0' + d.getHours()) +
+        ':' +
+        (d.getMinutes() > 9 ? d.getMinutes() : '0' + d.getMinutes()) +
+        ':' +
+        (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
+      )
+    },
+    async showList() {
+      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
+      const res = await this.getDailyData(req)
+      this.dailyData = res.result
+      this.initUserPieChart('userPieId', res.result.healthNum, res.result.noFeverNum)
+      this.baseList = [
+        {
+          id: 1,
+          icon: reportImg,
+          num: res.result.reportNum,
+          tip: '已上报人数',
+          color: '#e6fbea'
+        },
+        {
+          id: 2,
+          icon: unreportImg,
+          num: res.result.noReportNum,
+          tip: '未上报人数',
+          color: '#e0f3ff'
+        },
+        {
+          id: 3,
+          icon: unhealthyImg,
+          num: res.result.healthNum,
+          tip: '健康异常人数',
+          color: '#f2efff'
+        },
+        {
+          id: 4,
+          icon: heatImg,
+          num: res.result.feverNum,
+          tip: '发热人数',
+          color: '#ffdedf'
+        }
+      ]
+    },
+    async symptomGet() {
+      const res = await this.getSymptomList()
+      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
+      const result = await this.getSymptomsUser(req)
+      const res1 = res.result
+      this.symptomList = result.result
+      for (var i = 0; i < this.symptomList.length; i++) {
+        for (var j = 0; j < res1.length; j++) {
+          if (this.symptomList[i].MARK === res1[j].symptomsCode) {
+            this.symptomList[i].name = res1[j].symptomsName
+            this.symptomList[i].y = this.symptomList[i].count1
+            break
+          }
+        }
+      }
+      this.initUnHealthyChart('unHealthyId', res.result)
+    },
+    async initUnHealthyChart(id, data) {
+      Highcharts.chart(id, {
         chart: {
           plotBackgroundColor: null,
           plotBorderWidth: null,
@@ -152,41 +229,37 @@ export default {
             dataLabels: {
               enabled: true,
               format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-
             },
             showInLegend: true
           }
         },
-        series: [{
-          name: 'Brands',
-          colorByPoint: true,
-          data: [{
-            name: '发热',
-            y: 61.41,
-            sliced: true,
-            selected: true
-          }, {
-            name: '咳嗽',
-            y: 11.84
-          }, {
-            name: '腹泻',
-            y: 10.85
-          }, {
-            name: '咽痛',
-            y: 4.67
-          }, {
-            name: '乏力',
-            y: 4.18
-          }, {
-            name: '鼻塞流涕',
-            y: 7.05
-          }]
-        }]
-      }
-      this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
+        series: [
+          {
+            name: 'Brands',
+            colorByPoint: true,
+            data: data
+          }
+        ]
+      })
     },
-    initHeatChart() {
-      this.heatOption = {
+    async feverAndHealthGet() {
+      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
+        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
+      )}&endTime=${this.getDateTime(new Date())}`
+      const res = await this.getFeverAndHealth(req)
+      const feverData = res.result.feverNum.map(item => {
+        return item.num
+      })
+      const unnormalData = res.result.healthNum.map(item => {
+        return item.num
+      })
+      const feverDate = res.result.feverNum.map(item => {
+        return item.reportTime
+      })
+      this.initHeatChart('heatId', feverData, unnormalData, feverDate)
+    },
+    initHeatChart(id, feverData, unnormalData, feverDate) {
+      Highcharts.chart(id, {
         chart: {
           type: 'area'
         },
@@ -202,14 +275,15 @@ export default {
           align: 'right'
         },
         xAxis: {
-          allowDecimals: false
+          allowDecimals: false,
+          categories: feverDate
         },
         yAxis: {
           title: {
             text: ''
           },
           labels: {
-            formatter: function () {
+            formatter: function() {
               return this.value
             }
           }
@@ -219,7 +293,7 @@ export default {
         },
         plotOptions: {
           area: {
-            pointStart: 2,
+            pointStart: 0,
             marker: {
               enabled: false,
               symbol: 'circle',
@@ -232,20 +306,35 @@ export default {
             }
           }
         },
-        series: [{
-          name: '发热次数',
-          color: '#ff0000',
-          data: [0, 4, 9, 11, 7, 9, 15, 8, 3, 0]
-        }, {
-          name: '异常次数',
-          color: '#ffac00',
-          data: [1, 6, 10, 11, 9, 12, 14, 9, 5, 1]
-        }]
-      }
-      this.heatChart = new Highcharts.Chart(this.heatId, this.heatOption)
+        series: [
+          {
+            name: '发热次数',
+            color: '#ff0000',
+            data: feverData
+          },
+          {
+            name: '异常次数',
+            color: '#ffac00',
+            data: unnormalData
+          }
+        ]
+      })
     },
-    initUnReportChart() {
-      this.unReportOption = {
+    async noReportGet() {
+      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
+        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
+      )}&endTime=${this.getDateTime(new Date())}`
+      const res = await this.getNoReport(req)
+      const data = res.result.map(item => {
+        return item.num
+      })
+      const date = res.result.map(item => {
+        return item.reportTime
+      })
+      this.initUnReportChart('unReportId', data, date)
+    },
+    initUnReportChart(id, data, date) {
+      Highcharts.chart(id, {
         chart: {
           type: 'area'
         },
@@ -261,14 +350,15 @@ export default {
           align: 'right'
         },
         xAxis: {
-          allowDecimals: false
+          allowDecimals: false,
+          categories: date
         },
         yAxis: {
           title: {
             text: ''
           },
           labels: {
-            formatter: function () {
+            formatter: function() {
               return this.value
             }
           }
@@ -278,7 +368,7 @@ export default {
         },
         plotOptions: {
           area: {
-            pointStart: 2,
+            pointStart: 0,
             marker: {
               enabled: false,
               symbol: 'circle',
@@ -291,16 +381,17 @@ export default {
             }
           }
         },
-        series: [{
-          name: '数量',
-          color: '#0089ff',
-          data: [30, 21, 16, 8, 5, 3, 1, 0, 0, 0]
-        }]
-      }
-      this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
+        series: [
+          {
+            name: '数量',
+            color: '#0089ff',
+            data: data
+          }
+        ]
+      })
     },
-    initUserPieChart() {
-      this.userPieOption = {
+    initUserPieChart(id, healthNum, noFeverNum) {
+      Highcharts.chart(id, {
         chart: {
           spacing: [40, 0, 40, 0]
         },
@@ -325,35 +416,21 @@ export default {
               style: {
                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
               }
-            },
-            point: {
-              events: {
-                mouseOver: function(e) { // 鼠标滑过时动态更新标题
-                // 标题更新函数，API 地址：https://api.hcharts.cn/highcharts#Chart.setTitle
-                // chart.setTitle({
-                // 	text: e.target.name+ '\t'+ e.target.y + ' %'
-                // });
-                }
-              // click: function(e) { // 同样的可以在点击事件里处理
-              //     chart.setTitle({
-              //         text: e.point.name+ '\t'+ e.point.y + ' %'
-              //     });
-              // }
-              }
             }
           }
         },
-        series: [{
-          type: 'pie',
-          innerSize: '80%',
-          name: '市场份额',
-          data: [
-            ['发热', 20],
-            ['未发热', 70]
-          ]
-        }]
-      }
-      this.userPieChart = new Highcharts.Chart(this.userPieId, this.userPieOption)
+        series: [
+          {
+            type: 'pie',
+            innerSize: '80%',
+            name: '',
+            data: [
+              ['发热', healthNum],
+              ['未发热', noFeverNum]
+            ]
+          }
+        ]
+      })
     }
   }
 }
