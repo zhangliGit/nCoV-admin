@@ -17,7 +17,7 @@
           <div class="qui-fx-ver">
             <a-row class="padd-l10">
               <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName }}</a-col>
-              <a-col class="mar-b10" :span="12">性别 : {{ detailInfo.gender ? '女' : '男' }}</a-col>
+              <a-col class="mar-b10" :span="12">性别 : {{ (detailInfo.gender=='2' ? '女' : (detailInfo.gender=='1'?'男':'未知'))}}</a-col>
               <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo }}</a-col>
               <a-col class="mar-b10" :span="12">生日 : {{ detailInfo.birthday }}</a-col>
               <a-col class="mar-b10" :span="12">人员类型 : {{ detailInfo.userType ? '教职工' : '学生' }}</a-col>
@@ -335,10 +335,9 @@ export default {
         ...values,
         schoolCode: this.userInfo.orgCode,
         userCode: this.$route.query.id,
-        userType: 1,
+        userType: this.detailInfo.userType,
         userName: this.$route.query.userName
       }
-      console.log(req)
       const res = await this.updateInfo(req)
       this.$message.success('添加成功')
       setTimeout(() => {
@@ -358,6 +357,7 @@ export default {
       if (res.result) {
         this.msg = '更新体检数据'
         this.detailData = res.result
+        this.detailData.createTime =this.getDateTime(new Date(res.result.createTime))
         this.reportShow = true
         this.noData = false
       } else {

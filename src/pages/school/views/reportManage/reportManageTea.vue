@@ -40,15 +40,17 @@ const columns = [
     dataIndex: 'userName',
     width: '7%'
   },
-  {
+ {
     title: '性别',
     dataIndex: 'gender',
     width: '8%',
     customRender: text => {
-      if (text === 1) {
+      if (text === '1') {
         return '男'
-      } else {
+      } else if (text === '2') {
         return '女'
+      } else {
+        return '未知'
       }
     }
   },
@@ -211,7 +213,7 @@ export default {
     },
     reportList() {
       const schoolCode = this.userInfo.orgCode
-      window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=1&excelUrl=1`
+      window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=1&excelUrl=`
     },
     detail(record) {
       this.$router.push({
