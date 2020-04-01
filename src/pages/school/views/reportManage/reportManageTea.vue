@@ -164,7 +164,7 @@ const searchLabel = [
     label: '风险类型'
   },
   {
-    value: 'riskTime',
+    value: 'rangeTime',
     type: 'rangeTime',
     label: '上报时间'
   }
@@ -209,7 +209,14 @@ export default {
     },
     searchForm(values) {
       this.pageList.page = 1
-      this.showList(values)
+      const searchObj = {
+        userName: values.userName,
+        healthyState: values.healthyState,
+        startTime:values.rangeTime["0"],
+        endTime:values.rangeTime["1"]
+
+      }
+      this.showList(searchObj)
     },
     reportList() {
       const schoolCode = this.userInfo.orgCode

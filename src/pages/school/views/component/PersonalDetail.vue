@@ -20,7 +20,7 @@
               <a-col class="mar-b10" :span="12">性别 : {{ (detailInfo.gender=='2' ? '女' : (detailInfo.gender=='1'?'男':'未知'))}}</a-col>
               <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo }}</a-col>
               <a-col class="mar-b10" :span="12">生日 : {{ detailInfo.birthday }}</a-col>
-              <a-col class="mar-b10" :span="12">人员类型 : {{ detailInfo.userType ? '教职工' : '学生' }}</a-col>
+     aa         <a-col class="mar-b10" :span="12">人员类型 : {{ detailInfo.userType ? '教职工' : '学生' }}</a-col>
               <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime }}</a-col>
             </a-row>
           </div>
