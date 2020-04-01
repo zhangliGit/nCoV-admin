@@ -77,7 +77,7 @@
             <h3>疫情日报</h3>
           </div>
           <div class="momth">
-            <a-date-picker :allowClear="false" :defaultValue="chooseMonth" @change="panelChange" />
+            <a-date-picker :allowClear="false" :disabledDate="disabledDate" :defaultValue="chooseMonth" @change="panelChange" />
           </div>
         </div>
         <table-list :page-list="pageList" :columns="columns" :table-list="userList">
@@ -169,6 +169,7 @@ export default {
       stuDate: [],
       reportDate: [],
       chooseMonth: moment(new Date()),
+      maxDate: moment(new Date()).format('YYYY-MM-DD'),
       midHeight: '300px',
       charHeight: '270px',
       autoHeight: '200px',
@@ -207,6 +208,9 @@ export default {
   },
   methods: {
     ...mapActions('home', ['getBaseData', 'getDailyList', 'getTemperatureChart', 'getReportChart']),
+    disabledDate(current) {
+      return current && current >= moment().endOf('day')
+    },
     // 获取学校用户数量
     async showBaseData() {
       const req = {
@@ -229,7 +233,7 @@ export default {
     // 切换日期
     panelChange(value) {
       console.log(value.format('YYYY-MM-DD'))
-      this.showList(new Date(value.format('YYYY-MM-DD')))
+      this.showList(moment(new Date(value)).format('YYYY-MM-DD'))
     },
     // 体温异常态势
     async temperatureChart() {
@@ -237,6 +241,10 @@ export default {
         phone: this.userInfo.phone
       }
       const res = await this.getTemperatureChart(req)
+      if (!res.result) {
+        this.showBI('container', this.xDate, this.stuDate, this.teaDate)
+        return
+      }
       let i
       res.result.forEach(ele => {
         this.xDate.filter((item, index) => {
@@ -256,6 +264,10 @@ export default {
         phone: this.userInfo.phone
       }
       const res = await this.getReportChart(req)
+      if (!res.result) {
+        this.showLine('container1', this.xDate.slice(-7), this.reportDate)
+        return
+      }
       let i
       res.result.forEach(ele => {
         this.xDate.slice(-7).filter((item, index) => {
@@ -295,7 +307,8 @@ export default {
           min: 0,
           title: {
             text: '人/天'
-          }
+          },
+          allowDecimals: false
         },
         tooltip: {
           // head + 每个 point + footer 拼接成完整的 table
@@ -343,7 +356,8 @@ export default {
         yAxis: {
           title: {
             text: '人/次'
-          }
+          },
+          allowDecimals: false
         },
         legend: {
           verticalAlign: 'top',
