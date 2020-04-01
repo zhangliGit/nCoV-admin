@@ -82,11 +82,11 @@
             :columns="fillColumns"
             :dataSource="fillList"
           >
-            <template v-slot:stucollects="stucollect">
-              <span>{{ stucollect.record.excStudentCount }} / {{ stucollect.record.realStudentCount }}</span>
+            <template slot="stucollect" slot-scope="text, record">
+              <span>{{ record.realStudentNum }} / {{ record.totalStudentNum}}</span>
             </template>
-            <template v-slot:teacollects="teacollect">
-              <span>{{ teacollect.record.excTeacherCount }} / {{ teacollect.record.realTeacherCount }}</span>
+            <template slot="teacollect" slot-scope="text, record">
+              <span>{{ record.realTeacherNum }} / {{ record.totalTeacherNum }}</span>
             </template>
             <template slot="action" slot-scope="text, record">
               <a-tooltip placement="topLeft" title="详情">
@@ -190,7 +190,7 @@ const fillColumns = [
   },
   {
     title: '学生实上报/应上报',
-    dataIndex: 'excStudentCount',
+    dataIndex: 'realStudentNum',
     width: '30%',
     scopedSlots: {
       customRender: 'stucollect'
@@ -198,7 +198,7 @@ const fillColumns = [
   },
   {
     title: '教职工实上报/应上报',
-    dataIndex: 'excTeacherCount',
+    dataIndex: 'realTeacherNum',
     width: '30%',
     scopedSlots: {
       customRender: 'teacollect'
@@ -308,12 +308,12 @@ export default {
         phone: this.userInfo.phone
       }
       const res = await this.getStatistics(req)
-      this.fillList = res.result.list
+      this.fillList = res.result
       this.fillTotal = res.result.totalCount
     },
     schoolDetail(record) {
       console.log(record)
-      this.$router.push({ path: '/overview', query: { id: record.id } })
+      this.$router.push({ path: '/overview', query: { schoolCode: record.schoolCode, schoolName: record.schoolName } })
     }
   }
 }

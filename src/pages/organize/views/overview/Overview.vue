@@ -1,43 +1,43 @@
 <template>
   <div class="overview page-layout qui-fx-ver">
     <div class="school qui-fx-jsb">
-      <a-select :defaultValue="defaultSchool" style="width: 200px" @change="chooseSchool">
+      <a-select v-model="defaultSchool" style="width: 200px" @change="chooseSchool">
         <a-select-option v-for="(item,i) in schoolList" :key="i" :value="item.schoolName">{{ item.schoolName }}</a-select-option>
       </a-select>
-      <div class="info qui-fx-ac">
+      <!-- <div class="info qui-fx-ac">
         <span>确诊：51</span>
         <span>疑似：103</span>
         <span>隔离：512</span>
-      </div>
+      </div> -->
     </div>
     <div>
       <div class="daily-card qui-fx qui-fx-ac" v-for="item in baseList" :key="item.id">
         <div class="img-box" :style="`background:${item.color}`">
-          <img :src="item.icon" alt="">
+          <img :src="item.icon" alt />
         </div>
         <div class="qui-fx-f1" style="text-align:center;">
-          <div class="num">{{item.num}}</div>
-          <div class="tip">{{item.tip}}</div>
+          <div class="num">{{ item.num }}</div>
+          <div class="tip">{{ item.tip }}</div>
         </div>
       </div>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <chart-component :style="{height:chartHeight}" :id="heatId" :option="heatOption"></chart-component>
+          <div id="heatId" :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <chart-component :style="{height:chartHeight}" :id="userPieId" :option="userPieOption"></chart-component>
+          <div id="userPieId" :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <chart-component :style="{height:chartHeight}" :id="unReportId" :option="unReportOption"></chart-component>
+          <div id="unReportId" :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <chart-component :style="{height:chartHeight}" :id="unHealthyId" :option="unHealthyOption"></chart-component>
+          <div id="unHealthyId" :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
@@ -47,72 +47,26 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Highcharts from 'highcharts/highstock'
-import ChartComponent from './component/ChartComponent'
 import reportImg from '@a/img/report.gif'
 import heatImg from '@a/img/heat.png'
 import unhealthyImg from '@a/img/unhealthy.gif'
 import unreportImg from '@a/img/unreport.gif'
 export default {
   name: 'Overview',
-  components: {
-    ChartComponent
-  },
   data() {
     return {
       reportImg,
-      defaultSchool: '武汉一中',
-      schoolList: [
-        {
-          id: 0,
-          schoolName: '武汉一中'
-        },
-        {
-          id: 1,
-          schoolName: '武汉二中'
-        },
-        {
-          id: 2,
-          schoolName: '武汉三中'
-        }
-      ],
-      baseList: [{
-        id: 1,
-        icon: reportImg,
-        num: 200,
-        tip: '已上报人数',
-        color: '#e6fbea'
-      }, {
-        id: 2,
-        icon: unreportImg,
-        num: 11,
-        tip: '未上报人数',
-        color: '#e0f3ff'
-      }, {
-        id: 3,
-        icon: unhealthyImg,
-        num: 23,
-        tip: '健康异常人数',
-        color: '#f2efff'
-      }, {
-        id: 4,
-        icon: heatImg,
-        num: 17,
-        tip: '发热人数',
-        color: '#ffdedf'
-      }],
-      heatId: 'heatId',
-      unReportId: 'unReportId',
-      userPieId: 'userPieId',
-      unHealthyId: 'unHealthyId',
-      heatOption: {},
-      unReportOption: {},
-      userPieOption: {},
-      unHealthyOption: {},
+      defaultSchool: '',
+      schoolList: [],
+      baseList: [],
       heatChart: null,
       unReportChart: null,
       userPieChart: null,
       unHealthyChart: null,
-      chartHeight: ''
+      chartHeight: '',
+      dailyData: {},
+      symptomList: [],
+      schoolCode: ''
     }
   },
   computed: {
@@ -121,16 +75,47 @@ export default {
   created() {
     this.chartHeight = ((document.body.clientHeight - 310) * 0.5) + 'px'
   },
-  mounted() {
+  async mounted() {
+    await this.getSchool()
     this.showList()
     this.symptomGet()
     this.feverAndHealthGet()
     this.noReportGet()
   },
   methods: {
-    ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
+    ...mapActions('home', ['getDailyData', 'getSchoolList', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
     chooseSchool(value) {
       console.log(value)
+      this.schoolCode = this.schoolList.filter(item => {
+        return item.schoolName === value
+      })[0].id
+      this.showList()
+      this.symptomGet()
+      this.feverAndHealthGet()
+      this.noReportGet()
+    },
+    async getSchool() {
+      this.schoolList = []
+      const res = await this.getSchoolList({
+        phone: this.userInfo.phone
+      })
+      console.log(res.result)
+      if (res.result.length === 0) {
+        return
+      }
+      if (this.$route.query.schoolCode) {
+        this.schoolCode = this.$route.query.schoolCode
+        this.defaultSchool = this.$route.query.schoolName
+      } else {
+        this.defaultSchool = res.result[0].schoolName
+        this.schoolCode = res.result[0].schoolCode
+      }
+      res.result.forEach(ele => {
+        this.schoolList.push({
+          id: ele.schoolCode,
+          schoolName: ele.schoolName
+        })
+      })
     },
     getDateTime(date) {
       if (date === '' || date === null) {
@@ -152,8 +137,10 @@ export default {
       )
     },
     async showList() {
-      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
-      const res = await this.getDailyData(req)
+      const res = await this.getDailyData({
+        schoolCode: this.schoolCode,
+        todayTime: this.getDateTime(new Date())
+      })
       this.dailyData = res.result
       this.initUserPieChart('userPieId', res.result.healthNum, res.result.noFeverNum)
       this.baseList = [
@@ -189,8 +176,10 @@ export default {
     },
     async symptomGet() {
       const res = await this.getSymptomList()
-      const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
-      const result = await this.getSymptomsUser(req)
+      const result = await this.getSymptomsUser({
+        schoolCode: this.schoolCode,
+        todayTime: this.getDateTime(new Date())
+      })
       const res1 = res.result
       this.symptomList = result.result
       for (var i = 0; i < this.symptomList.length; i++) {
@@ -243,10 +232,11 @@ export default {
       })
     },
     async feverAndHealthGet() {
-      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
-        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
-      )}&endTime=${this.getDateTime(new Date())}`
-      const res = await this.getFeverAndHealth(req)
+      const res = await this.getFeverAndHealth({
+        schoolCode: this.schoolCode,
+        startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
+        endTime: this.getDateTime(new Date())
+      })
       const feverData = res.result.feverNum.map(item => {
         return item.num
       })
@@ -279,6 +269,7 @@ export default {
           categories: feverDate
         },
         yAxis: {
+          min: 0,
           title: {
             text: ''
           },
@@ -321,10 +312,11 @@ export default {
       })
     },
     async noReportGet() {
-      const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
-        new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
-      )}&endTime=${this.getDateTime(new Date())}`
-      const res = await this.getNoReport(req)
+      const res = await this.getNoReport({
+        schoolCode: this.schoolCode,
+        startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
+        endTime: this.getDateTime(new Date())
+      })
       const data = res.result.map(item => {
         return item.num
       })
@@ -354,6 +346,7 @@ export default {
           categories: date
         },
         yAxis: {
+          min: 0,
           title: {
             text: ''
           },
