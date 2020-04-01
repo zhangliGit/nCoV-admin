@@ -344,7 +344,6 @@ export default {
     async submitForm(values) {
       const req = {
         ...values,
-        id: 50,
         schoolCode: this.userInfo.orgCode,
         userCode: this.$route.query.id,
         userType: this.detailInfo.userType,
