@@ -17,7 +17,10 @@
           <div class="qui-fx-ver">
             <a-row class="padd-l10">
               <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName }}</a-col>
-              <a-col class="mar-b10" :span="12">性别 : {{ (detailInfo.gender=='2' ? '女' : (detailInfo.gender=='1'?'男':'未知'))}}</a-col>
+              <a-col
+                class="mar-b10"
+                :span="12"
+              >性别 : {{ (detailInfo.gender=='2' ? '女' : (detailInfo.gender=='1'?'男':'未知'))}}</a-col>
               <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo }}</a-col>
               <a-col class="mar-b10" :span="12">生日 : {{ detailInfo.birthday }}</a-col>
               <a-col class="mar-b10" :span="12">人员类型 : {{ detailInfo.userType ? '教职工' : '学生' }}</a-col>
@@ -28,7 +31,11 @@
       </div>
       <a-menu :defaultSelectedKeys="['title']" mode="horizontal">
         <a-menu-item key="title">体检数据</a-menu-item>
-        <a-button class="add-btn" style="float: right;margin-top: 5px" @click="updateReport()">{{ msg }}</a-button>
+        <a-button
+          class="add-btn"
+          style="float: right;margin-top: 5px"
+          @click="updateReport()"
+        >{{ msg }}</a-button>
       </a-menu>
       <no-data v-if="noData" msg="暂无体检信息~"></no-data>
       <div class="process qui-fx-jsb qui-fx-ac" v-if="reportShow">
@@ -37,10 +44,14 @@
             <a-row class="padd-l10">
               <a-col class="mar-b10" :span="12">身高 :{{ detailData.userHeight }}</a-col>
               <a-col class="mar-b10" :span="12">体重 :{{ detailData.userWeight }}</a-col>
-              <a-col class="mar-b10" :span="12">是否有重大病史 :{{ detailData.majorDiseaseMark ? '是' : '否' }}</a-col>
-              <a-col class="mar-b10" :span="12"
-                >是否有家族病史 :{{ detailData.geneticDiseaseMark ? '是' : '否' }}</a-col
-              >
+              <a-col
+                class="mar-b10"
+                :span="12"
+              >是否有重大病史 :{{ detailData.majorDiseaseMark ? '是' : '否' }}</a-col>
+              <a-col
+                class="mar-b10"
+                :span="12"
+              >是否有家族病史 :{{ detailData.geneticDiseaseMark ? '是' : '否' }}</a-col>
               <a-col class="mar-b10" :span="12">创建时间 :{{ detailData.createTime }}</a-col>
             </a-row>
           </div>
@@ -333,12 +344,17 @@ export default {
     async submitForm(values) {
       const req = {
         ...values,
+        id: 50,
         schoolCode: this.userInfo.orgCode,
         userCode: this.$route.query.id,
         userType: this.detailInfo.userType,
         userName: this.$route.query.userName
       }
-      const res = await this.updateInfo(req)
+      try {
+        await this.updateInfo(req)
+      } catch (e) {
+        this.$refs.form.error()
+      }
       this.$message.success('添加成功')
       setTimeout(() => {
         this.showList()
@@ -357,7 +373,7 @@ export default {
       if (res.result) {
         this.msg = '更新体检数据'
         this.detailData = res.result
-        this.detailData.createTime =this.getDateTime(new Date(res.result.createTime))
+        this.detailData.createTime = this.getDateTime(new Date(res.result.createTime))
         this.reportShow = true
         this.noData = false
       } else {
@@ -380,7 +396,7 @@ export default {
         this.reportTime.push(item.reportTime)
         this.temperature.push(item.temperature)
       })
-      this.initUnReportChart();
+      this.initUnReportChart()
     },
     //获取上报信息记录
     async getReportList() {
