@@ -3,15 +3,10 @@
     <div>
       <a-button icon="plus" class="add-btn" @click="modify">新增</a-button>
     </div>
-    <table-list
-      :page-list="pageList"
-      :columns="columns"
-      :table-list="schoolList">
+    <table-list :page-list="pageList" :columns="columns" :table-list="schoolList">
       <template v-slot:actions="action">
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
-          <template slot="title">
-            您确定解绑该学校吗?
-          </template>
+          <template slot="title">您确定解绑该学校吗?</template>
           <a-tooltip placement="topLeft" title="解绑">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
@@ -19,8 +14,7 @@
       </template>
     </table-list>
     <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
-    <choose-school ref="chooseSchool" v-model="userTag" @submit="chooseSchool" title="选择学校">
-    </choose-school>
+    <choose-school ref="chooseSchool" v-model="userTag" @submit="chooseSchool" title="选择学校"></choose-school>
   </div>
 </template>
 
@@ -46,11 +40,18 @@ const columns = [
     title: '学校编码',
     dataIndex: 'organizationCode',
     width: '15%'
-  }, {
-    title: '账号',
+  },
+  {
+    title: '管理员',
     dataIndex: 'manageName',
     width: '15%'
-  }, {
+  },
+  {
+    title: '手机号码',
+    dataIndex: 'phone',
+    width: '17%'
+  },
+  {
     title: '密码',
     dataIndex: 'password',
     width: '15%'
@@ -60,11 +61,6 @@ const columns = [
   //   dataIndex: 'admin',
   //   width: '20%'
   // },
-  {
-    title: '手机号码',
-    dataIndex: 'phone',
-    width: '17%'
-  },
   {
     title: '操作',
     width: '15%',
@@ -123,8 +119,8 @@ export default {
       this.userTag = true
       this.$refs.chooseSchool.schoolGet()
     },
-    chooseSchool (item) {
-      this.params.schoolCodeList = item.map((item) => {
+    chooseSchool(item) {
+      this.params.schoolCodeList = item.map(item => {
         return item.id
       })
       this.bindSchool(this.params).then(() => {

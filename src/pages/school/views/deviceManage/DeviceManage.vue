@@ -13,23 +13,35 @@
       v-model="formStatus"
       :form-data="formData"
     ></submit-form>
-    <table-list is-check v-model="chooseList" :page-list="pageList" :columns="columns" :table-list="deviceList">
+    <table-list
+      is-check
+      v-model="chooseList"
+      :page-list="pageList"
+      :columns="columns"
+      :table-list="deviceList"
+    >
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="编辑" @click.stop="editDevice(true, action.record)">
           <a-button size="small" class="edit-action-btn" icon="form"></a-button>
         </a-tooltip>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm.stop="delDevice(action.record)">
-          <template slot="title">
-            您确定删除吗?
-          </template>
+        <a-popconfirm
+          placement="left"
+          okText="确定"
+          cancelText="取消"
+          @confirm.stop="delDevice(action.record)"
+        >
+          <template slot="title">您确定删除吗?</template>
           <a-tooltip placement="topLeft" title="删除">
             <a-button size="small" class="del-action-btn" icon="delete"></a-button>
           </a-tooltip>
         </a-popconfirm>
-        <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm.stop="cleanUser(action.record)">
-          <template slot="title">
-            您确定清空吗?
-          </template>
+        <a-popconfirm
+          placement="left"
+          okText="确定"
+          cancelText="取消"
+          @confirm.stop="cleanUser(action.record)"
+        >
+          <template slot="title">您确定清空吗?</template>
           <a-button size="small" class="del-action-btn">清空人员信息</a-button>
         </a-popconfirm>
       </template>
@@ -51,7 +63,7 @@ const searchLabel = [
     value: 'deviceName',
     type: 'input',
     label: '设备名称',
-    placeholder: '请输入设备名称'
+    placeholder: '请输入名称'
   }
 ]
 const columns = [
@@ -250,6 +262,7 @@ export default {
       this.deviceList = res.result.list.map(item => {
         return {
           ...item,
+          _id: item.id,
           id: item.deviceSn
         }
       })
@@ -261,7 +274,7 @@ export default {
         this.title = '编辑设备'
         this.deviceState = form.deviceState
         this.funName = 'updateDevice'
-        this.id = form.id
+        this.id = form._id
         this.formData = this.$tools.fillForm(formData, form)
       } else {
         this.formData = formData
@@ -274,7 +287,7 @@ export default {
     async delDevice(record) {
       try {
         await $ajax.del({
-          url: `${hostEnv.wangxuanzhang}/school/deviceInfo/delete?id=${record.id}`
+          url: `${hostEnv.wangxuanzhang}/school/deviceInfo/delete?id=${record._id}`
         })
       } catch (e) {}
       this.$message.success('删除成功')

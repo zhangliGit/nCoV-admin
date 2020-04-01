@@ -82,8 +82,9 @@ const formData = [
     initValue: '',
     type: 'input',
     label: '密码',
-    max: 50,
-    placeholder: '请输入密码'
+    max: 20,
+    regular: 'password',
+    placeholder: '请输入密码, 密码只允许字母、数字、下划线'
   }
   // {
   //   value: 'admin',
@@ -93,7 +94,6 @@ const formData = [
   //   max: 50,
   //   placeholder: '请输入管理员'
   // },
-
 ]
 const columns = [
   {
