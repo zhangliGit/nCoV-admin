@@ -125,13 +125,14 @@ export default {
     },
     chooseSchool (item) {
       this.params.schoolCodeList = item.map((item) => {
-        return item.id
+        return item.organizationCode
       })
       this.bindSchool(this.params).then(() => {
         this.$message.success('操作成功')
         this.$tools.goNext(() => {
           this.$refs.chooseSchool.reset()
           this.$refs.chooseSchool.totalList = []
+          this.$refs.chooseSchool.chooseList = []
           this.showList()
         })
       })

@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import moment from 'moment'
@@ -116,6 +116,9 @@ export default {
       tabActive: '1'
     }
   },
+  computed: {
+    ...mapState('home', ['userInfo'])
+  },
   mounted() {
     this.showList()
     // this.dailyGet()
@@ -129,6 +132,7 @@ export default {
       this.showList()
     },
     async showList() {
+      this.pageList.schoolCode = this.userInfo.orgCode
       const res = await this.getReport(this.pageList)
       this.userList = res.result.list
       this.total = res.result.totalCount
