@@ -14,6 +14,12 @@
         :page-list="pageList"
         :columns="columns"
         :table-list="userList">
+        <template v-slot:totalNums="temperature">
+          <a-tag v-if="temperature.record.temperature && temperature.record.feverMark === '1'" color="red">{{ temperature.record.temperature }}</a-tag>
+          <a-tag v-if="temperature.record.temperature && temperature.record.feverMark === '2'" >{{ temperature.record.temperature }}</a-tag>
+          <a-tag v-if="!temperature.record.temperature" >暂无</a-tag>
+
+        </template>
       </table-list>
       <page-num ref="pageNum" v-model="pageList" :total="total" @change-page="showList"></page-num>
     </div>
@@ -54,8 +60,10 @@ const columns = [
   // },
   {
     title: '温度',
-    dataIndex: 'temperature',
-    width: '25%'
+    width: '25%',
+    scopedSlots: {
+      customRender: 'totalNum'
+    }
   },
   // {
   //   title: '测温部位',
@@ -122,7 +130,6 @@ export default {
     },
     async showList() {
       const res = await this.getReport(this.pageList)
-      console.log('===', res)
       this.userList = res.result.list
       this.total = res.result.totalCount
     },
@@ -135,7 +142,6 @@ export default {
     },
     tabChange(key) {
       this.tabActive = key
-      console.log(this.tabActive)
       if (this.tabActive === '1') {
         this.pageList.reportState = '2'
         this.pageList.feverMark = ''
@@ -146,12 +152,12 @@ export default {
         this.pageList.mark02 = ''
       } else if (this.tabActive === '3') {
         this.pageList.reportState = ''
-        this.pageList.feverMark = '1'
-        this.pageList.mark02 = ''
-      } else if (this.tabActive === '4') {
-        this.pageList.reportState = ''
         this.pageList.feverMark = ''
         this.pageList.mark02 = '1'
+      } else if (this.tabActive === '4') {
+        this.pageList.reportState = ''
+        this.pageList.feverMark = '1'
+        this.pageList.mark02 = ''
       }
       this.pageList.page = 1
       this.pageList.size = 20
