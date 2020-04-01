@@ -52,7 +52,7 @@ import { mapState, mapActions } from 'vuex'
 import TableList from '@c/TableList'
 import PageNum from '@c/PageNum'
 import SearchForm from '@c/SearchForm'
-import SubmitForm from '@c/SubmitForm'
+import SubmitForm from '../component/SubmitForm'
 import UploadOne from '@c/UploadOne'
 import GradeClass from '@c/GradeClass'
 const columns = [
