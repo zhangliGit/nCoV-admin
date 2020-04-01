@@ -7,6 +7,7 @@ import hostEnv from '@/config/host-env'
 
 const organizeApi = {
   getBaseData: '/education/school/ifno#get', // 获取学校数据
+  getSchoolList: '/education/school/list#get', // 获取学校列表
   getDailyList: '/education/day/record#get', // 疫情日报
   getTemperatureChart: '/education/exc/temperature#get', // 体温异常史
   getReportChart: '/education/no/record#get', // 疫情上报态势
