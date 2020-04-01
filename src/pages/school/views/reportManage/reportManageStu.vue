@@ -5,9 +5,9 @@
     </div>
     <div class="qui-fx-f1 qui-fx-ver">
       <search-form @search-form="searchForm" :search-label="searchLabel">
-        <div slot="left">
+        <!-- <div slot="left">
           <a-button icon="export" class="export-btn" @click="reportList()">导出</a-button>
-        </div>
+        </div> -->
       </search-form>
       <table-list :page-list="pageList" :columns="columns" :table-list="userList">
         <template v-slot:actions="action">
@@ -82,7 +82,7 @@ const columns = [
     dataIndex: 'userName',
     width: '8%'
   },
- {
+  {
     title: '性别',
     dataIndex: 'gender',
     width: '10%',
@@ -210,19 +210,18 @@ export default {
     },
     searchForm(values) {
       this.pageList.page = 1
-     const searchObj = {
+      const searchObj = {
         userName: values.userName,
         healthyState: values.healthyState,
-        startTime:values.rangeTime["0"],
-        endTime:values.rangeTime["1"]
-
+        startTime: values.rangeTime['0'],
+        endTime: values.rangeTime['1']
       }
       this.showList(searchObj)
     },
-    reportList() {
-      const schoolCode = this.userInfo.orgCode
-      window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=2&excelUrl=`
-    },
+    // reportList() {
+    //   const schoolCode = this.userInfo.orgCode
+    //   window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=2&excelUrl=`
+    // },
     detail(record) {
       this.$router.push({
         path: '/component/detail',
@@ -235,7 +234,7 @@ export default {
           classChargeMark: record.classChargeMark,
           riskTime: record.riskTime,
           profilePhoto: record.profilePhoto,
-         userType: record.userType,
+          userType: record.userType
         }
       })
     }

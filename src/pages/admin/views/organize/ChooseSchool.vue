@@ -19,7 +19,7 @@
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
           is-check
-          :scroll-h="100"
+          :scroll-h="300"
           :page-list="pageList"
           v-model="chooseList"
           :columns="columns"
@@ -45,7 +45,7 @@
         <div class="qui-fx-f1" style="overflow: auto">
           <ul>
             <li v-for="(item, index) in totalList" :key="item.id" class="qui-fx-jsb">
-              <span>{{ item.name }}</span>
+              <span>{{ item.organizationName }}</span>
               <a-tag @click="delUser(item.id, index)" color="#f50">删除</a-tag>
             </li>
           </ul>
@@ -128,11 +128,7 @@ export default {
       this.pageList.pcode = this.$route.query.pcode
       const userData = await this.getUnbindSchool(this.pageList)
       this.total = userData.result.totalCount
-      this.userList = userData.result.list.map((item) => {
-        item.id = item.organizationCode
-        item.userName = item.organizationName
-        return item
-      })
+      this.userList = userData.result.list
     },
     reset() {
       this.confirmLoading = false

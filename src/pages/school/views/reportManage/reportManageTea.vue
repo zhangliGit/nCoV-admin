@@ -1,9 +1,9 @@
 <template>
   <div class="page-layout qui-fx-ver">
     <search-form @search-form="searchForm" :search-label="searchLabel">
-      <div slot="left">
+      <!-- <div slot="left">
         <a-button icon="export" class="export-btn" @click="reportList()">导出</a-button>
-      </div>
+      </div> -->
     </search-form>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
@@ -218,10 +218,11 @@ export default {
       }
       this.showList(searchObj)
     },
-    reportList() {
-      const schoolCode = this.userInfo.orgCode
-      window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=1&excelUrl=`
-    },
+    // reportList() {
+    //   debugger;
+    //   const schoolCode = this.userInfo.orgCode
+    //   window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=1&excelUrl=`
+    // },
     detail(record) {
       this.$router.push({
         path: '/component/detail',
