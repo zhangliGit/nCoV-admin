@@ -174,7 +174,7 @@ export default {
       autoHeight: '200px',
       pageList: {
         page: 1,
-        size: 20
+        size: 999
       },
       total: 1,
       userList: [],
@@ -204,14 +204,13 @@ export default {
     console.log(this.xDate)
   },
   mounted() {
-    console.log(this.userInfo)
   },
   methods: {
     ...mapActions('home', ['getBaseData', 'getDailyList', 'getTemperatureChart', 'getReportChart']),
     // 获取学校用户数量
     async showBaseData() {
       const req = {
-        userId: this.userInfo.phone
+        phone: this.userInfo.phone
       }
       const res = await this.getBaseData(req)
       this.schoolData.schoolNum = res.result.schoolCount
@@ -219,10 +218,10 @@ export default {
       this.schoolData.teacherNum = res.result.teacherCount
     },
     // 疫情日报
-    async showList(date = new Date()) {
+    async showList(date = new Date().format('YYYY-MM-DD')) {
       const req = {
-        userId: '3',
-        date: date.getTime()
+        phone: this.userInfo.phone,
+        date
       }
       const res = await this.getDailyList(req)
       this.userList = res.result
@@ -230,12 +229,12 @@ export default {
     // 切换日期
     panelChange(value) {
       console.log(value.format('YYYY-MM-DD'))
-      this.showList(new Date(value.format('YYYY/MM/DD')))
+      this.showList(new Date(value.format('YYYY-MM-DD')))
     },
     // 体温异常态势
     async temperatureChart() {
       const req = {
-        userId: '3'
+        phone: this.userInfo.phone
       }
       const res = await this.getTemperatureChart(req)
       let i
@@ -254,7 +253,7 @@ export default {
     // 疫情上报态势
     async reportChart() {
       const req = {
-        userId: '3'
+        phone: this.userInfo.phone
       }
       const res = await this.getReportChart(req)
       let i

@@ -82,6 +82,12 @@
             :columns="fillColumns"
             :dataSource="fillList"
           >
+            <template v-slot:stucollects="stucollect">
+              <span>{{ stucollect.record.excStudentCount }} / {{ stucollect.record.realStudentCount }}</span>
+            </template>
+            <template v-slot:teacollects="teacollect">
+              <span>{{ teacollect.record.excTeacherCount }} / {{ teacollect.record.realTeacherCount }}</span>
+            </template>
             <template slot="action" slot-scope="text, record">
               <a-tooltip placement="topLeft" title="详情">
                 <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="schoolDetail(record)"></a-button>
@@ -96,7 +102,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import TableList from '../components/TableList'
 import PageNum from '@c/PageNum'
 import xs1Img from '@a/img/organize/xs.png'
@@ -184,13 +190,19 @@ const fillColumns = [
   },
   {
     title: '学生实上报/应上报',
-    dataIndex: 'studentNum',
-    width: '30%'
+    dataIndex: 'excStudentCount',
+    width: '30%',
+    scopedSlots: {
+      customRender: 'stucollect'
+    }
   },
   {
     title: '教职工实上报/应上报',
-    dataIndex: 'teacherNum',
-    width: '30%'
+    dataIndex: 'excTeacherCount',
+    width: '30%',
+    scopedSlots: {
+      customRender: 'teacollect'
+    }
   },
   {
     title: '操作',
@@ -205,6 +217,9 @@ export default {
   components: {
     TableList,
     PageNum
+  },
+  computed: {
+    ...mapState('home', ['userInfo'])
   },
   data() {
     return {
@@ -260,7 +275,7 @@ export default {
     // 获取学校用户数量
     async showBaseData() {
       const req = {
-        userId: '3'
+        phone: this.userInfo.phone
       }
       const res = await this.getBaseData(req)
       this.schoolData.schoolNum = res.result.schoolCount
@@ -270,7 +285,7 @@ export default {
     // 体温异常史
     async showTemperatureList() {
       const req = {
-        userId: '3',
+        phone: this.userInfo.phone,
         ...this.pageList1
       }
       const res = await this.getTemperature(req)
@@ -280,7 +295,7 @@ export default {
     // 疫情人员接触史
     async showTouchList() {
       const req = {
-        userId: '3',
+        phone: this.userInfo.phone,
         ...this.pageList2
       }
       const res = await this.getTouch(req)
@@ -290,8 +305,7 @@ export default {
     // 填报统计
     async showStatisticsList() {
       const req = {
-        userId: '3',
-        date: new Date().getTime()
+        phone: this.userInfo.phone
       }
       const res = await this.getStatistics(req)
       this.fillList = res.result.list
