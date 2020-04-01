@@ -345,7 +345,6 @@ export default {
           enabled: false
         },
         title: {
-          floating: true,
           text: '健康异常人员分布'
         },
         tooltip: {
