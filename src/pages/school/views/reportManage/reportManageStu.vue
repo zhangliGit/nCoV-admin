@@ -64,7 +64,7 @@ const searchLabel = [
     label: '风险类型'
   },
   {
-    value: 'riskTime',
+    value: 'rangeTime',
     type: 'rangeTime',
     label: '上报时间'
   }
@@ -82,15 +82,17 @@ const columns = [
     dataIndex: 'userName',
     width: '8%'
   },
-  {
+ {
     title: '性别',
     dataIndex: 'gender',
     width: '10%',
     customRender: text => {
-      if (text === 1) {
+      if (text === '1') {
         return '男'
-      } else {
+      } else if (text === '2') {
         return '女'
+      } else {
+        return '未知'
       }
     }
   },
@@ -208,11 +210,18 @@ export default {
     },
     searchForm(values) {
       this.pageList.page = 1
-      this.showList(values)
+     const searchObj = {
+        userName: values.userName,
+        healthyState: values.healthyState,
+        startTime:values.rangeTime["0"],
+        endTime:values.rangeTime["1"]
+
+      }
+      this.showList(searchObj)
     },
     reportList() {
       const schoolCode = this.userInfo.orgCode
-      window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=2&excelUrl=1`
+      window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=2&excelUrl=`
     },
     detail(record) {
       this.$router.push({
@@ -225,7 +234,8 @@ export default {
           birthday: record.birthday,
           classChargeMark: record.classChargeMark,
           riskTime: record.riskTime,
-          profilePhoto: record.profilePhoto
+          profilePhoto: record.profilePhoto,
+         userType: record.userType,
         }
       })
     }

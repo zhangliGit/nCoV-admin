@@ -89,7 +89,7 @@
           </template>
           <template v-slot:actions="action">
             <a-tooltip placement="topLeft" title="详情">
-              <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="schoolDetail(action.record.schoolCode)"></a-button>
+              <a-button size="small" class="detail-action-btn" icon="ellipsis" @click="schoolDetail(action.record)"></a-button>
             </a-tooltip>
           </template>
         </table-list>
@@ -218,7 +218,7 @@ export default {
       this.schoolData.teacherNum = res.result.teacherCount
     },
     // 疫情日报
-    async showList(date = new Date().format('YYYY-MM-DD')) {
+    async showList(date = moment(new Date()).format('YYYY-MM-DD')) {
       const req = {
         phone: this.userInfo.phone,
         date
@@ -268,8 +268,8 @@ export default {
       console.log(this.reportDate)
       this.showLine('container1', this.xDate.slice(-7), this.reportDate)
     },
-    schoolDetail(schoolCode) {
-      this.$router.push({ path: '/overview', query: { schoolCode } })
+    schoolDetail(record) {
+      this.$router.push({ path: '/overview', query: { schoolCode: record.schoolCode, schoolName: record.schoolName } })
     },
     showBI(id, xDate, stuDate, teaDate) {
       Highcharts.chart(id, {
