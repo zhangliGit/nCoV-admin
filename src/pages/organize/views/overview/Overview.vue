@@ -1,6 +1,7 @@
 <template>
   <div class="overview page-layout qui-fx-ver">
-    <div class="school qui-fx-jsb">
+    <no-data v-if="nodata" msg="暂无学校~"></no-data>
+    <div v-else class="school qui-fx-jsb">
       <a-select v-model="defaultSchool" style="width: 200px" @change="chooseSchool">
         <a-select-option v-for="(item,i) in schoolList" :key="i" :value="item.schoolName">{{ item.schoolName }}</a-select-option>
       </a-select>
@@ -10,7 +11,7 @@
         <span>隔离：512</span>
       </div> -->
     </div>
-    <div>
+    <div v-if="!nodata">
       <div class="daily-card qui-fx qui-fx-ac" v-for="item in baseList" :key="item.id">
         <div class="img-box" :style="`background:${item.color}`">
           <img :src="item.icon" alt />
@@ -21,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div style="margin-top:10px;">
+    <div v-if="!nodata" style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
           <div id="heatId" :style="{ height: chartHeight }"></div>
@@ -31,7 +32,7 @@
         </a-col>
       </a-row>
     </div>
-    <div style="margin-top:10px;">
+    <div v-if="!nodata" style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
           <div id="unReportId" :style="{ height: chartHeight }"></div>
@@ -46,6 +47,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import NoData from '@c/NoData'
 import Highcharts from 'highcharts/highstock'
 import reportImg from '@a/img/report.gif'
 import heatImg from '@a/img/heat.png'
@@ -56,6 +58,7 @@ export default {
   data() {
     return {
       reportImg,
+      nodata: false,
       defaultSchool: '',
       schoolList: [],
       baseList: [],
@@ -68,6 +71,9 @@ export default {
       symptomList: [],
       schoolCode: ''
     }
+  },
+  components: {
+    NoData
   },
   computed: {
     ...mapState('home', ['userInfo'])
@@ -100,9 +106,11 @@ export default {
         phone: this.userInfo.phone
       })
       console.log(res.result)
-      if (res.result.length === 0) {
+      if (!res.result) {
+        this.nodata = true
         return
       }
+      this.nodata = false
       if (this.$route.query.schoolCode) {
         this.schoolCode = this.$route.query.schoolCode
         this.defaultSchool = this.$route.query.schoolName
