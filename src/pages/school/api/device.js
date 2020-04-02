@@ -11,7 +11,7 @@ const deviceApi = {
   updateDevice: '/school/deviceInfo/update#post', //  更新设备
   deleteDevice: 'school/deviceInfo/delete#del', // 删除设备
   syncUserInfo: '/school/deviceInfo/deviceSyncUserInfo#postQuery', // 设备同步人员信息
-  cleanDeviceUser: '/school/deviceInfo/cleanDeviceUser#postQuery' // 清空人员信息
+  cleanDeviceUser: '/school/deviceInfo/cleanDeviceUser#delQuery' // 清空人员信息
 }
 for (const val in deviceApi) {
   deviceApi[val] = `${hostEnv.wangxuanzhang}${deviceApi[val]}`

@@ -129,6 +129,20 @@ const $ajax = {
       return responseRes(err.response.data)
     }
   },
+  async delQuery(obj, tag = true) {
+    if (tag) showToast()
+    let url = obj.url + '?'
+    for (const key in obj.params) {
+      url += key + '=' + obj.params[key] + '&'
+    }
+    try {
+      let res = await axios.delete(url, {})
+      res = res.data
+      return responseRes(res)
+    } catch (err) {
+      return responseRes(err.response.data)
+    }
+  },
   async dele(obj, tag = true) {
     if (tag) showToast()
     try {
