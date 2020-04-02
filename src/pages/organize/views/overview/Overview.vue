@@ -53,10 +53,12 @@ import reportImg from '@a/img/report.gif'
 import heatImg from '@a/img/heat.png'
 import unhealthyImg from '@a/img/unhealthy.gif'
 import unreportImg from '@a/img/unreport.gif'
+import moment from 'moment'
 export default {
   name: 'Overview',
   data() {
     return {
+      moment,
       reportImg,
       nodata: false,
       defaultSchool: '',
@@ -69,7 +71,11 @@ export default {
       chartHeight: '',
       dailyData: {},
       symptomList: [],
-      schoolCode: ''
+      schoolCode: '',
+      feverData: [],
+      unnormalData: [],
+      reportData: [],
+      xDate: []
     }
   },
   components: {
@@ -87,6 +93,12 @@ export default {
     this.symptomGet()
     this.feverAndHealthGet()
     this.noReportGet()
+    for (var i = 0; i < 14; i++) {
+      this.xDate.unshift(moment(new Date(new Date().setDate(new Date().getDate() - i))).format('YYYY-MM-DD'))
+      this.feverData.unshift(0)
+      this.unnormalData.unshift(0)
+      this.reportData.unshift(0)
+    }
   },
   methods: {
     ...mapActions('home', ['getDailyData', 'getSchoolList', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
@@ -245,16 +257,40 @@ export default {
         startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
         endTime: this.getDateTime(new Date())
       })
-      const feverData = res.result.feverNum.map(item => {
-        return item.num
-      })
-      const unnormalData = res.result.healthNum.map(item => {
-        return item.num
-      })
-      const feverDate = res.result.feverNum.map(item => {
-        return item.reportTime
-      })
-      this.initHeatChart('heatId', feverData, unnormalData, feverDate)
+      if (res.result.feverNum !== 0 && res.result.feverNum.length !== 0) {
+        let i
+        res.result.feverNum.forEach(ele => {
+          this.xDate.filter((item, index) => {
+            if (item === ele.reportTime) {
+              i = index
+            }
+          })
+          this.feverData[i] = ele.num
+        })
+      }
+      if (res.result.healthNum !== 0 && res.result.healthNum.length !== 0) {
+        let y
+        res.result.healthNum.forEach(ele => {
+          this.xDate.filter((item, index) => {
+            if (item === ele.reportTime) {
+              y = index
+            }
+          })
+          this.unnormalData[y] = ele.num
+        })
+      }
+      this.initHeatChart('heatId', this.feverData, this.unnormalData, this.xDate)
+
+      // const feverData = res.result.feverNum.map(item => {
+      //   return item.num
+      // })
+      // const unnormalData = res.result.healthNum.map(item => {
+      //   return item.num
+      // })
+      // const feverDate = res.result.feverNum.map(item => {
+      //   return item.reportTime
+      // })
+      // this.initHeatChart('heatId', feverData, unnormalData, feverDate)
     },
     initHeatChart(id, feverData, unnormalData, feverDate) {
       Highcharts.chart(id, {
@@ -281,6 +317,7 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
             formatter: function() {
               return this.value
@@ -325,13 +362,26 @@ export default {
         startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
         endTime: this.getDateTime(new Date())
       })
-      const data = res.result.map(item => {
-        return item.num
+      if (!res.result) {
+        this.initUnReportChart('unReportId', this.xDate, this.reportData)
+        return
+      }
+      let i
+      res.result.forEach(ele => {
+        this.xDate.filter((item, index) => {
+          if (item === ele.reportTime) {
+            i = index
+          }
+        })
+        this.reportData[i] = ele.num
       })
-      const date = res.result.map(item => {
-        return item.reportTime
-      })
-      this.initUnReportChart('unReportId', data, date)
+      // const data = res.result.map(item => {
+      //   return item.num
+      // })
+      // const date = res.result.map(item => {
+      //   return item.reportTime
+      // })
+      this.initUnReportChart('unReportId', this.reportData, this.xDate)
     },
     initUnReportChart(id, data, date) {
       Highcharts.chart(id, {
@@ -358,6 +408,7 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
             formatter: function() {
               return this.value

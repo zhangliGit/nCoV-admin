@@ -212,7 +212,9 @@ export default {
         let i
         res.result.feverNum.forEach(ele => {
           this.xDate.filter((item, index) => {
-            if (item === ele.date) {
+            console.log('item', item)
+            console.log('el', ele)
+            if (item === ele.reportTime) {
               i = index
             }
           })
@@ -223,7 +225,7 @@ export default {
         let y
         res.result.healthNum.forEach(ele => {
           this.xDate.filter((item, index) => {
-            if (item === ele.date) {
+            if (item === ele.reportTime) {
               y = index
             }
           })
@@ -239,6 +241,8 @@ export default {
       // const feverDate = res.result.feverNum.map(item => {
       //   return item.reportTime
       // })
+      console.log('this.feverData', this.feverData)
+      console.log('this.unnormalData', this.unnormalData)
       this.initHeatChart('heatId', this.feverData, this.unnormalData, this.xDate)
     },
     initHeatChart(id, feverData, unnormalData, xDate) {
@@ -266,6 +270,7 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
             formatter: function() {
               return this.value
@@ -317,7 +322,7 @@ export default {
       let i
       res.result.forEach(ele => {
         this.xDate.filter((item, index) => {
-          if (item === ele.date) {
+          if (item === ele.reportTime) {
             i = index
           }
         })
@@ -356,6 +361,7 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
             formatter: function() {
               return this.value
