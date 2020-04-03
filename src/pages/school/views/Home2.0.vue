@@ -187,7 +187,8 @@ export default {
           min: 0,
           title: {
             text: ''
-          }
+          },
+          allowDecimals: false
         },
         tooltip: {
           // head + 每个 point + footer 拼接成完整的 table
@@ -307,6 +308,7 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
             formatter: function() {
               return this.value
@@ -381,6 +383,7 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
             formatter: function() {
               return this.value
