@@ -169,6 +169,19 @@ const $ajax = {
       return responseRes(err.response.data)
     }
   },
+  async postUrl(obj, tag = true) {
+    if (tag) showToast()
+    try {
+      let res = await axios({
+        url: obj.url,
+        method: 'post'
+      })
+      res = res.data
+      return responseRes(res)
+    } catch (err) {
+      return responseRes(err.response.data)
+    }
+  },
   async postWithPara(obj, tag = true) {
     if (tag) showToast()
     try {

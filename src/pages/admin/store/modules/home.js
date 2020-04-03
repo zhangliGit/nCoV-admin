@@ -27,7 +27,7 @@ for (const key in apiList) {
     const isGetUrl = type === 'getUrl'
     const res = await $ajax[reqType](
       {
-        url: isGetUrl || type === 'del' ? url + '/' + params : url,
+        url: isGetUrl || type === 'postUrl' || type === 'del' ? url + '/' + params : url,
         params: isGetUrl ? {} : params
       },
       isLoad
