@@ -1,28 +1,35 @@
 <template>
   <div class="page-layout qui-fx-ver">
+    <a-modal title="邀请教职工" :footer="null" v-model="teacherVisible" @ok="teacherVisible = false">
+      <img
+        style="widht: 200px; height: 200px; display: block; margin: 0 auto;"
+        :src="
+          'http://qr.liantu.com/api.php?text=http://ai2.canpoint.net/nCov/shareTeacher?schoolCode=' + userInfo.orgCode
+        "
+        alt=""
+      />
+      <div style="text-align: center; padding-top: 10px; font-size: 14px;">
+        请使用微信扫描二维码，然后分享给教职工进行绑定注册
+      </div>
+    </a-modal>
     <search-form isReset @search-form="searchForm" :search-label="searchLabel">
       <div slot="left">
         <a-button icon="plus" class="add-btn" @click="add(0)">添加教职工</a-button>
-        <!-- <a-button icon="plus" class="add-btn">邀请教职工</a-button>
+        <a-button icon="plus" class="share-btn" @click="teacherVisible = true">邀请教职工</a-button>
+        <!--
         <a-button icon="export" class="export-btn">导入教职工</a-button>
         <a-button icon="export" class="export-all-btn">导入人脸</a-button>
         <a-button icon="export" class="del-btn">导出</a-button> -->
       </div>
     </search-form>
-    <submit-form
-      ref="form"
-      @submit-form="submitForm"
-      :title="title"
-      v-model="formStatus"
-      :form-data="formData"
-    >
+    <submit-form ref="form" @submit-form="submitForm" :title="title" v-model="formStatus" :form-data="formData">
       <div slot="upload">
         <upload-one :file-info="fileInfo" v-model="picUrl"></upload-one>
       </div>
     </submit-form>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
-        <a-tooltip placement="topLeft" title="编辑" @click="add(1,action.record)">
+        <a-tooltip placement="topLeft" title="编辑" @click="add(1, action.record)">
           <a-button size="small" class="edit-action-btn" icon="form"></a-button>
         </a-tooltip>
         <a-popconfirm placement="left" okText="确定" cancelText="取消" @confirm="del(action.record)">
@@ -57,19 +64,19 @@ const columns = [
     title: '序号',
     width: '10%',
     scopedSlots: {
-      customRender: 'index'
-    }
+      customRender: 'index',
+    },
   },
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '10%'
+    width: '10%',
   },
   {
     title: '性别',
     dataIndex: 'gender',
     width: '10%',
-    customRender: text => {
+    customRender: (text) => {
       if (text === '1') {
         return '男'
       } else if (text === '2') {
@@ -77,64 +84,64 @@ const columns = [
       } else {
         return '未知'
       }
-    }
+    },
   },
   {
     title: '职位',
     dataIndex: 'classChargeMark',
     width: '10%',
-    customRender: text => {
+    customRender: (text) => {
       if (text === '1') {
         return '班主任'
       } else if (text === '2') {
         return '教职工'
       }
-    }
+    },
   },
   {
     title: '工号',
     dataIndex: 'workNo',
-    width: '10%'
+    width: '10%',
   },
   {
     title: '手机号',
     dataIndex: 'phone',
-    width: '10%'
+    width: '10%',
   },
   {
     title: '人脸照片',
     dataIndex: 'profilePhoto',
     width: '10%',
     scopedSlots: {
-      customRender: 'photoPic'
-    }
+      customRender: 'photoPic',
+    },
   },
   {
     title: '出生日期',
     dataIndex: 'birthday',
-    width: '10%'
+    width: '10%',
   },
   {
     title: '操作',
     width: '20%',
     scopedSlots: {
-      customRender: 'action'
-    }
-  }
+      customRender: 'action',
+    },
+  },
 ]
 const searchLabel = [
   {
     value: 'name',
     type: 'input',
     label: '姓名',
-    placeholder: '请输入姓名'
+    placeholder: '请输入姓名',
   },
   {
     value: 'phone',
     type: 'input',
     label: '手机号',
-    placeholder: '请输入手机号'
-  }
+    placeholder: '请输入手机号',
+  },
 ]
 const formData = [
   {
@@ -142,7 +149,7 @@ const formData = [
     initValue: '',
     type: 'input',
     label: '姓名',
-    placeholder: '请输入姓名'
+    placeholder: '请输入姓名',
   },
   {
     value: 'phone',
@@ -150,7 +157,7 @@ const formData = [
     type: 'input',
     label: '手机号',
     placeholder: '请输入正确的手机号',
-    regular: 'phone'
+    regular: 'phone',
   },
   {
     value: 'classChargeMark',
@@ -158,16 +165,16 @@ const formData = [
     list: [
       {
         key: '1',
-        val: '班主任'
+        val: '班主任',
       },
       {
         key: '2',
-        val: '教职工'
-      }
+        val: '教职工',
+      },
     ],
     type: 'radio',
     label: '职位',
-    placeholder: '请选择职位'
+    placeholder: '请选择职位',
   },
   {
     value: 'gender',
@@ -175,16 +182,16 @@ const formData = [
     list: [
       {
         key: '1',
-        val: '男'
+        val: '男',
       },
       {
         key: '2',
-        val: '女'
-      }
+        val: '女',
+      },
     ],
     type: 'radio',
     label: '性别',
-    placeholder: '请选择性别'
+    placeholder: '请选择性别',
   },
   {
     value: 'workNo',
@@ -192,12 +199,12 @@ const formData = [
     type: 'input',
     required: false,
     label: '工号',
-    placeholder: '请输入工号'
+    placeholder: '请输入工号',
   },
   {
     type: 'upload',
     required: false,
-    label: '人脸照片'
+    label: '人脸照片',
   },
   {
     value: 'birthday',
@@ -205,8 +212,8 @@ const formData = [
     label: '生日',
     required: false,
     initValue: '',
-    placeholder: '请选择生日'
-  }
+    placeholder: '请选择生日',
+  },
 ]
 export default {
   name: 'TeacherManage',
@@ -215,10 +222,11 @@ export default {
     SearchForm,
     SubmitForm,
     UploadOne,
-    PageNum
+    PageNum,
   },
   data() {
     return {
+      teacherVisible: false,
       columns,
       searchLabel,
       formData,
@@ -226,7 +234,7 @@ export default {
       formStatus: false,
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
       },
       total: 0,
       type: 0,
@@ -236,13 +244,13 @@ export default {
         url: '', // 接口地址
         tip: '上传图片',
         h: 120, // 高度
-        w: 120 // 宽度
+        w: 120, // 宽度
       },
-      picUrl: ''
+      picUrl: '',
     }
   },
   computed: {
-    ...mapState('home', ['userInfo'])
+    ...mapState('home', ['userInfo']),
   },
   mounted() {
     this.fileInfo.url = `/admin/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
@@ -255,7 +263,7 @@ export default {
         schoolCode: this.userInfo.orgCode,
         userType: 1,
         ...this.pageList,
-        ...searchObj
+        ...searchObj,
       }
       const res = await this.getUserList(req)
       this.userList = res.result.list
@@ -279,7 +287,7 @@ export default {
     async del(record) {
       console.log(record.id)
       const req = {
-        id: record.id
+        id: record.id,
       }
       console.log(req)
       await this.deleUser(req)
@@ -292,7 +300,7 @@ export default {
       this.pageList.page = 1
       const searchObj = {
         userName: values.name,
-        phone: values.phone
+        phone: values.phone,
       }
       this.showList(searchObj)
     },
@@ -303,7 +311,7 @@ export default {
           ...values,
           schoolCode: this.userInfo.orgCode,
           profilePhoto: this.picUrl,
-          id: this.record.id
+          id: this.record.id,
         }
         console.log(req)
         req.userNo = values.workNo
@@ -322,7 +330,7 @@ export default {
         const req = {
           ...values,
           schoolCode: this.userInfo.orgCode,
-          profilePhoto: this.picUrl
+          profilePhoto: this.picUrl,
         }
         console.log(req)
         req.userNo = values.workNo
@@ -342,11 +350,11 @@ export default {
     goDetail(record) {
       const obj = {
         path: '/reportManageTea/detail',
-        query: { id: record.id }
+        query: { id: record.id },
       }
       this.$router.push(obj)
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="less" scoped>
