@@ -48,7 +48,7 @@
     "@vue/test-utils": "^1.0.0-beta.20",
     "adm-zip": "^0.4.13",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^8.0.1",
     "babel-jest": "^23.6.0",
     "babel-plugin-import": "^1.11.0",
     "eslint": "^5.8.0",
@@ -79,6 +79,8 @@
       "parser": "babel-eslint"
     },
     "rules": {
+      "template-curly-spacing" : "off",
+      "indent": "off",
       "space-before-function-paren": 0,
       "generator-star-spacing": "off",
       "no-mixed-operators": 0,

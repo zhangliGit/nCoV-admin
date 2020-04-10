@@ -94,7 +94,7 @@
         </div>
       </div>
     </div>
-    <dv-border-box-11 :titleWidth="400" class="qui-fx-f1 qui-fx-ver" title="武汉全品疫情防控平台"></dv-border-box-11>
+    <dv-border-box-11 :titleWidth="400" class="qui-fx-f1 qui-fx-ver" style="letter-spacing: 2px; font-weight: 600" title="武汉全品疫情防控平台"></dv-border-box-11>
   </div>
 </template>
 
@@ -197,17 +197,18 @@ export default {
 <style lang="less" scoped>
 .title-img {
   margin: 0 auto;
-  height: 40px;
-  width: 368px;
+  height: .4rem;
+  width: 3.64rem;
   text-align: center;
   color: #fff;
   letter-spacing: 2px;
   font-size: 16px;
-  line-height: 40px;
-  background: url('../../images/box-title1.png') no-repeat;
-  background-size: 368px 100%;
+  line-height: .4rem;
+  background: url('../../images/box-title1.png') no-repeat center;
+  background-size: 3.64rem 100%;
 }
 .data-view {
+  font-size: .16rem;
   background-color: #041e49;
 }
 .mar-t20 {
@@ -238,11 +239,11 @@ export default {
       margin-bottom: 20px;
     }
     .total-text {
-      width: 3rem;
-      height: 3rem;
+      width: .5rem;
+      height: .5rem;
       text-align: center;
-      line-height: 3rem;
-      font-size: 2rem;
+      line-height: .5rem;
+      font-size: .24rem;
       margin-left: 8px;
       &:first-child {
         margin-left: 0px;

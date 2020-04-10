@@ -124,7 +124,7 @@ export default {
         this.faceList.splice(50)
       }
       this.faceList.unshift(obj)
-    }, 600)
+    }, 1500)
   },
   methods: {},
 }
@@ -163,7 +163,7 @@ export default {
   .record-box {
     position: relative;
     margin-left: 12px;
-    animation: moveLeft linear 0.2s;
+    animation: moveLeft ease-out 0.3s;
     width: 150px;
     height: 18vh;
     border: 8px #204486 solid;
@@ -195,7 +195,7 @@ export default {
   .face-box {
     margin: 0px 15px 15px;
     height: 140px;
-    animation: moveDown linear 0.3s;
+    animation: moveDown ease-out 0.3s;
     .face-img {
       width: 132px;
       height: 140px;
