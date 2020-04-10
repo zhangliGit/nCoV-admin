@@ -14,6 +14,9 @@
         <span v-if="index < routeAddress.length - 1" style="padding: 0 5px">/</span>
       </li>
     </ul>
+    <div style="float:right">
+      <slot name="right"></slot>
+    </div>
   </div>
 </template>
 
@@ -69,6 +72,7 @@ export default {
 <style lang="less" scoped>
 .router-menu {
   background-color: #fff;
+  overflow: auto;
   padding: 0 5px;
   margin: 8px 0 10px 0;
   ul {

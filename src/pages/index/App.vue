@@ -48,13 +48,13 @@ export default {
         {
           id: 3,
           name: '局端大屏',
-          url: 'dataView.html',
+          url: 'view.html?phone=12486571549&orgName=' + encodeURI('武汉全品文教科技有限公司'),
           icon: xx,
         },
         {
           id: 4,
           name: '人脸识别',
-          url: 'faceShow.html',
+          url: 'face.html',
           icon: xx,
         },
       ],

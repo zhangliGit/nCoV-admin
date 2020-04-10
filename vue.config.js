@@ -2,6 +2,7 @@ const path = require('path')
 const utils = require('./build/utils')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const uploadZip = require('./build/upload-zip')
 const webpack = require('webpack')
 
 function resolve(dir) {
@@ -48,20 +49,20 @@ module.exports = {
     config.plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))
     // 配置cdn模块
     if (isProduction) {
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerPort: 8890
-        })
-      )
-      if (isCdn) {
-        config.externals = {
-          vue: 'Vue',
-          'vue-router': 'VueRouter',
-          vuex: 'Vuex',
-          axios: 'axios',
-          moment: 'moment'
-        }
+      // config.plugins.push(
+      //   new BundleAnalyzerPlugin({
+      //     analyzerPort: 8890
+      //   })
+      // )
+      config.plugins.push(new uploadZip())
+      config.externals = {
+        vue: 'Vue',
+        'vue-router': 'VueRouter',
+        vuex: 'Vuex',
+        axios: 'axios',
+        moment: 'moment'
       }
+
       // 压缩代码
       config.optimization = {
         splitChunks: {},

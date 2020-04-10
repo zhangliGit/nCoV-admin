@@ -4,7 +4,7 @@
       <img
         style="widht: 200px; height: 200px; display: block; margin: 0 auto;"
         :src="
-          'http://qr.liantu.com/api.php?text=http://ai2.canpoint.net/nCov/shareTeacher?schoolCode=' + userInfo.orgCode
+          'http://qr.liantu.com/api.php?text=http://canpointtest.com/mobile-protal/shareTeacher?schoolCode=' + userInfo.orgCode
         "
         alt=""
       />

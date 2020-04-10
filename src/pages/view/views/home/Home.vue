@@ -29,8 +29,8 @@
             <div class="pos-box qui-fx-ver" style="padding: 0 20px 20px;">
               <div class="title-img">风险学校排名</div>
               <div class="qui-fx-f1 mar-t20">
-                <div class="pos-box">
-                  <dv-scroll-ranking-board :color="['red', 'green']" :config="sortConfig" />
+                <div class="pos-box" v-if="this.sortConfig.data.length > 0">
+                  <dv-scroll-ranking-board :config="sortConfig" />
                 </div>
               </div>
             </div>
@@ -94,13 +94,14 @@
         </div>
       </div>
     </div>
-    <dv-border-box-11 :titleWidth="400" class="qui-fx-f1 qui-fx-ver" style="letter-spacing: 2px; font-weight: 600" title="武汉全品疫情防控平台"></dv-border-box-11>
+    <dv-border-box-11 :titleWidth="400" class="qui-fx-f1 qui-fx-ver" style="letter-spacing: 2px; font-weight: 600" :title="orgName"></dv-border-box-11>
   </div>
 </template>
 
 <script>
 import Highcharts from 'highcharts/highstock'
 import HighchartsVariablepie from 'highcharts/modules/variable-pie'
+import { actions } from '../../store'
 import xx from '../../images/xx.png'
 import xs from '../../images/xs.png'
 import jzg from '../../images/jzg.png'
@@ -119,74 +120,103 @@ export default {
   computed: {},
   data() {
     return {
+      orgName: '',
       borderColor: ['#204486', '#00ffff'],
+      organizeTotal: {
+        school: 0,
+        student: 0,
+        teacher: 0
+      },
       menuList: [
         {
           icon: xx,
           title: '下属学校(所)',
-          total: '20',
+          total: '0',
         },
         {
           icon: xs,
           title: '学生总数(人)',
-          total: '23420',
+          total: '0',
         },
         {
           icon: jzg,
           title: '教职工总数(人)',
-          total: '2234',
+          total: '0',
         },
         {
           icon: zfx,
           title: '中高风险总数(人)',
-          total: '420',
+          total: '0',
         },
         {
           icon: zs,
           title: '今日上报总数(人)',
-          total: '22020',
+          total: '0',
         },
       ],
       sortConfig: {
-        data: [
-          {
-            name: '宜昌市外国语高中',
-            value: 55,
-          },
-          {
-            name: '重庆建筑工程职业学院',
-            value: 120,
-          },
-          {
-            name: '金太阳实验中学',
-            value: 78,
-          },
-          {
-            name: '长沙理工大学',
-            value: 66,
-          },
-          {
-            name: '	霍林郭勒市第一中学',
-            value: 80,
-          },
-          {
-            name: '	荆门市象山中学',
-            value: 80,
-          },
-        ],
+        data: [],
         unit: '人',
         waitTime: 2500,
       },
     }
   },
   mounted() {
+    var url = window.location.href
+    const paramsArr = url.substring(url.indexOf('?') + 1, url.indexOf('#/')).split('&')
+    const paramsObj = {}
+    paramsArr.forEach((item) => {
+      const arr = item.split('=')
+      paramsObj[arr[0]] = arr[1]
+    })
+    const phone = paramsObj.phone || '12486571549'
+    this.orgName = decodeURI(paramsObj.orgName || '武汉全品教育科技有限公司')
+    this.getBaseData(phone)
+    this.getTemperatureChart(phone)
+    this.getDailyList(phone, '2020-04-10')
+    this.getReportChart('12486571549')
     this.setBi()
   },
   methods: {
+    // 获取机构下的学校，人员数
+    async getBaseData (phone) {
+      const res = await actions.getBaseData({
+        phone
+      })
+      this.menuList[0].total = res.result.schoolCount + ''
+      this.menuList[1].total = res.result.studentCount + ''
+      this.menuList[2].total = res.result.teacherCount + ''
+    },
+    // 获取体温异常态势
+    async getTemperatureChart (phone) {
+      const res = await actions.getTemperatureChart({
+        phone
+      })
+      Highcharts.chart('yichang', yichang(res.result))
+    },
+    // 疫情日报
+    async getDailyList (phone, date) {
+      const res = await actions.getDailyList({
+        phone,
+        date
+      })
+      this.sortConfig.data = res.result.map(item => {
+        return {
+          name: item.schoolName,
+          value: item.excStudentCount + item.excTeacherCount
+        }
+      })
+      this.$forceUpdate()
+    },
+    // 疫情上报记录
+    async getReportChart (phone) {
+      const res = await actions.getReportChart({
+        phone
+      })
+      Highcharts.chart('unReport', unReport(res.result))
+    },
     setBi() {
-      Highcharts.chart('yichang', yichang)
       Highcharts.chart('backSchool', backSchool)
-      Highcharts.chart('unReport', unReport)
       Highcharts.chart('area', area)
       Highcharts.chart('circle', circle)
     },

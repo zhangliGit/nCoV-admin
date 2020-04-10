@@ -12,7 +12,7 @@ function resultBack(res) {
 }
 
 // 响应式数据
-const projectName = 'demo' // 此处写项目名作为存储值
+const projectName = 'view' // 此处写项目名作为存储值
 const localData = window.sessionStorage.getItem(projectName) || '{}'
 const getState = (state, val) => {
   return JSON.parse(localData)[state] || val

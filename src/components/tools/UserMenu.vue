@@ -83,8 +83,8 @@ export default {
     },
     handleLogout() {
       window.localStorage.removeItem('yq_admin')
-      if (process.env.VUE_APP_URL === 'prod') {
-        window.location.href = '/pc-protal/nCov-admin'
+      if (process.env.NODE_ENV === 'production') {
+        window.location.href = '/nCov-admin'
       } else {
         window.location.href = '/'
       }
