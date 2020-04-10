@@ -1,10 +1,6 @@
 <template>
   <div class="page-layout qui-fx-ver">
-    <search-form @search-form="searchForm" :search-label="searchLabel">
-      <!-- <div slot="left">
-        <a-button icon="export" class="export-btn" @click="reportList()">导出</a-button>
-      </div> -->
-    </search-form>
+    <search-form @search-form="searchForm" :search-label="searchLabel"></search-form>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList">
       <template v-slot:actions="action">
         <a-tooltip placement="topLeft" title="查看健康档案">
@@ -38,16 +34,16 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '7%'
+    width: '5%'
   },
- {
+  {
     title: '性别',
     dataIndex: 'gender',
-    width: '8%',
+    width: '7%',
     customRender: text => {
-      if (text === '1') {
+      if (text === 1) {
         return '男'
-      } else if (text === '2') {
+      } else if (text === 2) {
         return '女'
       } else {
         return '未知'
@@ -55,51 +51,83 @@ const columns = [
     }
   },
   {
-    title: '工号',
-    dataIndex: 'workNo',
-    width: '10%'
+    title: '人员类型',
+    dataIndex: 'userType',
+    width: '8%',
+    customRender: text => {
+      if (text === 1) {
+        return '教职工'
+      } else {
+        return '学生'
+      }
+    }
   },
   {
-    title: '手机号',
-    dataIndex: 'phone',
-    width: '10%'
+    title: '温度',
+    dataIndex: 'temperature',
+    width: '5%'
   },
   {
-    title: '生日',
-    dataIndex: 'birthday',
-    width: '10%'
-  },
-  {
-    title: '职位',
-    dataIndex: 'classChargeMark',
+    title: '上报区间',
+    dataIndex: 'timeInterval',
     width: '10%',
     customRender: text => {
       if (text === 1) {
-        return '班主任'
+        return '上午'
       } else {
-        return '教职工'
+        return '下午'
       }
     }
   },
   {
-    title: '风险类型 ',
-    dataIndex: 'healthyState',
+    title: '发热状态',
+    dataIndex: 'feverMark',
     width: '10%',
     customRender: text => {
-      if (parseInt(text) === 1) {
-        return '疑似'
-      } else if (parseInt(text) === 2) {
-        return '确诊'
-      } else if (parseInt(text) === 3) {
-        return '健康'
+      if (text === 1) {
+        return '发热'
       } else {
-        return '未知'
+        return '未发热'
       }
     }
   },
   {
-    title: '风险时间',
-    dataIndex: 'riskTime',
+    title: '附带症状',
+    dataIndex: 'symptoms',
+    width: '8%'
+  },
+  {
+    title: '是否接触疫情人员 ',
+    dataIndex: 'mark01',
+    width: '8%',
+    customRender: text => {
+      if (text === 1) {
+        return '是'
+      } else {
+        return '否'
+      }
+    }
+  },
+  {
+    title: '健康状态',
+    dataIndex: 'classChargeMark',
+    width: '8%',
+    customRender: text => {
+      if (text === 1) {
+        return '正常'
+      } else {
+        return '异常'
+      }
+    }
+  },
+  {
+    title: '上报人',
+    dataIndex: 'reportPersonName',
+    width: '8%'
+  },
+  {
+    title: '上报时间',
+    dataIndex: 'reportTime',
     width: '10%',
     customRender: text => {
       return (
@@ -118,16 +146,8 @@ const columns = [
     }
   },
   {
-    title: '人脸图像',
-    dataIndex: 'profilePhoto',
-    width: '10%',
-    scopedSlots: {
-      customRender: 'photoPic'
-    }
-  },
-  {
     title: '操作',
-    width: '10%',
+    width: '8%',
     scopedSlots: {
       customRender: 'action'
     }
@@ -148,20 +168,16 @@ const searchLabel = [
       },
       {
         key: 1,
-        val: '疑似'
+        val: '健康'
       },
       {
         key: 2,
-        val: '确诊'
-      },
-      {
-        key: 3,
-        val: '健康'
+        val: '异常'
       }
     ],
-    value: 'healthyState',
+    value: 'classChargeMark',
     type: 'select',
-    label: '风险类型'
+    label: '健康状态'
   },
   {
     value: 'rangeTime',
@@ -197,10 +213,10 @@ export default {
     this.showList()
   },
   methods: {
-    ...mapActions('home', ['getreportList']),
+    ...mapActions('home', ['getReportInfoList']),
     async showList(searchObj = {}) {
       this.pageList.schoolCode = this.userInfo.orgCode
-      const res = await this.getreportList({
+      const res = await this.getReportInfoList({
         ...this.pageList,
         ...searchObj
       })
@@ -211,18 +227,12 @@ export default {
       this.pageList.page = 1
       const searchObj = {
         userName: values.userName,
-        healthyState: values.healthyState,
-        startTime:values.rangeTime["0"],
-        endTime:values.rangeTime["1"]
-
+        classChargeMark: values.classChargeMark,
+        startTime: values.rangeTime['0'],
+        endTime: values.rangeTime['1']
       }
       this.showList(searchObj)
     },
-    // reportList() {
-    //   debugger;
-    //   const schoolCode = this.userInfo.orgCode
-    //   window.location.href = `${hostEnv.wangxuanzhang}/school/userinfo/exportPersonnelInfo?schoolCode=${schoolCode}&userType=1&excelUrl=`
-    // },
     detail(record) {
       this.$router.push({
         path: '/component/detail',

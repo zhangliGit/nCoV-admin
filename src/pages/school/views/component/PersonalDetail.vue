@@ -399,6 +399,7 @@ export default {
     },
     //获取上报信息记录
     async getReportList() {
+      this.pageList.userCode = this.$route.query.id
       const res = await this.getReportInfoList(this.pageList)
       this.detailList = res.result.list
       this.total = res.result.totalCount
