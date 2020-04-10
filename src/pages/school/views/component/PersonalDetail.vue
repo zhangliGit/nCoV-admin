@@ -372,7 +372,7 @@ export default {
       const res = await this.getTemperatureData({
         schoolCode: this.userInfo.orgCode,
         userCode: this.$route.query.id,
-        startTime: this.getDateTime(new Date().setMonth((new Date().getMonth()-1))),
+        startTime: this.getDateTime(new Date().setMonth(new Date().getMonth() - 1)),
         endTime: this.getDateTime(new Date())
       })
       this.reportTime = []
@@ -380,10 +380,9 @@ export default {
       res.result.forEach(item => {
         this.reportTime.push(item.reportTime)
         this.temperature.push(parseInt(item.temperature))
-       
       })
-      console.log( this.reportTime)
-      console.log( this.temperature)
+      console.log(this.reportTime)
+      console.log(this.temperature)
       this.initUnReportChart()
     },
     //获取上报信息记录

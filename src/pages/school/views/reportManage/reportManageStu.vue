@@ -120,7 +120,7 @@ const columns = [
     dataIndex: 'symptoms',
     width: '7%'
   },
-    {
+  {
     title: '是否异常 ',
     dataIndex: 'mark02',
     width: '8%',
@@ -204,8 +204,7 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     ...mapActions('home', ['getReportInfoList']),
     select(item) {
