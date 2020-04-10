@@ -23,12 +23,12 @@
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
-        <a-col :span="18">
+        <a-col :span="24">
           <div id="unReportId" :style="{ height: chartHeight }"></div>
         </a-col>
-        <a-col :span="6">
+        <!-- <a-col :span="6">
           <div id="unHealthyId" :style="{ height: chartHeight }"></div>
-        </a-col>
+        </a-col> -->
       </a-row>
     </div>
   </div>

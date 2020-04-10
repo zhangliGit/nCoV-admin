@@ -34,12 +34,12 @@
     </div>
     <div v-if="!nodata" style="margin-top:10px;">
       <a-row :gutter="10">
-        <a-col :span="18">
+        <a-col :span="24">
           <div id="unReportId" :style="{ height: chartHeight }"></div>
         </a-col>
-        <a-col :span="6">
+        <!-- <a-col :span="6">
           <div id="unHealthyId" :style="{ height: chartHeight }"></div>
-        </a-col>
+        </a-col> -->
       </a-row>
     </div>
   </div>
@@ -451,7 +451,7 @@ export default {
           enabled: false
         },
         title: {
-          floating: true,
+          // floating: true,
           text: '健康异常人员分布'
         },
         tooltip: {
