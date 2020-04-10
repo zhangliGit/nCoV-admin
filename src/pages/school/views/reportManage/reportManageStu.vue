@@ -80,9 +80,9 @@ const columns = [
     width: '7%',
     customRender: text => {
        if (text === 1) {
-        return '学生'
-      } else {
         return '教职工'
+      } else {
+        return '学生'
       }
     }
   },
@@ -193,7 +193,7 @@ export default {
       pageList: {
         page: 1,
         size: 20,
-        userType: '1',
+        userType: '2',
         schoolCode: '',
         gradeCode: '',
         classCode: ''

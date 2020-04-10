@@ -36,12 +36,12 @@ const columns = [
     dataIndex: 'userName',
     width: '6%'
   },
-  {
+ {
     title: '人员类型',
     dataIndex: 'userType',
-    width: '8%',
+    width: '7%',
     customRender: text => {
-      if (text === 1) {
+       if (text === 2) {
         return '学生'
       } else {
         return '教职工'
@@ -185,7 +185,7 @@ export default {
       pageList: {
         page: 1,
         size: 20,
-        userType: '2',
+        userType: '1',
         schoolCode: ''
       },
       total: 0,
