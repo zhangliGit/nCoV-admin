@@ -379,8 +379,10 @@ export default {
       this.temperature = []
       res.result.forEach(item => {
         this.reportTime.push(item.reportTime)
-        this.temperature.push(item.temperature)
+        this.temperature.push(parseInt(item.temperature))
+       
       })
+      console.log( this.reportTime)
       console.log( this.temperature)
       this.initUnReportChart()
     },
@@ -390,7 +392,6 @@ export default {
       const res = await this.getReportInfoList(this.pageList)
       this.detailList = res.result.list
       this.total = res.result.totalCount
-      console.log(this.total)
     },
     initUnReportChart() {
       this.unReportOption = {
