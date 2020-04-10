@@ -79,10 +79,10 @@ const columns = [
     dataIndex: 'userType',
     width: '7%',
     customRender: text => {
-      if (text === 1) {
-        return '教职工'
-      } else {
+       if (text === 1) {
         return '学生'
+      } else {
+        return '教职工'
       }
     }
   },
