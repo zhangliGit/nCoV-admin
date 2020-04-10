@@ -13,7 +13,7 @@ if (ConfigEnv === 'test') {
   wangxuanzhang = '/pc-yq'
   zhuxu = '/mobile-yq'
 } else {
-  wangxuanzhang = '/zhuxu'
+  wangxuanzhang = '/wangxuanzhang'
   zhuxu = '/zhuxu'
 }
 

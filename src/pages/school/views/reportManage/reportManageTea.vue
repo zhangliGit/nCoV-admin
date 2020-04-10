@@ -36,12 +36,12 @@ const columns = [
     dataIndex: 'userName',
     width: '6%'
   },
- {
+  {
     title: '人员类型',
     dataIndex: 'userType',
     width: '7%',
     customRender: text => {
-       if (text === 2) {
+      if (text === 2) {
         return '学生'
       } else {
         return '教职工'
@@ -87,10 +87,10 @@ const columns = [
     dataIndex: 'mark02',
     width: '8%',
     customRender: text => {
-      if (text === 1) {
-        return '是'
+     if (text === 1) {
+        return '异常'
       } else {
-        return '否'
+        return '正常'
       }
     }
   },
@@ -214,8 +214,8 @@ export default {
       const searchObj = {
         userName: values.userName,
         mark02: values.mark02,
-        startTime: values.rangeTime['0'],
-        endTime: values.rangeTime['1']
+        startTime: values.rangeTime[0],
+        endTime: values.rangeTime[1]
       }
       this.showList(searchObj)
     },
@@ -224,13 +224,8 @@ export default {
         path: '/component/detail',
         query: {
           id: record.userCode,
-          userName: record.userName,
-          gender: record.gender,
-          workNo: record.workNo,
-          birthday: record.birthday,
           userType: record.userType,
-          riskTime: record.riskTime,
-          profilePhoto: record.profilePhoto
+          userName: record.userName
         }
       })
     }

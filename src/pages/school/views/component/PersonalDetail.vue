@@ -13,18 +13,21 @@
       </a-menu>
       <div class="process qui-fx-jsb qui-fx-ac">
         <div class="qui-fx-jsa qui-fx-ac">
-          <img :src="detailInfo.profilePhoto" alt />
+          <img :src="detailInfo[0].profilePhoto" alt />
           <div class="qui-fx-ver">
             <a-row class="padd-l10">
-              <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo.userName }}</a-col>
+              <a-col class="mar-b10" :span="12">姓名 : {{ detailInfo[0].userName }}</a-col>
               <a-col
                 class="mar-b10"
                 :span="12"
-              >性别 : {{ (detailInfo.gender=='2' ? '女' : (detailInfo.gender=='1'?'男':'未知'))}}</a-col>
-              <a-col class="mar-b10" :span="12">工号 : {{ detailInfo.workNo }}</a-col>
-              <a-col class="mar-b10" :span="12">生日 : {{ detailInfo.birthday }}</a-col>
-              <a-col class="mar-b10" :span="12">人员类型 : {{ detailInfo.userType ? '教职工' : '学生' }}</a-col>
-              <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo.riskTime }}</a-col>
+              >性别 : {{ (detailInfo[0].gender=='2' ? '女' : (detailInfo[0].gender=='1'?'男':'未知'))}}</a-col>
+              <a-col class="mar-b10" :span="12">工号 : {{ detailInfo[0].workNo }}</a-col>
+              <a-col class="mar-b10" :span="12">生日 : {{ detailInfo[0].birthday }}</a-col>
+              <a-col
+                class="mar-b10"
+                :span="12"
+              >人员类型 : {{ detailInfo[0].userType =='1'?'教职工' : '学生' }}</a-col>
+              <a-col class="mar-b10" :span="12">风险时间 : {{ detailInfo[0].riskTime }}</a-col>
             </a-row>
           </div>
         </div>
@@ -271,14 +274,15 @@ export default {
       formStatus: false,
       pageList: {
         page: 1,
-        size: 20
+        size: 20,
+        userCode: ''
       },
       unReportId: 'unReportId',
       unReportOption: {},
       total: 0,
       columns,
       detailList: [],
-      detailInfo: '',
+      detailInfo: [],
       detailData: {
         userHeight: '',
         userWeight: '',
@@ -287,7 +291,8 @@ export default {
         createTime: ''
       },
       reportTime: [],
-      temperature: []
+      temperature: [],
+      infoList: []
     }
   },
   computed: {
@@ -302,7 +307,13 @@ export default {
     this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
   methods: {
-    ...mapActions('home', ['getLatestMedicalInfo', 'updateInfo', 'getTemperatureData', 'getReportInfoList']),
+    ...mapActions('home', [
+      'getLatestMedicalInfo',
+      'updateInfo',
+      'getTemperatureData',
+      'getReportInfoList',
+      'getreportList'
+    ]),
     getDateTime(date) {
       if (date === '' || date === null) {
         return '--'
@@ -332,7 +343,7 @@ export default {
         ...values,
         schoolCode: this.userInfo.orgCode,
         userCode: this.$route.query.id,
-        userType: this.detailInfo.userType,
+        userType: this.detailInfo[0].userType,
         userName: this.$route.query.userName
       }
       try {
@@ -348,17 +359,26 @@ export default {
     },
     //获取体检数据加个人信息
     async showList() {
-      this.detailInfo = this.$route.query
-      const userCode = this.$route.query.id
+    const userCode = this.$route.query.id
+      const userType = this.$route.query.userType
+      const userName = this.$route.query.userName
       const schoolCode = this.userInfo.orgCode
-      const res = await this.getLatestMedicalInfo({
+      const res = await this.getreportList({
+        userCode,
+        schoolCode,
+        userType,
+        userName,
+        ...this.pageList
+      })
+      this.detailInfo = res.result.list
+      const req = await this.getLatestMedicalInfo({
         userCode,
         schoolCode
       })
-      if (res.result) {
+      if (req.result) {
         this.msg = '更新体检数据'
-        this.detailData = res.result
-        this.detailData.createTime = this.getDateTime(new Date(res.result.createTime))
+        this.detailData = req.result
+        this.detailData.createTime = this.getDateTime(new Date(req.result.createTime))
         this.reportShow = true
         this.noData = false
       } else {

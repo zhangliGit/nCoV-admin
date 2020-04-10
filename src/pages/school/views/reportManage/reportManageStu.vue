@@ -79,7 +79,7 @@ const columns = [
     dataIndex: 'userType',
     width: '7%',
     customRender: text => {
-       if (text === 1) {
+      if (text === 1) {
         return '教职工'
       } else {
         return '学生'
@@ -126,9 +126,9 @@ const columns = [
     width: '8%',
     customRender: text => {
       if (text === 1) {
-        return '是'
+        return '异常'
       } else {
-        return '否'
+        return '正常'
       }
     }
   },
@@ -235,14 +235,8 @@ export default {
         path: '/component/detail',
         query: {
           id: record.userCode,
-          userName: record.userName,
-          gender: record.gender,
-          workNo: record.workNo,
-          birthday: record.birthday,
-          classChargeMark: record.classChargeMark,
-          riskTime: record.riskTime,
-          profilePhoto: record.profilePhoto,
-          userType: record.userType
+          userType: record.userType,
+          userName: record.userName
         }
       })
     }

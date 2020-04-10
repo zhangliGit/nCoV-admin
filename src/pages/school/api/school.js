@@ -24,7 +24,7 @@ const schoolApi = {
   getLatestMedicalInfo: '/school/medicalinfo/getLatestMedicalInfo#postQuery', // 获取体检最新一条记录
   updateInfo: '/school/medicalinfo/save#post', // 修改体检数据
   getTemperatureData: '/school/reportinfo/getTemperatureData#postQuery', // 获取个人体温数据
-  getreportList: '/school/userinfo/getUserInfoList#post', // 上报记录
+  getreportList: '/school/userinfo/getUserInfoList#post', // 人员信息查询
   getReportInfoList: '/school/reportinfo/getReportInfoList#post' // 获取上报信息记录
   
 }
