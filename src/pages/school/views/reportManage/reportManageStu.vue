@@ -193,7 +193,7 @@ export default {
       pageList: {
         page: 1,
         size: 20,
-        userType: '2',
+        userType: '1',
         schoolCode: '',
         gradeCode: '',
         classCode: ''
