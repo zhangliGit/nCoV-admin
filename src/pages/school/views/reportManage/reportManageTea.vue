@@ -34,21 +34,7 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'userName',
-    width: '5%'
-  },
-  {
-    title: '性别',
-    dataIndex: 'gender',
-    width: '7%',
-    customRender: text => {
-      if (text === 1) {
-        return '男'
-      } else if (text === 2) {
-        return '女'
-      } else {
-        return '未知'
-      }
-    }
+    width: '6%'
   },
   {
     title: '人员类型',
@@ -70,7 +56,7 @@ const columns = [
   {
     title: '上报区间',
     dataIndex: 'timeInterval',
-    width: '10%',
+    width: '8%',
     customRender: text => {
       if (text === 1) {
         return '上午'
@@ -82,7 +68,7 @@ const columns = [
   {
     title: '发热状态',
     dataIndex: 'feverMark',
-    width: '10%',
+    width: '8%',
     customRender: text => {
       if (text === 1) {
         return '发热'
@@ -97,8 +83,8 @@ const columns = [
     width: '8%'
   },
   {
-    title: '是否接触疫情人员 ',
-    dataIndex: 'mark01',
+    title: '是否异常 ',
+    dataIndex: 'mark02',
     width: '8%',
     customRender: text => {
       if (text === 1) {
@@ -109,14 +95,14 @@ const columns = [
     }
   },
   {
-    title: '健康状态',
-    dataIndex: 'classChargeMark',
+    title: '是否接触疫情人员 ',
+    dataIndex: 'mark01',
     width: '8%',
     customRender: text => {
       if (text === 1) {
-        return '正常'
+        return '是'
       } else {
-        return '异常'
+        return '否'
       }
     }
   },
@@ -168,14 +154,14 @@ const searchLabel = [
       },
       {
         key: 1,
-        val: '健康'
+        val: '异常'
       },
       {
         key: 2,
-        val: '异常'
+        val: '正常'
       }
     ],
-    value: 'classChargeMark',
+    value: 'mark02',
     type: 'select',
     label: '健康状态'
   },
@@ -227,7 +213,7 @@ export default {
       this.pageList.page = 1
       const searchObj = {
         userName: values.userName,
-        classChargeMark: values.classChargeMark,
+        mark02: values.mark02,
         startTime: values.rangeTime['0'],
         endTime: values.rangeTime['1']
       }
