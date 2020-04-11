@@ -48,11 +48,11 @@ module.exports = {
     config.plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))
     // 配置cdn模块
     if (isProduction) {
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerPort: 8890
-        })
-      )
+      // config.plugins.push(
+      //   new BundleAnalyzerPlugin({
+      //     analyzerPort: 8890
+      //   })
+      // )
       if (isCdn) {
         config.externals = {
           vue: 'Vue',
@@ -63,18 +63,18 @@ module.exports = {
         }
       }
       // 压缩代码
-      config.optimization = {
-        splitChunks: {},
-        minimizer: [
-          new UglifyJsPlugin({
-            uglifyOptions: {
-              compress: {
-                drop_console: true
-              }
-            }
-          })
-        ]
-      }
+      // config.optimization = {
+      //   splitChunks: {},
+      //   minimizer: [
+      //     new UglifyJsPlugin({
+      //       uglifyOptions: {
+      //         compress: {
+      //           drop_console: true
+      //         }
+      //       }
+      //     })
+      //   ]
+      // }
     }
   },
   css: {
