@@ -1,11 +1,16 @@
 <template>
   <div class="home page-layout qui-fx-ver">
     <div>
-      <div class="daily-card qui-fx qui-fx-ac" v-for="item in baseList" :key="item.id">
-        <div class="img-box" :style="`background:${item.color}`">
-          <img :src="item.icon" alt />
+      <div class="daily-card qui-fx qui-fx-ac"
+           v-for="item in baseList"
+           :key="item.id">
+        <div class="img-box"
+             :style="`background:${item.color}`">
+          <img :src="item.icon"
+               alt />
         </div>
-        <div class="qui-fx-f1" style="text-align:center;">
+        <div class="qui-fx-f1"
+             style="text-align:center;">
           <div class="num">{{ item.num }}</div>
           <div class="tip">{{ item.tip }}</div>
         </div>
@@ -14,15 +19,21 @@
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="16">
-          <chart-component :style="{ height: chartHeight }" :id="heatId" :option="heatOption"></chart-component>
+          <chart-component :style="{ height: chartHeight }"
+                           :id="heatId"
+                           :option="heatOption"></chart-component>
         </a-col>
         <a-col :span="8">
-          <a-row >
+          <a-row>
             <a-col :span="12">
-              <chart-component :style="{ height: chartHeight }" :id="highUserPieId" :option="highUserPieOption"></chart-component>
+              <chart-component :style="{ height: chartHeight }"
+                               :id="highUserPieId"
+                               :option="highUserPieOption"></chart-component>
             </a-col>
             <a-col :span="12">
-              <chart-component :style="{ height: chartHeight }" :id="middleUserPieId" :option="middleUserPieOption"></chart-component>
+              <chart-component :style="{ height: chartHeight }"
+                               :id="middleUserPieId"
+                               :option="middleUserPieOption"></chart-component>
             </a-col>
           </a-row>
         </a-col>
@@ -31,18 +42,14 @@
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="16">
-          <chart-component
-            :style="{ height: chartHeight }"
-            :id="unReportId"
-            :option="unReportOption"
-          ></chart-component>
+          <chart-component :style="{ height: chartHeight }"
+                           :id="unReportId"
+                           :option="unReportOption"></chart-component>
         </a-col>
         <a-col :span="8">
-          <chart-component
-            :style="{ height: chartHeight }"
-            :id="unHealthyId"
-            :option="unHealthyOption"
-          ></chart-component>
+          <chart-component :style="{ height: chartHeight }"
+                           :id="unHealthyId"
+                           :option="unHealthyOption"></chart-component>
         </a-col>
       </a-row>
     </div>
@@ -62,7 +69,7 @@ export default {
   components: {
     ChartComponent
   },
-  data() {
+  data () {
     return {
       reportImg,
       baseList: [],
@@ -89,10 +96,10 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  created() {
+  created () {
     this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
-  mounted() {
+  mounted () {
     this.showList()
     this.symptomGet()
     this.initHeatChart()
@@ -119,7 +126,7 @@ export default {
         (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
       )
     },
-    async showList() {
+    async showList () {
       const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
       const res = await this.getDailyData(req)
       this.dailyData = res.result
@@ -140,7 +147,7 @@ export default {
       }, {
         id: 3,
         icon: unhealthyImg,
-        num: res.result.healthNum,
+        num: res.result.noHealthNum,
         tip: '健康异常人数',
         color: '#f2efff'
       }, {
@@ -151,7 +158,7 @@ export default {
         color: '#ffdedf'
       }]
     },
-    async symptomGet() {
+    async symptomGet () {
       const res = await this.getSymptomList()
       const req = `schoolCode=${this.userInfo.orgCode}&todayTime=${this.getDateTime(new Date())}`
       const result = await this.getSymptomsUser(req)
@@ -169,7 +176,7 @@ export default {
       console.log('this.symptomList', this.symptomList)
       this.initUnHealthyChart()
     },
-    async initUnHealthyChart() {
+    async initUnHealthyChart () {
       this.unHealthyOption = {
         chart: {
           type: 'column'
@@ -194,7 +201,7 @@ export default {
           // head + 每个 point + footer 拼接成完整的 table
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-		'<td style="padding:0"><b>{point.y:1f} 人</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:1f} 人</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -271,7 +278,7 @@ export default {
       this.unHealthyChart = new Highcharts.Chart(this.unHealthyId, this.unHealthyOption)
     },
     */
-    async initHeatChart() {
+    async initHeatChart () {
       const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
         new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
       )}&endTime=${this.getDateTime(new Date())}`
@@ -310,7 +317,7 @@ export default {
           },
           allowDecimals: false,
           labels: {
-            formatter: function() {
+            formatter: function () {
               return this.value
             }
           }
@@ -348,7 +355,7 @@ export default {
       }
       this.heatChart = new Highcharts.Chart(this.heatId, this.heatOption)
     },
-    async initUnReportChart() {
+    async initUnReportChart () {
       const req = `schoolCode=${this.userInfo.orgCode}&startTime=${this.getDateTime(
         new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)
       )}&endTime=${this.getDateTime(new Date())}`
@@ -385,7 +392,7 @@ export default {
           },
           allowDecimals: false,
           labels: {
-            formatter: function() {
+            formatter: function () {
               return this.value
             }
           }
@@ -418,7 +425,7 @@ export default {
       }
       this.unReportChart = new Highcharts.Chart(this.unReportId, this.unReportOption)
     },
-    async initHighUserPieChart() {
+    async initHighUserPieChart () {
       this.highUserPieOption = {
         chart: {
           spacing: [40, 0, 40, 0]
@@ -460,7 +467,7 @@ export default {
       }
       this.highUserPieChart = new Highcharts.Chart(this.highUserPieId, this.highUserPieOption)
     },
-    async initMiddleUserPieChart() {
+    async initMiddleUserPieChart () {
       this.middleUserPieOption = {
         chart: {
           spacing: [40, 0, 40, 0]

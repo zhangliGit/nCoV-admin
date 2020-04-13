@@ -1,11 +1,16 @@
 <template>
   <div class="home page-layout qui-fx-ver">
     <div>
-      <div class="daily-card qui-fx qui-fx-ac" v-for="item in baseList" :key="item.id">
-        <div class="img-box" :style="`background:${item.color}`">
-          <img :src="item.icon" alt />
+      <div class="daily-card qui-fx qui-fx-ac"
+           v-for="item in baseList"
+           :key="item.id">
+        <div class="img-box"
+             :style="`background:${item.color}`">
+          <img :src="item.icon"
+               alt />
         </div>
-        <div class="qui-fx-f1" style="text-align:center;">
+        <div class="qui-fx-f1"
+             style="text-align:center;">
           <div class="num">{{ item.num }}</div>
           <div class="tip">{{ item.tip }}</div>
         </div>
@@ -14,17 +19,20 @@
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <div id="heatId" :style="{ height: chartHeight }"></div>
+          <div id="heatId"
+               :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <div id="userPieId" :style="{ height: chartHeight }"></div>
+          <div id="userPieId"
+               :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="24">
-          <div id="unReportId" :style="{ height: chartHeight }"></div>
+          <div id="unReportId"
+               :style="{ height: chartHeight }"></div>
         </a-col>
         <!-- <a-col :span="6">
           <div id="unHealthyId" :style="{ height: chartHeight }"></div>
@@ -44,7 +52,7 @@ import unreportImg from '@a/img/unreport.gif'
 import moment from 'moment'
 export default {
   name: 'Home',
-  data() {
+  data () {
     return {
       moment,
       reportImg,
@@ -65,10 +73,10 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  created() {
+  created () {
     this.chartHeight = document.body.clientHeight * 0.35 + 'px'
   },
-  mounted() {
+  mounted () {
     this.showList()
     this.symptomGet()
     this.feverAndHealthGet()
@@ -88,7 +96,7 @@ export default {
   },
   methods: {
     ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
-    getDateTime(date) {
+    getDateTime (date) {
       if (date === '' || date === null) {
         return '--'
       }
@@ -107,7 +115,7 @@ export default {
         (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
       )
     },
-    async showList() {
+    async showList () {
       const res = await this.getDailyData({
         schoolCode: this.userInfo.orgCode,
         todayTime: this.getDateTime(new Date())
@@ -132,7 +140,7 @@ export default {
         {
           id: 3,
           icon: unhealthyImg,
-          num: res.result.healthNum,
+          num: res.result.noHealthNum,
           tip: '健康异常人数',
           color: '#f2efff'
         },
@@ -145,7 +153,7 @@ export default {
         }
       ]
     },
-    async symptomGet() {
+    async symptomGet () {
       const res = await this.getSymptomList()
       const result = await this.getSymptomsUser({
         schoolCode: this.userInfo.orgCode,
@@ -164,7 +172,7 @@ export default {
       }
       this.initUnHealthyChart('unHealthyId', res.result)
     },
-    async initUnHealthyChart(id, data) {
+    async initUnHealthyChart (id, data) {
       Highcharts.chart(id, {
         chart: {
           plotBackgroundColor: null,
@@ -202,7 +210,7 @@ export default {
         ]
       })
     },
-    async feverAndHealthGet() {
+    async feverAndHealthGet () {
       const res = await this.getFeverAndHealth({
         schoolCode: this.userInfo.orgCode,
         startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
@@ -245,7 +253,7 @@ export default {
       console.log('this.unnormalData', this.unnormalData)
       this.initHeatChart('heatId', this.feverData, this.unnormalData, this.xDate)
     },
-    initHeatChart(id, feverData, unnormalData, xDate) {
+    initHeatChart (id, feverData, unnormalData, xDate) {
       Highcharts.chart(id, {
         chart: {
           type: 'area'
@@ -272,7 +280,7 @@ export default {
           },
           allowDecimals: false,
           labels: {
-            formatter: function() {
+            formatter: function () {
               return this.value
             }
           }
@@ -309,7 +317,7 @@ export default {
         ]
       })
     },
-    async noReportGet() {
+    async noReportGet () {
       const res = await this.getNoReport({
         schoolCode: this.userInfo.orgCode,
         startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
@@ -336,7 +344,7 @@ export default {
       // })
       this.initUnReportChart('unReportId', this.reportData, this.xDate)
     },
-    initUnReportChart(id, data, date) {
+    initUnReportChart (id, data, date) {
       Highcharts.chart(id, {
         chart: {
           type: 'area'
@@ -363,7 +371,7 @@ export default {
           },
           allowDecimals: false,
           labels: {
-            formatter: function() {
+            formatter: function () {
               return this.value
             }
           }
@@ -395,7 +403,7 @@ export default {
         ]
       })
     },
-    initUserPieChart(id, healthNum, noFeverNum) {
+    initUserPieChart (id, healthNum, noFeverNum) {
       Highcharts.chart(id, {
         chart: {
           spacing: [40, 0, 40, 0]
