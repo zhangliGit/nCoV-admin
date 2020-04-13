@@ -3,14 +3,9 @@
     <div class="header">云平台系统</div>
     <div class="qui-fx-f1">
       <div class="system-box">
-        <div
-          @click="goHtml(system.url)"
-          v-for="system in systemList"
-          :key="system.id"
-          class="system-list qui-fx-ac-jc"
-        >
+        <div @click="goHtml(system.url)" v-for="system in systemList" :key="system.id" class="system-list qui-fx-ac-jc">
           <img :src="system.icon" alt />
-          <p>{{system.name}}</p>
+          <p>{{ system.name }}</p>
         </div>
       </div>
     </div>
@@ -36,29 +31,41 @@ export default {
           id: 1,
           name: '运维端',
           url: 'admin.html',
-          icon: yw
+          icon: yw,
         },
         {
           id: 2,
           name: '教育局',
           url: 'organize.html',
-          icon: jyj
+          icon: jyj,
         },
         {
           id: 3,
           name: '学校端',
           url: 'school.html',
-          icon: xx
-        }
-      ]
+          icon: xx,
+        },
+        {
+          id: 3,
+          name: '局端大屏',
+          url: 'view.html?phone=12486571549&orgName=' + encodeURI('武汉全品文教科技有限公司'),
+          icon: xx,
+        },
+        {
+          id: 4,
+          name: '人脸识别',
+          url: 'face.html',
+          icon: xx,
+        },
+      ],
     }
   },
   methods: {
     goHtml(url) {
       window.location.href = `./${url}`
-    }
+    },
   },
-  mounted() {}
+  mounted() {},
 }
 </script>
 <style lang="less">

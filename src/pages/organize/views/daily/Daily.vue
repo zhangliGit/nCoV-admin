@@ -1,5 +1,6 @@
 <template>
   <div class="daily page-layout qui-fx-ver">
+    <div @click="goView" style="position: absolute; right: 10px; top: 12px; z-index: 88; width: 40px; height: 30px; background: #ccc; line-height: 30px; text-align: center; border-radius: 3px; color:#fff; cursor: pointer">大屏</div>
     <div class="top">
       <a-row :gutter="14">
         <a-col :span="8">
@@ -390,8 +391,15 @@ export default {
           }
         ]
       })
+    },
+    goView () {
+      if (process.env.NODE_ENV === 'production') {
+        window.open(`/pc-mobile/view?phone=${this.userInfo.phone}&orgName=${encodeURI(this.userInfo.orgName)}`, '_blank ')
+      } else {
+        window.open(`/view.html?phone=${this.userInfo.phone}&orgName=${encodeURI(this.userInfo.orgName)}`, '_blank ')
+      }
     }
-  }
+  },
 }
 </script>
 <style lang="less" scoped>

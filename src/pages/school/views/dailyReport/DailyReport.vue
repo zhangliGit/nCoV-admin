@@ -128,10 +128,11 @@ export default {
     select(value) {
       this.pageList.page = 1
       this.pageList.size = 20
-      this.pageList.reportTime = moment(value).format('YYYY-MM-DD')
+      this.pageList.reportTime = moment(value).format('YYYY-MM-DD HH:mm:ss')
       this.showList()
     },
     async showList() {
+      this.pageList.reportTime = moment(moment(new Date())).format('YYYY-MM-DD HH:mm:ss')
       this.pageList.schoolCode = this.userInfo.orgCode
       const res = await this.getReport(this.pageList)
       this.userList = res.result.list

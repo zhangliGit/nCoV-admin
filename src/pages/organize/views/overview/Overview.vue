@@ -1,9 +1,15 @@
 <template>
   <div class="overview page-layout qui-fx-ver">
-    <no-data v-if="nodata" msg="暂无学校~"></no-data>
-    <div v-else class="school qui-fx-jsb">
-      <a-select v-model="defaultSchool" style="width: 200px" @change="chooseSchool">
-        <a-select-option v-for="(item,i) in schoolList" :key="i" :value="item.schoolName">{{ item.schoolName }}</a-select-option>
+    <no-data v-if="nodata"
+             msg="暂无学校~"></no-data>
+    <div v-else
+         class="school qui-fx-jsb">
+      <a-select v-model="defaultSchool"
+                style="width: 200px"
+                @change="chooseSchool">
+        <a-select-option v-for="(item,i) in schoolList"
+                         :key="i"
+                         :value="item.schoolName">{{ item.schoolName }}</a-select-option>
       </a-select>
       <!-- <div class="info qui-fx-ac">
         <span>确诊：51</span>
@@ -12,34 +18,44 @@
       </div> -->
     </div>
     <div v-if="!nodata">
-      <div class="daily-card qui-fx qui-fx-ac" v-for="item in baseList" :key="item.id">
-        <div class="img-box" :style="`background:${item.color}`">
-          <img :src="item.icon" alt />
+      <div class="daily-card qui-fx qui-fx-ac"
+           v-for="item in baseList"
+           :key="item.id">
+        <div class="img-box"
+             :style="`background:${item.color}`">
+          <img :src="item.icon"
+               alt />
         </div>
-        <div class="qui-fx-f1" style="text-align:center;">
+        <div class="qui-fx-f1"
+             style="text-align:center;">
           <div class="num">{{ item.num }}</div>
           <div class="tip">{{ item.tip }}</div>
         </div>
       </div>
     </div>
-    <div v-if="!nodata" style="margin-top:10px;">
+    <div v-if="!nodata"
+         style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <div id="heatId" :style="{ height: chartHeight }"></div>
+          <div id="heatId"
+               :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <div id="userPieId" :style="{ height: chartHeight }"></div>
+          <div id="userPieId"
+               :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
-    <div v-if="!nodata" style="margin-top:10px;">
+    <div v-if="!nodata"
+         style="margin-top:10px;">
       <a-row :gutter="10">
-        <a-col :span="18">
-          <div id="unReportId" :style="{ height: chartHeight }"></div>
+        <a-col :span="24">
+          <div id="unReportId"
+               :style="{ height: chartHeight }"></div>
         </a-col>
-        <a-col :span="6">
+        <!-- <a-col :span="6">
           <div id="unHealthyId" :style="{ height: chartHeight }"></div>
-        </a-col>
+        </a-col> -->
       </a-row>
     </div>
   </div>
@@ -53,10 +69,12 @@ import reportImg from '@a/img/report.gif'
 import heatImg from '@a/img/heat.png'
 import unhealthyImg from '@a/img/unhealthy.gif'
 import unreportImg from '@a/img/unreport.gif'
+import moment from 'moment'
 export default {
   name: 'Overview',
-  data() {
+  data () {
     return {
+      moment,
       reportImg,
       nodata: false,
       defaultSchool: '',
@@ -69,7 +87,11 @@ export default {
       chartHeight: '',
       dailyData: {},
       symptomList: [],
-      schoolCode: ''
+      schoolCode: '',
+      feverData: [],
+      unnormalData: [],
+      reportData: [],
+      xDate: []
     }
   },
   components: {
@@ -78,19 +100,25 @@ export default {
   computed: {
     ...mapState('home', ['userInfo'])
   },
-  created() {
+  created () {
     this.chartHeight = ((document.body.clientHeight - 310) * 0.5) + 'px'
   },
-  async mounted() {
+  async mounted () {
     await this.getSchool()
     this.showList()
     this.symptomGet()
     this.feverAndHealthGet()
     this.noReportGet()
+    for (var i = 0; i < 14; i++) {
+      this.xDate.unshift(moment(new Date(new Date().setDate(new Date().getDate() - i))).format('YYYY-MM-DD'))
+      this.feverData.unshift(0)
+      this.unnormalData.unshift(0)
+      this.reportData.unshift(0)
+    }
   },
   methods: {
     ...mapActions('home', ['getDailyData', 'getSchoolList', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
-    chooseSchool(value) {
+    chooseSchool (value) {
       console.log(value)
       this.schoolCode = this.schoolList.filter(item => {
         return item.schoolName === value
@@ -100,7 +128,7 @@ export default {
       this.feverAndHealthGet()
       this.noReportGet()
     },
-    async getSchool() {
+    async getSchool () {
       this.schoolList = []
       const res = await this.getSchoolList({
         phone: this.userInfo.phone
@@ -125,7 +153,7 @@ export default {
         })
       })
     },
-    getDateTime(date) {
+    getDateTime (date) {
       if (date === '' || date === null) {
         return '--'
       }
@@ -144,7 +172,7 @@ export default {
         (d.getSeconds() > 9 ? d.getSeconds() : '0' + d.getSeconds())
       )
     },
-    async showList() {
+    async showList () {
       const res = await this.getDailyData({
         schoolCode: this.schoolCode,
         todayTime: this.getDateTime(new Date())
@@ -169,7 +197,7 @@ export default {
         {
           id: 3,
           icon: unhealthyImg,
-          num: res.result.healthNum,
+          num: res.result.noHealthNum,
           tip: '健康异常人数',
           color: '#f2efff'
         },
@@ -182,7 +210,7 @@ export default {
         }
       ]
     },
-    async symptomGet() {
+    async symptomGet () {
       const res = await this.getSymptomList()
       const result = await this.getSymptomsUser({
         schoolCode: this.schoolCode,
@@ -201,7 +229,7 @@ export default {
       }
       this.initUnHealthyChart('unHealthyId', res.result)
     },
-    async initUnHealthyChart(id, data) {
+    async initUnHealthyChart (id, data) {
       Highcharts.chart(id, {
         chart: {
           plotBackgroundColor: null,
@@ -239,24 +267,48 @@ export default {
         ]
       })
     },
-    async feverAndHealthGet() {
+    async feverAndHealthGet () {
       const res = await this.getFeverAndHealth({
         schoolCode: this.schoolCode,
         startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
         endTime: this.getDateTime(new Date())
       })
-      const feverData = res.result.feverNum.map(item => {
-        return item.num
-      })
-      const unnormalData = res.result.healthNum.map(item => {
-        return item.num
-      })
-      const feverDate = res.result.feverNum.map(item => {
-        return item.reportTime
-      })
-      this.initHeatChart('heatId', feverData, unnormalData, feverDate)
+      if (res.result.feverNum !== 0 && res.result.feverNum.length !== 0) {
+        let i
+        res.result.feverNum.forEach(ele => {
+          this.xDate.filter((item, index) => {
+            if (item === ele.reportTime) {
+              i = index
+            }
+          })
+          this.feverData[i] = ele.num
+        })
+      }
+      if (res.result.healthNum !== 0 && res.result.healthNum.length !== 0) {
+        let y
+        res.result.healthNum.forEach(ele => {
+          this.xDate.filter((item, index) => {
+            if (item === ele.reportTime) {
+              y = index
+            }
+          })
+          this.unnormalData[y] = ele.num
+        })
+      }
+      this.initHeatChart('heatId', this.feverData, this.unnormalData, this.xDate)
+
+      // const feverData = res.result.feverNum.map(item => {
+      //   return item.num
+      // })
+      // const unnormalData = res.result.healthNum.map(item => {
+      //   return item.num
+      // })
+      // const feverDate = res.result.feverNum.map(item => {
+      //   return item.reportTime
+      // })
+      // this.initHeatChart('heatId', feverData, unnormalData, feverDate)
     },
-    initHeatChart(id, feverData, unnormalData, feverDate) {
+    initHeatChart (id, feverData, unnormalData, feverDate) {
       Highcharts.chart(id, {
         chart: {
           type: 'area'
@@ -281,8 +333,9 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
-            formatter: function() {
+            formatter: function () {
               return this.value
             }
           }
@@ -319,21 +372,34 @@ export default {
         ]
       })
     },
-    async noReportGet() {
+    async noReportGet () {
       const res = await this.getNoReport({
         schoolCode: this.schoolCode,
         startTime: this.getDateTime(new Date(new Date().getTime() - 15 * 24 * 60 * 60 * 1000)),
         endTime: this.getDateTime(new Date())
       })
-      const data = res.result.map(item => {
-        return item.num
+      if (!res.result) {
+        this.initUnReportChart('unReportId', this.xDate, this.reportData)
+        return
+      }
+      let i
+      res.result.forEach(ele => {
+        this.xDate.filter((item, index) => {
+          if (item === ele.reportTime) {
+            i = index
+          }
+        })
+        this.reportData[i] = ele.num
       })
-      const date = res.result.map(item => {
-        return item.reportTime
-      })
-      this.initUnReportChart('unReportId', data, date)
+      // const data = res.result.map(item => {
+      //   return item.num
+      // })
+      // const date = res.result.map(item => {
+      //   return item.reportTime
+      // })
+      this.initUnReportChart('unReportId', this.reportData, this.xDate)
     },
-    initUnReportChart(id, data, date) {
+    initUnReportChart (id, data, date) {
       Highcharts.chart(id, {
         chart: {
           type: 'area'
@@ -358,8 +424,9 @@ export default {
           title: {
             text: ''
           },
+          allowDecimals: false,
           labels: {
-            formatter: function() {
+            formatter: function () {
               return this.value
             }
           }
@@ -391,7 +458,7 @@ export default {
         ]
       })
     },
-    initUserPieChart(id, healthNum, noFeverNum) {
+    initUserPieChart (id, healthNum, noFeverNum) {
       Highcharts.chart(id, {
         chart: {
           spacing: [40, 0, 40, 0]
@@ -400,7 +467,7 @@ export default {
           enabled: false
         },
         title: {
-          floating: true,
+          // floating: true,
           text: '健康异常人员分布'
         },
         tooltip: {
@@ -437,45 +504,44 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.overview{
-  .school{
+.overview {
+  .school {
     margin: 0 0 10px 0;
     background: #fff;
     padding: 10px;
-    .info{
-      span{
+    .info {
+      span {
         margin-left: 20px;
         color: #000;
         font-size: 14px;
       }
     }
   }
-
 }
-  .daily-card {
-    padding: 10px 30px;
-    width: 23.5%;
-    float: left;
-    margin-left: 2%;
-    height: 80px;
-    border-radius: 5px;
-    background-color: #fff;
-    &:first-of-type{
-      margin: 0;
-    }
-    .img-box{
-      width: 50px;
-      height: 50px;
-      line-height: 50px;
-      text-align: center;
-      border-radius: 50%;
-    }
-    .num {
-      font-size: 24px;
-      font-weight: bold;
-    }
-    .tip{
-      font-size: 16px;
-    }
+.daily-card {
+  padding: 10px 30px;
+  width: 23.5%;
+  float: left;
+  margin-left: 2%;
+  height: 80px;
+  border-radius: 5px;
+  background-color: #fff;
+  &:first-of-type {
+    margin: 0;
   }
+  .img-box {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 50%;
+  }
+  .num {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .tip {
+    font-size: 16px;
+  }
+}
 </style>

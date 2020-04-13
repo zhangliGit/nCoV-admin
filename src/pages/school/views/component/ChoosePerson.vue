@@ -32,7 +32,7 @@
       <div class="qui-fx-ver qui-fx-f1">
         <table-list
           is-check
-          :scroll-h="0"
+          :scroll-h="430"
           v-model="chooseList"
           :columns="columns"
           @clickRow="clickRow"

@@ -19,7 +19,7 @@ const homeApi = {
   getRiskList: '/operate/riskinfo/getList#get', // 风险类型列表
   addRisk: '/operate/riskinfo/save#post', // 添加风险类型
   updateRisk: '/operate/riskinfo/update#post', // 编辑风险类型
-  delRisk: '/operate/riskinfo/delete/#postWithPara', // 删除风险类型
+  delRisk: '/operate/riskinfo/delete/#postUrl', // 删除风险类型
   getUnbindSchool: '/operate/organizationinfo/getSchoolInfoPage#post' // 未绑定的学校
 }
 for (const val in homeApi) {

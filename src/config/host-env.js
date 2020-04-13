@@ -7,13 +7,15 @@ const ConfigEnv = process.env.VUE_APP_URL
 let wangxuanzhang = ''
 let zhuxu = ''
 if (ConfigEnv === 'test') {
-  wangxuanzhang = '/wangxuanzhang'
+ // 线上接口
+ wangxuanzhang = '/pc-yq'
+ zhuxu = '/mobile-yq'
 } else if (ConfigEnv === 'prod') {
   // 线上接口
   wangxuanzhang = '/pc-yq'
   zhuxu = '/mobile-yq'
 } else {
-  wangxuanzhang = '/zhuxu'
+  wangxuanzhang = '/wangxuanzhang'
   zhuxu = '/zhuxu'
 }
 
