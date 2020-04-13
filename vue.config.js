@@ -51,32 +51,31 @@ module.exports = {
     if (isProduction) {
       // config.plugins.push(
       //   new BundleAnalyzerPlugin({
-      //     analyzerPort: 8890
+      //     analyzerPort: 8891
       //   })
       // )
-      if (isCdn) {
-        config.externals = {
-          vue: 'Vue',
-          'vue-router': 'VueRouter',
-          vuex: 'Vuex',
-          axios: 'axios',
-          moment: 'moment'
-        }
+      config.plugins.push(new uploadZip())
+      config.externals = {
+        vue: 'Vue',
+        'vue-router': 'VueRouter',
+        vuex: 'Vuex',
+        axios: 'axios',
+        moment: 'moment'
       }
 
       // 压缩代码
-      // config.optimization = {
-      //   splitChunks: {},
-      //   minimizer: [
-      //     new UglifyJsPlugin({
-      //       uglifyOptions: {
-      //         compress: {
-      //           drop_console: true
-      //         }
-      //       }
-      //     })
-      //   ]
-      // }
+      config.optimization = {
+        splitChunks: {},
+        minimizer: [
+          new UglifyJsPlugin({
+            uglifyOptions: {
+              compress: {
+                drop_console: true
+              }
+            }
+          })
+        ]
+      }
     }
   },
   css: {
