@@ -54,28 +54,29 @@ module.exports = {
       //     analyzerPort: 8890
       //   })
       // )
-      config.plugins.push(new uploadZip())
-      config.externals = {
-        vue: 'Vue',
-        'vue-router': 'VueRouter',
-        vuex: 'Vuex',
-        axios: 'axios',
-        moment: 'moment'
+      if (isCdn) {
+        config.externals = {
+          vue: 'Vue',
+          'vue-router': 'VueRouter',
+          vuex: 'Vuex',
+          axios: 'axios',
+          moment: 'moment'
+        }
       }
 
       // 压缩代码
-      config.optimization = {
-        splitChunks: {},
-        minimizer: [
-          new UglifyJsPlugin({
-            uglifyOptions: {
-              compress: {
-                drop_console: true
-              }
-            }
-          })
-        ]
-      }
+      // config.optimization = {
+      //   splitChunks: {},
+      //   minimizer: [
+      //     new UglifyJsPlugin({
+      //       uglifyOptions: {
+      //         compress: {
+      //           drop_console: true
+      //         }
+      //       }
+      //     })
+      //   ]
+      // }
     }
   },
   css: {
