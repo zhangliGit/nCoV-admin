@@ -18,7 +18,7 @@ const envHost = {
     uploadPath: '/usr/local/openresty/nginx/html/pc-protal/'
   },
   test: {
-    url: 'http://39.97.164.4:8090/upload-zip',
+    url: 'http://112.125.89.37:8090/upload-zip',
     uploadPath: '/usr/local/openresty/nginx/html/pc-protal/'
   }
 }
@@ -45,7 +45,7 @@ class uploadZip {
           if (!error && response.statusCode === 200) {
             // 删除压缩包
             fs.unlink(path.resolve(__dirname, `../${buildModule}.zip`), function() {
-              logs('上传成功')
+              logs(`上传成功，${buildModule}模块已上传到${msg}`)
               process.exit()
             })
           }
