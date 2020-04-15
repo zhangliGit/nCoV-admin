@@ -8,12 +8,12 @@ let wangxuanzhang = ''
 let zhuxu = ''
 if (ConfigEnv === 'test') {
  // 线上接口
- wangxuanzhang = '/pc-yq'
- zhuxu = '/mobile-yq'
+ wangxuanzhang = '/api-pc-ncov'
+ zhuxu = '/api-pc-ncov'
 } else if (ConfigEnv === 'prod') {
   // 线上接口
-  wangxuanzhang = '/pc-yq'
-  zhuxu = '/mobile-yq'
+  wangxuanzhang = '/api-pc-ncov'
+  zhuxu = '/api-pc-ncov'
 } else {
   wangxuanzhang = '/wangxuanzhang'
   zhuxu = '/zhuxu'
