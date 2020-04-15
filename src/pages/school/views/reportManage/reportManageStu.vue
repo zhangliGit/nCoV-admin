@@ -118,7 +118,16 @@ const columns = [
   {
     title: '附带症状',
     dataIndex: 'symptoms',
-    width: '7%'
+    width: '8%',
+    customRender: text => {
+     if (text === 'FL001') {
+        return '乏力'
+      } else if(text === 'YT001') {
+        return '咽痛'
+      }else if(text === 'KS001'){
+        return '咳嗽'
+      }
+    }
   },
   {
     title: '是否异常 ',
