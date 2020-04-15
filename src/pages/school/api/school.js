@@ -25,7 +25,8 @@ const schoolApi = {
   updateInfo: '/school/medicalinfo/save#post', // 修改体检数据
   getTemperatureData: '/school/reportinfo/getTemperatureData#postQuery', // 获取个人体温数据
   getreportList: '/school/userinfo/getUserInfoList#post', // 人员信息查询
-  getReportInfoList: '/school/reportinfo/getReportInfoList#post' // 获取上报信息记录
+  getReportInfoList: '/school/reportinfo/getReportInfoList#post', // 获取上报信息记录
+  getSymptomList: '/operate/symptomsinfo/list#get' // 获取症状信息列表
   
 }
 for (const val in schoolApi) {
