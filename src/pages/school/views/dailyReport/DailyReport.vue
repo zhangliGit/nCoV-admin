@@ -108,7 +108,7 @@ export default {
         reportState: '2', // 上报1，未上报2
         feverMark: '', // 1发烧2不发烧
         mark02: '', // 1异常
-        reportTime: moment(new Date())
+        reportTime: moment(moment(new Date())).format('YYYY-MM-DD HH:mm:ss')
       },
       total: 0,
       columns,
@@ -132,7 +132,6 @@ export default {
       this.showList()
     },
     async showList() {
-      this.pageList.reportTime = moment(moment(new Date())).format('YYYY-MM-DD HH:mm:ss')
       this.pageList.schoolCode = this.userInfo.orgCode
       const res = await this.getReport(this.pageList)
       this.userList = res.result.list
