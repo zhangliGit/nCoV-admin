@@ -1,16 +1,14 @@
 <template>
   <div class="home page-layout qui-fx-ver">
     <div>
-      <div class="daily-card qui-fx qui-fx-ac"
-           v-for="item in baseList"
-           :key="item.id">
-        <div class="img-box"
-             :style="`background:${item.color}`">
-          <img :src="item.icon"
-               alt />
+      <div
+        class="daily-card qui-fx qui-fx-ac"
+        v-for="item in baseList"
+        :key="item.id">
+        <div class="img-box" :style="`background:${item.color}`">
+          <img :src="item.icon" alt />
         </div>
-        <div class="qui-fx-f1"
-             style="text-align:center;">
+        <div class="qui-fx-f1" style="text-align:center;">
           <div class="num">{{ item.num }}</div>
           <div class="tip">{{ item.tip }}</div>
         </div>
@@ -19,24 +17,21 @@
     <div style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <div id="heatId"
-               :style="{ height: chartHeight }"></div>
+          <div id="heatId" :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <div id="userPieId"
-               :style="{ height: chartHeight }"></div>
+          <div id="userPieId" :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
     <div style="margin-top:10px;">
       <a-row :gutter="10">
-        <a-col :span="24">
-          <div id="unReportId"
-               :style="{ height: chartHeight }"></div>
+        <a-col :span="18">
+          <div id="unReportId" :style="{ height: chartHeight }"></div>
         </a-col>
-        <!-- <a-col :span="6">
+        <a-col :span="6">
           <div id="unHealthyId" :style="{ height: chartHeight }"></div>
-        </a-col> -->
+        </a-col>
       </a-row>
     </div>
   </div>
@@ -87,12 +82,6 @@ export default {
       this.unnormalData.unshift(0)
       this.reportData.unshift(0)
     }
-    // console.log('this.xDate', this.xDate)
-    // console.log('this.feverData', this.feverData)
-    // console.log('this.unnormalData', this.unnormalData)
-    // for (var j = 0; j < 7; j++) {
-    //   this.reportDate.unshift(0)
-    // }
   },
   methods: {
     ...mapActions('home', ['getDailyData', 'getFeverAndHealth', 'getNoReport', 'getSymptomsUser', 'getSymptomList']),
@@ -160,17 +149,21 @@ export default {
         todayTime: this.getDateTime(new Date())
       })
       const res1 = res.result
-      this.symptomList = result.result
-      for (var i = 0; i < this.symptomList.length; i++) {
-        for (var j = 0; j < res1.length; j++) {
-          if (this.symptomList[i].MARK === res1[j].symptomsCode) {
-            this.symptomList[i].name = res1[j].symptomsName
-            this.symptomList[i].y = this.symptomList[i].count1
-            break
+      let res2 = result.result
+      for (var i = 0; i < res2.length; i++) {
+        if (res2[i].MARK) {
+          for (var j = 0; j < res1.length; j++) {
+            if (res2[i].MARK === res1[j].symptomsCode) {
+              res2[i].name = res1[j].symptomsName
+              res2[i].y = res2[i].count1
+              break
+            }
           }
+        } else {
+         res2 = []
         }
       }
-      this.initUnHealthyChart('unHealthyId', res.result)
+      this.initUnHealthyChart('unHealthyId', res2)
     },
     async initUnHealthyChart (id, data) {
       Highcharts.chart(id, {
@@ -220,8 +213,6 @@ export default {
         let i
         res.result.feverNum.forEach(ele => {
           this.xDate.filter((item, index) => {
-            console.log('item', item)
-            console.log('el', ele)
             if (item === ele.reportTime) {
               i = index
             }
@@ -249,8 +240,6 @@ export default {
       // const feverDate = res.result.feverNum.map(item => {
       //   return item.reportTime
       // })
-      console.log('this.feverData', this.feverData)
-      console.log('this.unnormalData', this.unnormalData)
       this.initHeatChart('heatId', this.feverData, this.unnormalData, this.xDate)
     },
     initHeatChart (id, feverData, unnormalData, xDate) {

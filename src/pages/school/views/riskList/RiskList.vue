@@ -13,7 +13,7 @@
       title="选择风险人员"
     ></choose-person>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList"></table-list>
-    <page-num v-model="pageList" :total="total" @change-page="showList"></page-num>
+    <page-num v-model="pageList" :total="total" @change-page="showList(this.searchObj)"></page-num>
   </div>
 </template>
 
@@ -162,22 +162,23 @@ export default {
         size: 20
       },
       total: 0,
-      userList: []
+      userList: [],
+      searchObj: null
     }
   },
   computed: {
     ...mapState('home', ['userInfo'])
   },
   mounted() {
-    this.showList()
+    this.showList(this.searchObj)
   },
   methods: {
     ...mapActions('home', ['getRiskList', 'addRisk']),
-    async showList(searchObj = {}) {
+    async showList() {
       const req = {
         ...this.pageList,
         schoolCode: this.userInfo.orgCode,
-        ...searchObj
+        ...this.searchObj
       }
       const res = await this.getRiskList(req)
       this.userList = res.result.list
@@ -191,11 +192,11 @@ export default {
     },
     searchForm(values) {
       this.pageList.page = 1
-      const searchObj = {
+      this.searchObj = {
         userName: values.userName,
         healthyState: values.healthyState
       }
-      this.showList(searchObj)
+      this.showList(this.searchObj)
     },
     async chooseUser(item, riskType) {
       console.log(item, riskType)
@@ -217,7 +218,7 @@ export default {
       this.$message.success('添加成功')
       setTimeout(() => {
         this.$refs.chooseUser.reset()
-        this.showList()
+        this.showList(this.searchObj)
       }, 2000)
     }
   }

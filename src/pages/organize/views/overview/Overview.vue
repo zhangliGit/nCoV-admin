@@ -1,15 +1,15 @@
 <template>
   <div class="overview page-layout qui-fx-ver">
-    <no-data v-if="nodata"
-             msg="暂无学校~"></no-data>
-    <div v-else
-         class="school qui-fx-jsb">
-      <a-select v-model="defaultSchool"
-                style="width: 200px"
-                @change="chooseSchool">
-        <a-select-option v-for="(item,i) in schoolList"
-                         :key="i"
-                         :value="item.schoolName">{{ item.schoolName }}</a-select-option>
+    <no-data v-if="nodata" msg="暂无学校~"></no-data>
+    <div v-else class="school qui-fx-jsb">
+      <a-select
+        v-model="defaultSchool"
+        style="width: 200px"
+        @change="chooseSchool">
+        <a-select-option
+          v-for="(item,i) in schoolList"
+          :key="i"
+          :value="item.schoolName">{{ item.schoolName }}</a-select-option>
       </a-select>
       <!-- <div class="info qui-fx-ac">
         <span>确诊：51</span>
@@ -18,44 +18,37 @@
       </div> -->
     </div>
     <div v-if="!nodata">
-      <div class="daily-card qui-fx qui-fx-ac"
-           v-for="item in baseList"
-           :key="item.id">
-        <div class="img-box"
-             :style="`background:${item.color}`">
-          <img :src="item.icon"
-               alt />
+      <div
+        class="daily-card qui-fx qui-fx-ac"
+        v-for="item in baseList"
+        :key="item.id">
+        <div class="img-box" :style="`background:${item.color}`">
+          <img :src="item.icon" alt />
         </div>
-        <div class="qui-fx-f1"
-             style="text-align:center;">
+        <div class="qui-fx-f1" style="text-align:center;">
           <div class="num">{{ item.num }}</div>
           <div class="tip">{{ item.tip }}</div>
         </div>
       </div>
     </div>
-    <div v-if="!nodata"
-         style="margin-top:10px;">
+    <div v-if="!nodata" style="margin-top:10px;">
       <a-row :gutter="10">
         <a-col :span="18">
-          <div id="heatId"
-               :style="{ height: chartHeight }"></div>
+          <div id="heatId" :style="{ height: chartHeight }"></div>
         </a-col>
         <a-col :span="6">
-          <div id="userPieId"
-               :style="{ height: chartHeight }"></div>
+          <div id="userPieId" :style="{ height: chartHeight }"></div>
         </a-col>
       </a-row>
     </div>
-    <div v-if="!nodata"
-         style="margin-top:10px;">
+    <div v-if="!nodata" style="margin-top:10px;">
       <a-row :gutter="10">
-        <a-col :span="24">
-          <div id="unReportId"
-               :style="{ height: chartHeight }"></div>
+        <a-col :span="18">
+          <div id="unReportId" :style="{ height: chartHeight }"></div>
         </a-col>
-        <!-- <a-col :span="6">
+        <a-col :span="6">
           <div id="unHealthyId" :style="{ height: chartHeight }"></div>
-        </a-col> -->
+        </a-col>
       </a-row>
     </div>
   </div>
@@ -213,21 +206,25 @@ export default {
     async symptomGet () {
       const res = await this.getSymptomList()
       const result = await this.getSymptomsUser({
-        schoolCode: this.schoolCode,
+        schoolCode: this.userInfo.orgCode,
         todayTime: this.getDateTime(new Date())
       })
       const res1 = res.result
-      this.symptomList = result.result
-      for (var i = 0; i < this.symptomList.length; i++) {
-        for (var j = 0; j < res1.length; j++) {
-          if (this.symptomList[i].MARK === res1[j].symptomsCode) {
-            this.symptomList[i].name = res1[j].symptomsName
-            this.symptomList[i].y = this.symptomList[i].count1
-            break
+      let res2 = result.result
+      for (var i = 0; i < res2.length; i++) {
+        if (res2[i].MARK) {
+          for (var j = 0; j < res1.length; j++) {
+            if (res2[i].MARK === res1[j].symptomsCode) {
+              res2[i].name = res1[j].symptomsName
+              res2[i].y = res2[i].count1
+              break
+            }
           }
+        } else {
+         res2 = []
         }
       }
-      this.initUnHealthyChart('unHealthyId', res.result)
+      this.initUnHealthyChart('unHealthyId', res2)
     },
     async initUnHealthyChart (id, data) {
       Highcharts.chart(id, {
