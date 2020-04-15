@@ -260,7 +260,7 @@ export default {
     ...mapState('home', ['userInfo'])
   },
   created() {
-    this.fileInfo.url = `/admin/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
+    this.fileInfo.url = `/api-pc-ncov/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
     this.formData[1].selectGrade = this.selectGrade
   },
   async mounted() {

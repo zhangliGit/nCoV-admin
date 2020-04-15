@@ -253,7 +253,7 @@ export default {
     ...mapState('home', ['userInfo']),
   },
   mounted() {
-    this.fileInfo.url = `/admin/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
+    this.fileInfo.url = `/api-pc-ncov/school/userinfo/uploadFile?schoolCode=${this.userInfo.orgCode}`
     this.showList()
   },
   methods: {
