@@ -13,7 +13,7 @@
       title="选择风险人员"
     ></choose-person>
     <table-list :page-list="pageList" :columns="columns" :table-list="userList"></table-list>
-    <page-num v-model="pageList" :total="total" @change-page="showList(this.searchObj)"></page-num>
+    <page-num v-model="pageList" :total="total" @change-page="showList(searchObj)"></page-num>
   </div>
 </template>
 
@@ -133,11 +133,11 @@ const searchLabel = [
       {
         key: '2',
         val: '确诊'
-      },
+      }/* ,
       {
         key: '3',
         val: '健康'
-      }
+      } */
     ],
     value: 'healthyState',
     type: 'select',

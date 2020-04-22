@@ -355,7 +355,7 @@ export default {
       }
       this.showList(this.gradeCode, this.classCode, searchObj)
     },
-    async submitForm(values) {
+    submitForm(values) {
       console.log(values)
       if (this.type) {
         const req = {
@@ -376,17 +376,16 @@ export default {
         if (Array.isArray(values.gradeCode)) {
           req.gradeCode = values.gradeCode[0]
         }
-        try {
-          await this.editUser(req)
-        } catch (e) {
-          this.$refs.form.error()
-        }
-        this.$message.success('编辑成功')
-        setTimeout(() => {
-          this.picUrl = ''
-          this.showList()
-          this.$refs.form.reset()
-        }, 2000)
+          this.editUser(req).then(res => {
+            this.$message.success('编辑成功')
+            setTimeout(() => {
+              this.picUrl = ''
+              this.showList()
+              this.$refs.form.reset()
+            }, 2000)
+          }).catch(() => {
+            this.$refs.form.error()
+          })
       } else {
         const req = {
           birthday: values.birthday,
@@ -407,17 +406,16 @@ export default {
           return ele.key === values.classCode
         })[0].val
         console.log(req)
-        try {
-          await this.addStudent(req)
-        } catch (e) {
+        this.addStudent(req).then(res => {
+          this.$message.success('添加成功')
+          setTimeout(() => {
+            this.picUrl = ''
+            this.showList()
+            this.$refs.form.reset()
+          }, 2000)
+        }).catch(() => {
           this.$refs.form.error()
-        }
-        this.$message.success('添加成功')
-        setTimeout(() => {
-          this.picUrl = ''
-          this.showList()
-          this.$refs.form.reset()
-        }, 2000)
+        })
       }
     },
     goDetail(record) {

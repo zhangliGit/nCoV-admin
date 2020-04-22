@@ -23,7 +23,7 @@
             <a-select-option value="0">请选择</a-select-option>
             <a-select-option value="1">疑似</a-select-option>
             <a-select-option value="2">确诊</a-select-option>
-            <a-select-option value="3">健康</a-select-option>
+            <!--             <a-select-option value="3">健康</a-select-option> -->
           </a-select>
         </span>
       </a-col>

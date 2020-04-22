@@ -304,7 +304,7 @@ export default {
       }
       this.showList(searchObj)
     },
-    async submitForm(values) {
+    submitForm(values) {
       console.log(values)
       if (this.type) {
         const req = {
@@ -315,17 +315,16 @@ export default {
         }
         console.log(req)
         req.userNo = values.workNo
-        try {
-          await this.editUser(req)
-        } catch (e) {
+          this.editUser(req).then(res => {
+            this.$message.success('编辑成功')
+            setTimeout(() => {
+              this.picUrl = ''
+              this.showList()
+              this.$refs.form.reset()
+            }, 2000)
+          }).catch(() => {
           this.$refs.form.error()
-        }
-        this.$message.success('编辑成功')
-        setTimeout(() => {
-          this.picUrl = ''
-          this.showList()
-          this.$refs.form.reset()
-        }, 2000)
+        })
       } else {
         const req = {
           ...values,
@@ -334,17 +333,16 @@ export default {
         }
         console.log(req)
         req.userNo = values.workNo
-        try {
-          await this.addTeacher(req)
-        } catch (e) {
+          this.addTeacher(req).then(res => {
+            this.$message.success('添加成功')
+            setTimeout(() => {
+              this.picUrl = ''
+              this.showList()
+              this.$refs.form.reset()
+            }, 2000)
+          }).catch(() => {
           this.$refs.form.error()
-        }
-        this.$message.success('添加成功')
-        setTimeout(() => {
-          this.picUrl = ''
-          this.showList()
-          this.$refs.form.reset()
-        }, 2000)
+        })
       }
     },
     goDetail(record) {
