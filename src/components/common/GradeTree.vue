@@ -106,11 +106,11 @@ export default {
           schoolYearId: item.id
         }
       })
-      this.onLoadData({
+      /* this.onLoadData({
         dataRef: {
           schoolYearId: this.treeData[0].code
         }
-      })
+      }) */
       this.$emit('select', selectObj)
     },
     async onLoadData(treeNode) {
